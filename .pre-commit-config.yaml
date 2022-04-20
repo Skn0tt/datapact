@@ -4,3 +4,13 @@ repos:
     hooks:
       - id: black-jupyter
         language_version: python3.10
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: pyright
+        language: node
+        pass_filenames: false
+        types: [python]
+        # Replace the version below with the latest pyright version
+        additional_dependencies: ["pyright@1.1.239"]
