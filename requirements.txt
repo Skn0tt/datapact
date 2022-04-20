@@ -1,1 +1,5 @@
 pandas==1.4.2
+pre-commit
+pylint==2.13.5
+pytest==7.1.1
+sphinx==4.5.0
