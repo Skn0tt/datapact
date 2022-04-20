@@ -1,4 +1,8 @@
 repos:
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v2.6.2"
+    hooks:
+      - id: prettier
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
@@ -21,8 +25,7 @@ repos:
         entry: pylint
         language: system
         types: [python]
-        args:
-          [
+        args: [
             "-rn", # Only display messages
             "-sn", # Don't display the score
           ]
