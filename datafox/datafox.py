@@ -71,6 +71,12 @@ class SeriesTest(ContextManager):
         print(alpha)
         return self
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, _value, _traceback):
+        return self
+
 
 class DataframeTest(ContextManager):
     """
@@ -100,6 +106,12 @@ class DataframeTest(ContextManager):
         """
         series = getattr(self.dataframe, attr)
         return SeriesTest(series)  # pylint: disable=abstract-class-instantiated
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, _value, _traceback):
+        return self
 
 
 @overload

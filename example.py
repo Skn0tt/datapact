@@ -28,7 +28,7 @@ with datafox.test(income_df).describe(
         salary.expect_numbers()
         salary.expect_not_null()
         salary.expect_between(0, "300k")
-        salary.expect_normal(p=0.05, method="chi2")
+        salary.expect_normal(alpha=0.05)
 
 
 ## alternative, without with statements:
@@ -50,3 +50,6 @@ income_datafox.salary.expect_numbers()
 income_datafox.salary.expect_not_null()
 income_datafox.salary.expect_between(0, "300k")
 income_datafox.salary.expect_normal(alpha=0.05)
+
+# - biomedical: allow specifiying features dynamically
+# - katharina prefers with statements (not strong)
