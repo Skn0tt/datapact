@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Expectation",
+  "type": "object",
+  "properties": {
+    "column": {
+      "type": "string"
+    },
+    "segment": {
+      "type": "object",
+      "properties": {
+        "descriptor": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": ["descriptor"]
+    },
+    "name": {
+      "type": "string"
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string",
+          "enum": ["pass", "warn", "fail"]
+        },
+        "offending_rows": {
+          "type": "integer"
+        },
+        "offending_rows_sample": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              ".*": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": ["result", "offending_rows", "offending_rows_sample"]
+    }
+  },
+  "required": ["column", "name"],
+  "oneOf": [
+    {
+      "properties": {
+        "name": {
+          "const": "not_null"
+        },
+        "allowed_percentage": {
+          "type": "number"
+        }
+      },
+      "required": ["percentage_null"]
+    }
+  ]
+}

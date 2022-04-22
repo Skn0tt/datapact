@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "TestRun",
+  "type": "object",
+  "properties": {
+    "expectations": {
+      "type": "array",
+      "items": {
+        "$ref": "expectation.json"
+      }
+    },
+    "dataprofile": {
+      "$ref": "dataprofile.json"
+    },
+    "location": {
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "required": ["expectations", "dataprofile"]
+}
