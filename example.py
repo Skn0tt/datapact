@@ -26,7 +26,6 @@ with datafox.test(income_df).describe(
         age.should.be_between(0, 100)
     with income.salary as salary:
         salary.should.be_numbers()
-        salary.should_not.contain_null()
         salary.should.be_between(0, "300k")
         salary.should.be_normal(alpha=0.05)
 
@@ -43,8 +42,6 @@ income_datafox.age.should.be_between(0, 100)
 
 income_datafox.salary.describe(unit="$")
 income_datafox.salary.should.be_numbers()
-income_datafox.salary.should_not.contain_null()
-income_datafox.salary.should_not.be_between(0, "300k")
 income_datafox.salary.should.be_between(0, "300k")
 income_datafox.salary.should.be_normal(alpha=0.05)
 income_datafox.salary.must.be_normal(alpha=0.05)

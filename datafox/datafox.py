@@ -26,15 +26,12 @@ class SeriesTest(ContextManager):
     wraps a column
     """
 
-    parent: "DataframeTest"
-    series: pandas.Series
-    title: str
-    description: str
-    unit: str
-
     def __init__(self, parent: "DataframeTest", series: pandas.Series):
         self.parent = parent
         self.series = series
+        self.title: Optional[str] = None
+        self.description: Optional[str] = None
+        self.unit: Optional[str] = None
 
     def describe(
         self,
@@ -67,20 +64,6 @@ class SeriesTest(ContextManager):
         """
         return Asserter(self, critical=True)
 
-    @property
-    def should_not(self):
-        """
-        negated warning-test
-        """
-        return Asserter(self, critical=False, negated=True)
-
-    @property
-    def must_not(self):
-        """
-        negated failure-test
-        """
-        return Asserter(self, critical=True, negated=True)
-
     def __enter__(self):
         return self
 
@@ -93,26 +76,15 @@ class SeriesTest(ContextManager):
         """
         self.parent.report(self.series.name, error)
 
-    def __repr__(self):
-        return self.parent.__repr__()  # pylint: disable=protected-access
-
-    def _repr_html_(self):
-        return self.parent._repr_html_()  # pylint: disable=protected-access
-
 
 class Asserter:
     """
     demo docstring
     """
 
-    parent: SeriesTest
-    critical: bool
-    negated: bool
-
-    def __init__(self, parent: SeriesTest, critical: bool, negated: bool = False):
+    def __init__(self, parent: SeriesTest, critical: bool):
         self.parent = parent
         self.critical = critical
-        self.negated = negated
 
     @property
     def series(self):
@@ -149,16 +121,16 @@ class Asserter:
 
         if extends_left and extends_right:
             self.report(
-                f"out of range. expected to be in ({minimum}, {maximum}) \n"
-                + f"but found ({found_min}, {found_max})."
+                f"out of range. expected to be in $({minimum}, {maximum})$ \n"
+                + f"but found $({found_min}, {found_max})$."
             )
         elif extends_left:
             self.report(
-                f"expected values to be at least {minimum}, but found {found_min}"
+                f"expected values to be at least ${minimum}$, but found ${found_min}$"
             )
         elif extends_right:
             self.report(
-                f"expected values to be at most {maximum}, but found {found_max}"
+                f"expected values to be at most ${maximum}$, but found ${found_max}$"
             )
 
         return self
@@ -172,25 +144,18 @@ class Asserter:
             self.report(f"not normal. p={p}, stat={stat}")
         return self
 
-    def __repr__(self):
-        return self.parent.__repr__()  # pylint: disable=protected-access
-
-    def _repr_html_(self):
-        return self.parent._repr_html_()  # pylint: disable=protected-access
-
 
 class DataframeTest:
     """
     some demo doc
     """
 
-    dataframe: pandas.DataFrame
-    title: str
-    description: str
-    reports: "list[str]" = []
-
     def __init__(self, dataframe: pandas.DataFrame):
         self.dataframe = dataframe
+        self.title: Optional[str] = None
+        self.description: Optional[str] = None
+        self.reports: "list[str]" = []
+        self.series_tests: "dict[str, SeriesTest]" = {}
         super().__init__()
 
     def describe(self, title: Optional[str] = None, description: Optional[str] = None):
@@ -203,14 +168,16 @@ class DataframeTest:
             self.description = description
         return self
 
+    def get_series_test(self, series: pandas.Series):
+        if not series.name in self.series_tests:
+            self.series_tests[series.name] = SeriesTest(self, series)
+        return self.series_tests[series.name]
+
     def __getattr__(self, attr) -> SeriesTest:
-        """
-        demo docstring
-        """
         if not attr in self.dataframe.columns:
             raise AttributeError
         series = self.dataframe[attr]
-        return SeriesTest(self, series)
+        return self.get_series_test(series)
 
     def __enter__(self):
         return self
@@ -219,7 +186,7 @@ class DataframeTest:
         return self
 
     def report(self, column: str, error: str):
-        self.reports.append(f"{column}: {error}")
+        self.reports.append(f"`{column}`: {error}")
 
     def __repr__(self):
         return pystache.render(
@@ -231,15 +198,16 @@ class DataframeTest:
             {"reports": self.reports},
         )
 
-    def _repr_html_(self):
+    def _repr_markdown_(self):
+        """
+        see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
+        """
         return pystache.render(
             """
-<h1>Reports:</h1>
-<ul>
-    {{#reports}}
-    <li>{{.}}</li>
-    {{/reports}}
-</ul>
+reports:
+{{#reports}}
+- {{.}}
+{{/reports}}
 """,
             {"reports": self.reports},
         )
