@@ -47,6 +47,7 @@
     }
   },
   "required": ["column", "name"],
+  "additionalProperties": false,
   "oneOf": [
     {
       "properties": {
@@ -57,7 +58,29 @@
           "type": "number"
         }
       },
-      "required": ["percentage_null"]
+      "required": ["percentage_null", "allowed_percentage"],
+      "additionalProperties": false
+    },
+    {
+      "properties": {
+        "name": {
+          "const": "between"
+        },
+        "expected_min": {
+          "type": "number"
+        },
+        "expected_max": {
+          "type": "number"
+        },
+        "found_min": {
+          "type": "number"
+        },
+        "found_max": {
+          "type": "number"
+        }
+      },
+      "required": ["expected_min", "expected_max", "found_min", "found_max"],
+      "additionalProperties": false
     }
   ]
 }
