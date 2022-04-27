@@ -2,8 +2,10 @@
 demo docstring
 """
 
-from typing import Optional, ContextManager, Union, overload
+from typing import Optional, ContextManager, Union
 import pandas
+import pystache
+import scipy.stats
 
 
 def connect(server: str = "datafox.dev", api_key: Optional[str] = None):
@@ -24,12 +26,14 @@ class SeriesTest(ContextManager):
     wraps a column
     """
 
+    parent: "DataframeTest"
     series: pandas.Series
     title: str
     description: str
     unit: str
 
-    def __init__(self, series: pandas.Series):
+    def __init__(self, parent: "DataframeTest", series: pandas.Series):
+        self.parent = parent
         self.series = series
 
     def describe(
@@ -54,28 +58,28 @@ class SeriesTest(ContextManager):
         """
         warning-test
         """
-        return Asserter(self.series, critical=False)
+        return Asserter(self, critical=False)
 
     @property
     def must(self):
         """
         failure-test
         """
-        return Asserter(self.series, critical=True)
+        return Asserter(self, critical=True)
 
     @property
     def should_not(self):
         """
         negated warning-test
         """
-        return Asserter(self.series, critical=False, negated=True)
+        return Asserter(self, critical=False, negated=True)
 
     @property
     def must_not(self):
         """
         negated failure-test
         """
-        return Asserter(self.series, critical=True, negated=True)
+        return Asserter(self, critical=True, negated=True)
 
     def __enter__(self):
         return self
@@ -83,28 +87,47 @@ class SeriesTest(ContextManager):
     def __exit__(self, _type, _value, _traceback):
         return self
 
+    def report(self, error: str):
+        """
+        demo docstring
+        """
+        self.parent.report(self.series.name, error)
+
+    def __repr__(self):
+        return self.parent.__repr__()  # pylint: disable=protected-access
+
+    def _repr_html_(self):
+        return self.parent._repr_html_()  # pylint: disable=protected-access
+
 
 class Asserter:
     """
     demo docstring
     """
 
-    series: pandas.Series
+    parent: SeriesTest
     critical: bool
     negated: bool
 
-    def __init__(self, series: pandas.Series, critical: bool, negated: bool = False):
-        self.series = series
+    def __init__(self, parent: SeriesTest, critical: bool, negated: bool = False):
+        self.parent = parent
         self.critical = critical
         self.negated = negated
 
-    def be_numbers(self) -> "Asserter":
+    @property
+    def series(self):
+        return self.parent.series
+
+    def report(self, error: str):
+        self.parent.report(error)
+
+    def be_numbers(self):
         """
         demo docstring
         """
         return self
 
-    def contain_null(self) -> "Asserter":
+    def contain_null(self):
         """
         demo docstring
         """
@@ -112,22 +135,51 @@ class Asserter:
 
     def be_between(
         self, minimum: Union[int, float, str], maximum: Union[int, float, str]
-    ) -> "Asserter":
+    ):
         """
         demo docstring
         """
-        print(minimum, maximum)
+        self.be_numbers()
+
+        found_min = self.series.min()
+        found_max = self.series.max()
+
+        extends_left = found_min < minimum
+        extends_right = found_max > maximum
+
+        if extends_left and extends_right:
+            self.report(
+                f"out of range. expected to be in ({minimum}, {maximum}) \n"
+                + f"but found ({found_min}, {found_max})."
+            )
+        elif extends_left:
+            self.report(
+                f"expected values to be at least {minimum}, but found {found_min}"
+            )
+        elif extends_right:
+            self.report(
+                f"expected values to be at most {maximum}, but found {found_max}"
+            )
+
         return self
 
-    def be_normal(self, alpha) -> "Asserter":
+    def be_normal(self, alpha=0.05):
         """
         demo docstring
         """
-        print(alpha)
+        stat, p = scipy.stats.normaltest(self.series)
+        if p < alpha:
+            self.report(f"not normal. p={p}, stat={stat}")
         return self
 
+    def __repr__(self):
+        return self.parent.__repr__()  # pylint: disable=protected-access
 
-class DataframeTest(ContextManager):
+    def _repr_html_(self):
+        return self.parent._repr_html_()  # pylint: disable=protected-access
+
+
+class DataframeTest:
     """
     some demo doc
     """
@@ -135,9 +187,11 @@ class DataframeTest(ContextManager):
     dataframe: pandas.DataFrame
     title: str
     description: str
+    reports: "list[str]" = []
 
     def __init__(self, dataframe: pandas.DataFrame):
         self.dataframe = dataframe
+        super().__init__()
 
     def describe(self, title: Optional[str] = None, description: Optional[str] = None):
         """
@@ -149,12 +203,14 @@ class DataframeTest(ContextManager):
             self.description = description
         return self
 
-    def __getattribute__(self, attr) -> SeriesTest:
+    def __getattr__(self, attr) -> SeriesTest:
         """
         demo docstring
         """
-        series = getattr(self.dataframe, attr)
-        return SeriesTest(series)  # pylint: disable=abstract-class-instantiated
+        if not attr in self.dataframe.columns:
+            raise AttributeError
+        series = self.dataframe[attr]
+        return SeriesTest(self, series)
 
     def __enter__(self):
         return self
@@ -162,25 +218,35 @@ class DataframeTest(ContextManager):
     def __exit__(self, _type, _value, _traceback):
         return self
 
+    def report(self, column: str, error: str):
+        self.reports.append(f"{column}: {error}")
 
-@overload
-def test(dataframe: pandas.DataFrame) -> DataframeTest:
-    ...
+    def __repr__(self):
+        return pystache.render(
+            """
+{{#reports}}
+- {{.}}
+{{/reports}}
+""",
+            {"reports": self.reports},
+        )
+
+    def _repr_html_(self):
+        return pystache.render(
+            """
+<h1>Reports:</h1>
+<ul>
+    {{#reports}}
+    <li>{{.}}</li>
+    {{/reports}}
+</ul>
+""",
+            {"reports": self.reports},
+        )
 
 
-@overload
-def test(dataframe: pandas.Series) -> SeriesTest:
-    ...
-
-
-def test(
-    dataframe: Union[pandas.DataFrame, pandas.Series]
-) -> Union[pandas.DataFrame, pandas.Series]:
+def test(dataframe: pandas.DataFrame):
     """
     demo docstring
     """
-    if isinstance(dataframe, pandas.DataFrame):
-        return DataframeTest(dataframe)  # pylint: disable=abstract-class-instantiated
-    if isinstance(dataframe, pandas.Series):
-        return SeriesTest(dataframe)  # pylint: disable=abstract-class-instantiated
-    raise TypeError("df must be pandas.DataFrame or pandas.Series")
+    return DataframeTest(dataframe)
