@@ -14,7 +14,7 @@ assumptions behind design:
 import pandas as pd
 import datafox
 
-datafox.connect(server="lynx.services.rki.de", api_key="abcde")
+datafox.connect(server="datafox.services.netcheck.de", api_key="abcde")
 
 income_df = pd.read_csv("some_csv")
 
@@ -22,34 +22,32 @@ with datafox.test(income_df).describe(
     title="Income", description="Income description"
 ) as income:
     with income.age as age:
-        age.expect_numbers()
-        age.expect_between(0, 100)
+        age.should.be_numbers()
+        age.should.be_between(0, 100)
     with income.salary as salary:
-        salary.expect_numbers()
-        salary.expect_not_null()
-        salary.expect_between(0, "300k")
-        salary.expect_normal(alpha=0.05)
+        salary.should.be_numbers()
+        salary.should_not.contain_null()
+        salary.should.be_between(0, "300k")
+        salary.should.be_normal(alpha=0.05)
 
 
-## alternative, without with statements:
 income_datafox = datafox.test(income_df)
 income_datafox.describe(
     title="Income Distribution", description="Used for analyzing market changes"
 )
 
-## -- potentially: jupyter block end
 
 income_datafox.age.describe(title="age of participants")
-income_datafox.age.expect_numbers()
-income_datafox.age.expect_between(0, 100)
-
-## -- potentially: jupyter block end
+income_datafox.age.should.be_numbers()
+income_datafox.age.should.be_between(0, 100)
 
 income_datafox.salary.describe(unit="$")
-income_datafox.salary.expect_numbers()
-income_datafox.salary.expect_not_null()
-income_datafox.salary.expect_between(0, "300k")
-income_datafox.salary.expect_normal(alpha=0.05)
+income_datafox.salary.should.be_numbers()
+income_datafox.salary.should_not.contain_null()
+income_datafox.salary.should_not.be_between(0, "300k")
+income_datafox.salary.should.be_between(0, "300k")
+income_datafox.salary.should.be_normal(alpha=0.05)
+income_datafox.salary.must.be_normal(alpha=0.05)
 
-# - biomedical: allow specifiying features dynamically
-# - katharina prefers with statements (not strong)
+
+datafox.generate_report("./report.pdf")

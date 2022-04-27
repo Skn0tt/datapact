@@ -13,9 +13,15 @@ def connect(server: str = "datafox.dev", api_key: Optional[str] = None):
     print(server, api_key)
 
 
+def generate_report(_filename: str):
+    """
+    collects all executed tests and generates a report
+    """
+
+
 class SeriesTest(ContextManager):
     """
-    demo docstring
+    wraps a column
     """
 
     series: pandas.Series
@@ -43,38 +49,81 @@ class SeriesTest(ContextManager):
             self.unit = unit
         return self
 
-    def expect_numbers(self) -> "SeriesTest":
+    @property
+    def should(self):
+        """
+        warning-test
+        """
+        return Asserter(self.series, critical=False)
+
+    @property
+    def must(self):
+        """
+        failure-test
+        """
+        return Asserter(self.series, critical=True)
+
+    @property
+    def should_not(self):
+        """
+        negated warning-test
+        """
+        return Asserter(self.series, critical=False, negated=True)
+
+    @property
+    def must_not(self):
+        """
+        negated failure-test
+        """
+        return Asserter(self.series, critical=True, negated=True)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _type, _value, _traceback):
+        return self
+
+
+class Asserter:
+    """
+    demo docstring
+    """
+
+    series: pandas.Series
+    critical: bool
+    negated: bool
+
+    def __init__(self, series: pandas.Series, critical: bool, negated: bool = False):
+        self.series = series
+        self.critical = critical
+        self.negated = negated
+
+    def be_numbers(self) -> "Asserter":
         """
         demo docstring
         """
         return self
 
-    def expect_not_null(self) -> "SeriesTest":
+    def contain_null(self) -> "Asserter":
         """
         demo docstring
         """
         return self
 
-    def expect_between(
+    def be_between(
         self, minimum: Union[int, float, str], maximum: Union[int, float, str]
-    ) -> "SeriesTest":
+    ) -> "Asserter":
         """
         demo docstring
         """
         print(minimum, maximum)
         return self
 
-    def expect_normal(self, alpha) -> "SeriesTest":
+    def be_normal(self, alpha) -> "Asserter":
         """
         demo docstring
         """
         print(alpha)
-        return self
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, _type, _value, _traceback):
         return self
 
 
