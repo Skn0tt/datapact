@@ -1,4 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
+import { Code } from "@chakra-ui/react"
+import { Shell } from "app/layout/Shell"
 import getTestRun from "app/testruns/queries/getTestRun"
 import { useRouter } from "next/router"
 
@@ -11,7 +13,22 @@ export default function TestRun() {
   })
 
   return (
-    <main>
+    <Shell
+      breadcrumbs={[
+        {
+          label: testRun.project.organisation.name,
+          href: `/${testRun.project.organisation.slug}`,
+        },
+        {
+          label: testRun.project.slug,
+          href: `/${testRun.project.organisation.slug}/${testRun.project.slug}`,
+        },
+        {
+          label: `Run #${testRun.id}`,
+          href: `/${testRun.project.organisation.slug}/${testRun.project.slug}/${testRun.project.id}`,
+        },
+      ]}
+    >
       <p>
         Created:{" "}
         <time dateTime={testRun.createdAt.toISOString()}>{testRun.createdAt.toISOString()}</time>
@@ -21,7 +38,7 @@ export default function TestRun() {
 
       <h2>Body</h2>
 
-      <code>{testRun.body}</code>
-    </main>
+      <Code>{testRun.body}</Code>
+    </Shell>
   )
 }

@@ -1,14 +1,14 @@
 import { useRouter } from "next/router"
-import Layout from "app/core/layouts/Layout"
 import { SignupForm } from "app/auth/components/SignupForm"
+import { Box, useColorModeValue } from "@chakra-ui/react"
 
 const SignupPage = () => {
   const router = useRouter()
 
   return (
-    <Layout title="Sign Up">
+    <Box minH={"100vh"} bg={useColorModeValue("gray.50", "gray.800")}>
       <SignupForm onSuccess={() => router.push("/")} />
-    </Layout>
+    </Box>
   )
 }
 

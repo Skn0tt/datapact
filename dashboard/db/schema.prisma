@@ -54,6 +54,8 @@ model User {
   hashedPassword String?
   role           String   @default("USER")
 
+  profilePictureUrl String?
+
   tokens             Token[]
   sessions           Session[]
   ownedOrganisations Organisation[]

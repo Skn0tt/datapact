@@ -1,4 +1,4 @@
-import Layout from "app/core/layouts/Layout"
+import { Box, useColorModeValue } from "@chakra-ui/react"
 import { LoginForm } from "app/auth/components/LoginForm"
 import { useRouter } from "next/router"
 
@@ -6,14 +6,14 @@ const LoginPage = () => {
   const router = useRouter()
 
   return (
-    <Layout title="Log In">
+    <Box minH={"100vh"} bg={useColorModeValue("gray.50", "gray.800")}>
       <LoginForm
         onSuccess={(_user) => {
           const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
           return router.push(next)
         }}
       />
-    </Layout>
+    </Box>
   )
 }
 

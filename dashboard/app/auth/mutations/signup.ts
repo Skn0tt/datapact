@@ -3,15 +3,10 @@ import { SecurePassword } from "@blitzjs/auth"
 import { Ctx } from "blitz"
 import { Role } from "types"
 import * as z from "zod"
+import { Signup } from "../validations"
 
-const signupSchema = z.object({
-  email: z.string().email(),
-  password: z.string().nonempty(),
-  name: z.string().nonempty(),
-})
-
-export default async function signup(input: z.TypeOf<typeof signupSchema>, ctx: Ctx) {
-  const { email, name, password } = signupSchema.parse(input)
+export default async function signup(input: z.TypeOf<typeof Signup>, ctx: Ctx) {
+  const { email, name, password } = Signup.parse(input)
 
   const role: Role = "USER"
 

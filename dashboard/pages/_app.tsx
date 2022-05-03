@@ -3,6 +3,7 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import type { AppProps } from "next/app"
 import React, { Suspense } from "react"
 import { withBlitz } from "app/blitz-client"
+import { ChakraProvider } from "@chakra-ui/react"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -26,11 +27,13 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ErrorBoundary FallbackComponent={RootErrorFallback}>
-      <Suspense fallback="Loading...">
-        <Component {...pageProps} />
-      </Suspense>
-    </ErrorBoundary>
+    <ChakraProvider>
+      <ErrorBoundary FallbackComponent={RootErrorFallback}>
+        <Suspense fallback="Loading...">
+          <Component {...pageProps} />
+        </Suspense>
+      </ErrorBoundary>
+    </ChakraProvider>
   )
 }
 

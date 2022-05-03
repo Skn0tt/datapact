@@ -21,6 +21,13 @@ export default async function getTestRun(
         },
       },
     },
+    include: {
+      project: {
+        include: {
+          organisation: true,
+        },
+      },
+    },
   })
   if (!testRun) {
     throw new NotFoundError()

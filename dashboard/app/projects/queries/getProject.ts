@@ -19,8 +19,13 @@ export default async function getProject(
       slug,
     },
     include: {
-      owner: true,
+      owner: {
+        select: {
+          name: true,
+        },
+      },
       testRuns: true,
+      organisation: true,
     },
   })
   if (!project) {

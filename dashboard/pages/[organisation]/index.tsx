@@ -1,6 +1,9 @@
 import { useQuery } from "@blitzjs/rpc"
+import { Heading, Link, ListItem, Stack, Text, UnorderedList } from "@chakra-ui/react"
+import { PageTitle } from "app/components/PageTitle"
+import { Shell } from "app/layout/Shell"
 import getOrganisation from "app/organisations/queries/getOrganisation"
-import Link from "next/link"
+import NextLink from "next/link"
 import { useRouter } from "next/router"
 
 export default function OrganisationPage() {
@@ -11,28 +14,33 @@ export default function OrganisationPage() {
   const [org] = useQuery(getOrganisation, organisation as string)
 
   return (
-    <div>
-      <h1>{org.name}</h1>
+    <Shell
+      breadcrumbs={[
+        {
+          label: org.name,
+          href: `/${org.slug}`,
+        },
+      ]}
+    >
+      <PageTitle title="organisation" name={org.name} />
 
-      <code>{org.id}</code>
-
-      <p>
+      <Text>
         Owner: <b>{org.owner.name}</b>
-      </p>
+      </Text>
 
-      <h2>Projects</h2>
-
-      <ul>
+      <Heading size="md" pt={4} pb={2}>
+        Projects
+      </Heading>
+      <UnorderedList>
         {org.projects.map((project) => (
-          <li key={project.id}>
-            <Link href={`/${organisation}/${project.slug}`}>
-              <a>
-                {project.slug} (owned by <b>{project.owner.name}</b>)
-              </a>
-            </Link>
-          </li>
+          <ListItem key={project.id}>
+            <NextLink href={`/${organisation}/${project.slug}`}>
+              <Link>{project.slug}</Link>
+            </NextLink>{" "}
+            (owned by <b>{project.owner.name}</b>)
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </UnorderedList>
+    </Shell>
   )
 }

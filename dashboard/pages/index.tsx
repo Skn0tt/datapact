@@ -4,6 +4,8 @@ import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import getOrganisations from "app/organisations/queries/getOrganisations"
+import { Shell } from "app/layout/Shell"
+import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -50,52 +52,50 @@ const UserInfo = () => {
   }
 }
 
+function LandingPage() {
+  return <p>Sign in to get started.</p>
+}
+
 function ProjectList() {
   const [organisations] = useQuery(getOrganisations, null)
 
   return (
     <section>
-      <h2>Your Projects</h2>
+      <Heading fontSize="xl">Projects</Heading>
 
-      {organisations.map((organisation) => (
-        <React.Fragment key={organisation.id}>
-          <Link href={`/${organisation.slug}`}>
-            <a>
-              <h3>{organisation.name}</h3>
-            </a>
-          </Link>
+      <Stack divider={<StackDivider />}>
+        {organisations.map((organisation) => (
+          <Box key={organisation.id} p={5} shadow="md" borderWidth="1px">
+            <Link href={`/${organisation.slug}`}>
+              <a>
+                <Heading fontSize="md">{organisation.name}</Heading>
+              </a>
+            </Link>
 
-          <ul>
-            {organisation.projects.map((project) => (
-              <Link href={`/${organisation.slug}/${project.slug}`}>
-                <a>
-                  <li key={project.id}>{project.slug}</li>
-                </a>
-              </Link>
-            ))}
-          </ul>
-        </React.Fragment>
-      ))}
+            <ul>
+              {organisation.projects.map((project) => (
+                <Link key={project.id} href={`/${organisation.slug}/${project.slug}`}>
+                  <a>
+                    <li>{project.slug}</li>
+                  </a>
+                </Link>
+              ))}
+            </ul>
+          </Box>
+        ))}
+      </Stack>
     </section>
   )
 }
 
+const Dashboard = () => {
+  return <ProjectList />
+}
+
 const Home = () => {
   const user = useCurrentUser()
-  return (
-    <main>
-      <h1>DataFox</h1>
-      <Suspense fallback="Loading...">
-        <UserInfo />
-      </Suspense>
 
-      {user && (
-        <Suspense fallback="Loading Projects...">
-          <ProjectList />
-        </Suspense>
-      )}
-    </main>
-  )
+  return <Shell>{user ? <Dashboard /> : <LandingPage />}</Shell>
 }
 
 export default Home

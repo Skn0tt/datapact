@@ -1,58 +1,103 @@
 import { AuthenticationError, PromiseReturnType } from "blitz"
-import Link from "next/link"
-import { LabeledTextField } from "app/core/components/LabeledTextField"
-import { Form, FORM_ERROR } from "app/core/components/Form"
 import login from "app/auth/mutations/login"
-import { Login } from "app/auth/validations"
 import { useMutation } from "@blitzjs/rpc"
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Link,
+  Stack,
+  Text,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react"
+import NextLink from "next/link"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
 }
 
 export const LoginForm = (props: LoginFormProps) => {
-  const [loginMutation] = useMutation(login)
+  const [loginMutation, loginMutationMeta] = useMutation(login)
+  const toast = useToast()
+
   return (
-    <div>
-      <h1>Login</h1>
-
-      <Form
-        submitText="Login"
-        schema={Login}
-        initialValues={{ email: "", password: "" }}
-        onSubmit={async (values) => {
-          try {
-            const user = await loginMutation(values)
-            props.onSuccess?.(user)
-          } catch (error: any) {
-            if (error instanceof AuthenticationError) {
-              return { [FORM_ERROR]: "Sorry, those credentials are invalid" }
-            } else {
-              return {
-                [FORM_ERROR]:
-                  "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
-              }
-            }
+    <form
+      onSubmit={async (evt) => {
+        evt.preventDefault()
+        const form = new FormData(evt.target as any)
+        try {
+          const user = await loginMutation({
+            email: form.get("email") as string,
+            password: form.get("password") as string,
+          })
+          props.onSuccess?.(user)
+        } catch (error: any) {
+          if (error instanceof AuthenticationError) {
+            // This error comes from Prisma
+            toast({
+              title: "Sorry, those credentials are invalid",
+            })
+          } else {
+            toast({
+              title: "Sorry, we had an unexpected error. Please try again. - " + error.toString(),
+              isClosable: true,
+            })
           }
-        }}
-      >
-        <LabeledTextField name="email" label="Email" placeholder="Email" />
-        <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
-        <div>
-          <Link href="/auth/forgot-password">
-            <a>Forgot your password?</a>
-          </Link>
-        </div>
-      </Form>
-
-      <div style={{ marginTop: "1rem" }}>
-        Or{" "}
-        <Link href="/auth/signup">
-          <a>Sign Up</a>
-        </Link>
-      </div>
-    </div>
+        }
+      }}
+    >
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+        <Stack align={"center"}>
+          <Heading fontSize={"4xl"} textAlign={"center"}>
+            Sign in to your account
+          </Heading>
+          <Text fontSize={"lg"} color={"gray.600"}>
+            to enjoy all of our cool features ✌️
+          </Text>
+        </Stack>
+        <Box rounded={"lg"} bg={useColorModeValue("white", "gray.700")} boxShadow={"lg"} p={8}>
+          <Stack spacing={4}>
+            <FormControl id="email">
+              <FormLabel>Email address</FormLabel>
+              <Input type="email" name="email" required />
+            </FormControl>
+            <FormControl id="password">
+              <FormLabel>Password</FormLabel>
+              <Input type="password" name="password" required />
+            </FormControl>
+            <Stack spacing={10}>
+              <Stack direction={{ base: "column", sm: "row" }} align={"start"} justify={"end"}>
+                <Link color={"blue.400"}>Forgot password?</Link>
+              </Stack>
+              <Button
+                bg={"blue.400"}
+                color={"white"}
+                _hover={{
+                  bg: "blue.500",
+                }}
+                type="submit"
+                loadingText="Signing in..."
+                isLoading={loginMutationMeta.isLoading}
+              >
+                Sign in
+              </Button>
+            </Stack>
+            <Stack pt={6}>
+              <Text align={"center"}>
+                Or{" "}
+                <NextLink href="/auth/signup">
+                  <Link color={"blue.400"}>Sign Up</Link>
+                </NextLink>
+              </Text>
+            </Stack>
+          </Stack>
+        </Box>
+      </Stack>
+    </form>
   )
 }
-
 export default LoginForm
