@@ -25,7 +25,7 @@ export default function OrganisationPage() {
       <PageTitle title="organisation" name={org.name} />
 
       <Text>
-        Owner: <b>{org.owner.name}</b>
+        Owned by <b>{org.owner.name}</b>.
       </Text>
 
       <Heading size="md" pt={4} pb={2}>

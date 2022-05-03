@@ -14,6 +14,11 @@ export default async function getOrganisations(_ = null, ctx: Ctx) {
     },
     include: {
       projects: true,
+      owner: {
+        select: {
+          name: true,
+        },
+      },
     },
   })
 }

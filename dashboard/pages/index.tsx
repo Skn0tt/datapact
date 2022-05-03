@@ -1,11 +1,22 @@
 import React, { Suspense } from "react"
-import Link from "next/link"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import getOrganisations from "app/organisations/queries/getOrganisations"
 import { Shell } from "app/layout/Shell"
-import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react"
+import {
+  Box,
+  Heading,
+  ListItem,
+  Stack,
+  StackDivider,
+  Text,
+  UnorderedList,
+  Link,
+} from "@chakra-ui/react"
+import { PageTitle } from "app/components/PageTitle"
+import { o } from "@blitzjs/auth/dist/index-b6a6318c"
+import NextLink from "next/link"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -56,40 +67,32 @@ function LandingPage() {
   return <p>Sign in to get started.</p>
 }
 
-function ProjectList() {
-  const [organisations] = useQuery(getOrganisations, null)
-
-  return (
-    <section>
-      <Heading fontSize="xl">Projects</Heading>
-
-      <Stack divider={<StackDivider />}>
-        {organisations.map((organisation) => (
-          <Box key={organisation.id} p={5} shadow="md" borderWidth="1px">
-            <Link href={`/${organisation.slug}`}>
-              <a>
-                <Heading fontSize="md">{organisation.name}</Heading>
-              </a>
-            </Link>
-
-            <ul>
-              {organisation.projects.map((project) => (
-                <Link key={project.id} href={`/${organisation.slug}/${project.slug}`}>
-                  <a>
-                    <li>{project.slug}</li>
-                  </a>
-                </Link>
-              ))}
-            </ul>
-          </Box>
-        ))}
-      </Stack>
-    </section>
-  )
-}
-
 const Dashboard = () => {
-  return <ProjectList />
+  const user = useCurrentUser()
+  if (!user) {
+    return null
+  }
+
+  const [orgs] = useQuery(getOrganisations, null)
+  return (
+    <>
+      <PageTitle title="welcome," name={user.name} suffix="!" />
+
+      <Heading size="md" pt={4} pb={2}>
+        Organisations
+      </Heading>
+      <UnorderedList>
+        {orgs.map((org) => (
+          <ListItem key={org.slug}>
+            <NextLink href={`/${org.slug}`}>
+              <Link>{org.name}</Link>
+            </NextLink>{" "}
+            (owned by <b>{org.owner.name}</b>)
+          </ListItem>
+        ))}
+      </UnorderedList>
+    </>
+  )
 }
 
 const Home = () => {
