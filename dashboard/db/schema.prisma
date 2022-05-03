@@ -12,17 +12,55 @@ generator client {
 
 // --------------------------------------
 
+model TestRun {
+  id        Int      @id @default(autoincrement())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId Int
+  createdAt DateTime
+  result    Boolean
+  body      String
+}
+
+model Project {
+  id             Int          @id @default(autoincrement())
+  slug           String
+  token          String       @unique
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId Int
+  owner          User         @relation(fields: [ownerId], references: [id])
+  ownerId        Int
+  testRuns       TestRun[]
+
+  @@unique([slug, organisationId])
+}
+
+model Organisation {
+  id      Int    @id @default(autoincrement())
+  slug    String @unique
+  name    String
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId Int
+
+  members  User[]    @relation(name: "OrganisationMembers")
+  projects Project[]
+}
+
 model User {
   id             Int      @id @default(autoincrement())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  name           String?
+  name           String
   email          String   @unique
   hashedPassword String?
   role           String   @default("USER")
 
-  tokens   Token[]
-  sessions Session[]
+  tokens             Token[]
+  sessions           Session[]
+  ownedOrganisations Organisation[]
+
+  organisations Organisation[] @relation(name: "OrganisationMembers")
+
+  ownedProjects Project[]
 }
 
 model Session {

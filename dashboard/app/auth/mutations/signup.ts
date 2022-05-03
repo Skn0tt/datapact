@@ -1,19 +1,30 @@
 import { db } from "db"
 import { SecurePassword } from "@blitzjs/auth"
+import { Ctx } from "blitz"
+import { Role } from "types"
+import * as z from "zod"
 
-export default async function signup(input, ctx) {
-  const blitzContext = ctx
+const signupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().nonempty(),
+  name: z.string().nonempty(),
+})
 
-  const hashedPassword = await SecurePassword.hash((input.password as string) || "test-password")
-  const email = (input.email as string) || "test" + Math.random() + "@test.com"
+export default async function signup(input: z.TypeOf<typeof signupSchema>, ctx: Ctx) {
+  const { email, name, password } = signupSchema.parse(input)
+
+  const role: Role = "USER"
+
+  const hashedPassword = await SecurePassword.hash(password)
   const user = await db.user.create({
-    data: { email, hashedPassword, role: "user" },
+    data: { email, name, hashedPassword, role },
     select: { id: true, name: true, email: true, role: true },
   })
 
-  await blitzContext.session.$create({
+  await ctx.session.$create({
     userId: user.id,
+    role: user.role as Role,
   })
 
-  return { userId: blitzContext.session.userId, ...user, email: input.email }
+  return { userId: ctx.session.userId, ...user, email: input.email }
 }
