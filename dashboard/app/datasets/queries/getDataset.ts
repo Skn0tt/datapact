@@ -19,11 +19,6 @@ export default async function getDataset(
       slug,
     },
     include: {
-      owner: {
-        select: {
-          name: true,
-        },
-      },
       testRuns: {
         orderBy: {
           date: "desc",

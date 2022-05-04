@@ -19,15 +19,7 @@ export default async function getOrganisation(slug: string, ctx: Ctx) {
           name: true,
         },
       },
-      datasets: {
-        include: {
-          owner: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
+      datasets: true,
       members: {
         select: {
           id: true,

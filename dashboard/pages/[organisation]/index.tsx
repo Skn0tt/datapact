@@ -1,8 +1,9 @@
 import { useMutation, useQuery, invoke } from "@blitzjs/rpc"
-import { AddIcon } from "@chakra-ui/icons"
+import { AddIcon, CheckIcon } from "@chakra-ui/icons"
 import {
   Avatar,
   AvatarGroup,
+  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -14,10 +15,14 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Grid,
+  GridItem,
   Heading,
   IconButton,
   Input,
   Link,
+  LinkBox,
+  LinkOverlay,
   ListItem,
   Popover,
   PopoverArrow,
@@ -25,6 +30,12 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  SimpleGrid,
+  Stat,
+  StatArrow,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
   Text,
   UnorderedList,
   useDisclosure,
@@ -147,16 +158,35 @@ export default function OrganisationPage() {
       <Heading size="md" pt={4} pb={2}>
         Datasets
       </Heading>
-      <UnorderedList>
-        {org.datasets.map((project) => (
-          <ListItem key={project.id}>
-            <NextLink href={`/${organisation}/${project.slug}`}>
-              <Link>{project.slug}</Link>
-            </NextLink>{" "}
-            (owned by <b>{project.owner.name}</b>)
-          </ListItem>
+
+      <SimpleGrid columns={3} spacing={8}>
+        {org.datasets.map((dataset) => (
+          <NextLink href={`/${organisation}/${dataset.slug}`}>
+            <LinkBox rounded="sm" bg="gray.100" p={4}>
+              <Heading size="md" mb={2}>
+                {dataset.slug}
+                <CheckIcon
+                  bg="green"
+                  rounded="full"
+                  color="white"
+                  boxSize={6}
+                  p={1}
+                  float="right"
+                />
+              </Heading>
+
+              <Stat>
+                <StatLabel>Confidence</StatLabel>
+                <StatNumber>100%</StatNumber>
+                <StatHelpText>
+                  <StatArrow type="increase" />
+                  23.36%
+                </StatHelpText>
+              </Stat>
+            </LinkBox>
+          </NextLink>
         ))}
-      </UnorderedList>
+      </SimpleGrid>
       <Button mt={4} size="sm" leftIcon={<AddIcon />} onClick={addDatasetModal.onOpen}>
         Add Dataset
       </Button>

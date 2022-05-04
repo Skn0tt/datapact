@@ -7,7 +7,7 @@ import { useRouter } from "next/router"
 export default function TestRun() {
   const { query } = useRouter()
   const [testRun] = useQuery(getTestRun, {
-    id: query.testrun,
+    id: query.testrun as string,
     organisation: query.organisation as string,
     project: query.project as string,
   })

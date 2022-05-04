@@ -1,9 +1,18 @@
-import { invoke, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import {
+  Button,
   Code,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   FormControl,
   FormLabel,
   Heading,
+  Input,
   Link,
   Select,
   Table,
@@ -13,7 +22,10 @@ import {
   Text,
   Th,
   Thead,
+  toast,
   Tr,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react"
 import { PageTitle } from "app/components/PageTitle"
 import { Shell } from "app/layout/Shell"
@@ -23,34 +35,39 @@ import { useRouter } from "next/router"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python"
 import docco from "react-syntax-highlighter/dist/cjs/styles/hljs/docco"
-import getMembers from "app/organisations/queries/getMembers"
-import { canUpdateOwner } from "app/datasets/permissions"
-import { useSession } from "@blitzjs/auth"
-import updateOwner from "app/datasets/mutations/updateOwner"
+import { useState } from "react"
+import { BellIcon } from "@chakra-ui/icons"
 
 SyntaxHighlighter.registerLanguage("python", python)
 
-export default function Dataset() {
-  const router = useRouter()
-  const { query } = router
-  const [dataset, datasetMeta] = useQuery(getDataset, {
-    organisation: query.organisation as string,
-    slug: query.dataset as string,
-  })
-
+function getServerUrl() {
   let serverUrl = location.host
   if (location.protocol !== "https:") {
     serverUrl = location.protocol + "//" + serverUrl
   }
+  return serverUrl
+}
+
+export default function Dataset() {
+  const router = useRouter()
+  const { query } = router
+  const [dataset] = useQuery(getDataset, {
+    organisation: query.organisation as string,
+    slug: query.dataset as string,
+  })
+  const toast = useToast()
+
   const codeString = `
 import datafox
 
-datafox.connect(server="${serverUrl}", api_key="${dataset.token}")
+datafox.connect(server="${getServerUrl()}", api_key="${dataset.token}")
 `.trim()
 
-  const [members] = useQuery(getMembers, dataset.organisation.slug)
+  const addNotificationModal = useDisclosure()
 
-  const session = useSession()
+  const [addNotificationType, setAddNotificationType] = useState<"email" | "slack" | "teams">(
+    "email"
+  )
 
   return (
     <Shell
@@ -67,35 +84,6 @@ datafox.connect(server="${serverUrl}", api_key="${dataset.token}")
     >
       <PageTitle title="dataset" name={dataset.slug} />
 
-      {canUpdateOwner(session, dataset) ? (
-        <FormControl>
-          <FormLabel>
-            Owner
-            <Select
-              value={dataset.ownerId}
-              onChange={async (evt) => {
-                const newId = Number.parseInt(evt.target.value)
-                await invoke(updateOwner, {
-                  datasetId: dataset.id,
-                  userId: newId,
-                })
-                await datasetMeta.refetch()
-              }}
-            >
-              {members.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
-            </Select>
-          </FormLabel>
-        </FormControl>
-      ) : (
-        <Text pb={2}>
-          Owned by <b>{dataset.owner.name}</b>.
-        </Text>
-      )}
-
       <Text pb={2}>
         Token: <Code userSelect="all">{dataset.token}</Code>
       </Text>
@@ -105,6 +93,10 @@ datafox.connect(server="${serverUrl}", api_key="${dataset.token}")
       <SyntaxHighlighter language="python" style={docco}>
         {codeString}
       </SyntaxHighlighter>
+
+      <Button mt={4} size="sm" leftIcon={<BellIcon />} onClick={addNotificationModal.onOpen}>
+        set up notifications
+      </Button>
 
       <Heading size="md" pt={4} pb={2}>
         Runs
@@ -137,6 +129,54 @@ datafox.connect(server="${serverUrl}", api_key="${dataset.token}")
           </Tbody>
         </Table>
       </TableContainer>
+
+      <Drawer isOpen={addNotificationModal.isOpen} onClose={addNotificationModal.onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Add Notifications</DrawerHeader>
+
+          <DrawerBody>
+            <FormControl>
+              <FormLabel>
+                Method
+                <Select onChange={(evt) => setAddNotificationType(evt.target.value as any)}>
+                  <option value="email">E-Mail</option>
+                  <option value="slack">Slack</option>
+                  <option value="teams">Teams</option>
+                </Select>
+              </FormLabel>
+            </FormControl>
+
+            {addNotificationType === "email" ? (
+              <FormControl>
+                <FormLabel>
+                  E-Mail
+                  <Input type="email" required />
+                </FormLabel>
+              </FormControl>
+            ) : (
+              <Text>🚧 Under Construction 🚧</Text>
+            )}
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={addNotificationModal.onClose}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme="blue"
+              onClick={() => {
+                toast({
+                  title: "Not Implemented yet",
+                })
+              }}
+            >
+              Save
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </Shell>
   )
 }

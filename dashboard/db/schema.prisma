@@ -28,8 +28,6 @@ model Dataset {
   token          String       @unique
   organisation   Organisation @relation(fields: [organisationId], references: [id])
   organisationId Int
-  owner          User         @relation(fields: [ownerId], references: [id])
-  ownerId        Int
   testRuns       TestRun[]
 
   @@unique([slug, organisationId])
@@ -62,8 +60,6 @@ model User {
   ownedOrganisations Organisation[]
 
   organisations Organisation[] @relation(name: "OrganisationMembers")
-
-  ownedDatasets Dataset[]
 }
 
 model Session {

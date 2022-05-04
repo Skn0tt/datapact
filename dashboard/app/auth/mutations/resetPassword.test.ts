@@ -27,6 +27,7 @@ describe("resetPassword mutation", () => {
     const user = await db.user.create({
       data: {
         email: "user@example.com",
+        name: "Example User",
         tokens: {
           // Create old token to ensure it's deleted
           create: [

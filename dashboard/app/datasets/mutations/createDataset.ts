@@ -28,7 +28,6 @@ export default async function createDataset(
       slug,
       token: crypto.randomUUID(),
       organisationId: org.id,
-      ownerId: ctx.session.userId,
     },
   })
 }
