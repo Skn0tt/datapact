@@ -28,6 +28,13 @@ export default async function getOrganisation(slug: string, ctx: Ctx) {
           },
         },
       },
+      members: {
+        select: {
+          id: true,
+          name: true,
+          profilePictureUrl: true,
+        },
+      },
     },
   })
 

@@ -1,6 +1,8 @@
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery, invoke } from "@blitzjs/rpc"
 import { AddIcon } from "@chakra-ui/icons"
 import {
+  Avatar,
+  AvatarGroup,
   Button,
   Drawer,
   DrawerBody,
@@ -13,10 +15,16 @@ import {
   FormHelperText,
   FormLabel,
   Heading,
+  IconButton,
   Input,
   Link,
   ListItem,
-  Stack,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
   Text,
   UnorderedList,
   useDisclosure,
@@ -27,6 +35,11 @@ import getOrganisation from "app/organisations/queries/getOrganisation"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import createDatasetMutation from "app/datasets/mutations/createDataset"
+import addMemberMutation from "app/organisations/mutations/addMember"
+import { AsyncSelect } from "chakra-react-select"
+import searchUsers from "app/users/queries/searchUsers"
+import { useState } from "react"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 
 export default function OrganisationPage() {
   const router = useRouter()
@@ -38,7 +51,14 @@ export default function OrganisationPage() {
 
   const addDatasetModal = useDisclosure()
 
+  const addMemberModal = useDisclosure()
+
   const [createDataset] = useMutation(createDatasetMutation)
+  const [addMember, addMemberMeta] = useMutation(addMemberMutation)
+
+  const [userToAdd, setUserToAdd] = useState<{ name: string; id: number }>()
+
+  const currentUser = useCurrentUser()
 
   return (
     <Shell
@@ -58,6 +78,66 @@ export default function OrganisationPage() {
       <Heading size="md" pt={4} pb={2}>
         Members
       </Heading>
+      <AvatarGroup>
+        {org.members.map((member) => (
+          <Avatar name={member.name} src={member.profilePictureUrl ?? undefined} />
+        ))}
+
+        {org.ownerId === currentUser?.id && (
+          <Popover
+            placement="right"
+            isOpen={addMemberModal.isOpen}
+            onClose={addMemberModal.onClose}
+          >
+            <PopoverTrigger>
+              <IconButton
+                variant="outline"
+                isRound
+                aria-label="Add Member"
+                icon={<AddIcon />}
+                onClick={addMemberModal.onOpen}
+              />
+            </PopoverTrigger>
+
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <AsyncSelect
+                  placeholder="Search by name or email"
+                  onChange={({ value }) => setUserToAdd(value as any)}
+                  loadOptions={async (inputValue) => {
+                    const users = await invoke(searchUsers, {
+                      term: inputValue,
+                      exclude: org.members.map((member) => member.id),
+                    })
+                    return users.map((user) => ({
+                      label: user.name,
+                      value: user,
+                    }))
+                  }}
+                />
+
+                {userToAdd && (
+                  <Button
+                    onClick={async () => {
+                      await addMember({
+                        organisation: org.slug,
+                        userId: userToAdd.id,
+                      })
+                      addMemberModal.onClose()
+                    }}
+                    loadingText="Adding..."
+                    isLoading={addMemberMeta.isLoading}
+                  >
+                    Add {userToAdd.name}
+                  </Button>
+                )}
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+        )}
+      </AvatarGroup>
 
       <Heading size="md" pt={4} pb={2}>
         Datasets
@@ -80,7 +160,7 @@ export default function OrganisationPage() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create Organisation</DrawerHeader>
+          <DrawerHeader>Add Dataset</DrawerHeader>
           <DrawerBody>
             <form
               id="create-dataset"

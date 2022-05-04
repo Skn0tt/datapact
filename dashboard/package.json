@@ -33,6 +33,7 @@
     "@emotion/styled": "11.8.1",
     "@prisma/client": "3.9.0",
     "blitz": "2.0.0-alpha.18",
+    "chakra-react-select": "3.3.1",
     "final-form": "4.20.7",
     "framer-motion": "6.3.3",
     "next": "12.1.1",
