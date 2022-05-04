@@ -1,9 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import {
-  Box,
   Code,
   Heading,
-  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -15,39 +13,55 @@ import {
 } from "@chakra-ui/react"
 import { PageTitle } from "app/components/PageTitle"
 import { Shell } from "app/layout/Shell"
-import getProject from "app/projects/queries/getProject"
+import getDataset from "app/datasets/queries/getDataset"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
+import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python"
+import docco from "react-syntax-highlighter/dist/cjs/styles/hljs/docco"
 
-export default function Project() {
+SyntaxHighlighter.registerLanguage("python", python)
+
+export default function Dataset() {
   const router = useRouter()
   const { query } = router
-  const [project] = useQuery(getProject, {
+  const [dataset] = useQuery(getDataset, {
     organisation: query.organisation as string,
-    slug: query.project as string,
+    slug: query.dataset as string,
   })
+  const codeString = `
+import datafox
+
+datafox.connect(api=, token="${dataset.token}")
+`.trim()
 
   return (
     <Shell
       breadcrumbs={[
         {
-          label: project.organisation.name,
-          href: `/${project.organisation.slug}`,
+          label: dataset.organisation.name,
+          href: `/${dataset.organisation.slug}`,
         },
         {
-          label: project.slug,
-          href: `/${project.organisation.slug}/${project.slug}`,
+          label: dataset.slug,
+          href: `/${dataset.organisation.slug}/${dataset.slug}`,
         },
       ]}
     >
-      <PageTitle title="project" name={project.slug} />
-      <Text>
-        Owned by <b>{project.owner.name}</b>.
+      <PageTitle title="dataset" name={dataset.slug} />
+      <Text pb={2}>
+        Owned by <b>{dataset.owner.name}</b>.
       </Text>
 
-      <Text>
-        Token: <Code userSelect="all">{project.token}</Code>
+      <Text pb={2}>
+        Token: <Code userSelect="all">{dataset.token}</Code>
       </Text>
+
+      <Text pb={2}>To connect to this dataset, place the following line in your script:</Text>
+
+      <SyntaxHighlighter language="python" style={docco}>
+        {codeString}
+      </SyntaxHighlighter>
 
       <Heading size="md" pt={4} pb={2}>
         Runs
@@ -58,11 +72,11 @@ export default function Project() {
             <Tr>
               <Th>Date</Th>
               <Th>Result</Th>
-              <Th>multiply by</Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
-            {project.testRuns.map((run) => (
+            {dataset.testRuns.map((run) => (
               <Tr
                 onClick={() =>
                   router.push(`/${query.organisation}/${query.project}/runs/${run.id}`)

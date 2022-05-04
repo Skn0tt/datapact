@@ -1,12 +1,12 @@
 import { Ctx, NotFoundError } from "blitz"
 import { db } from "db"
 
-export default async function getProject(
+export default async function getDataset(
   { organisation, slug }: { organisation: string; slug: string },
   ctx: Ctx
 ) {
   ctx.session.$authorize()
-  const project = await db.project.findFirst({
+  const project = await db.dataset.findFirst({
     where: {
       organisation: {
         slug: organisation,

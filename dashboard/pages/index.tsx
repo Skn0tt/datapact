@@ -1,67 +1,33 @@
-import React, { Suspense } from "react"
+import React from "react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import logout from "app/auth/mutations/logout"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import getOrganisations from "app/organisations/queries/getOrganisations"
 import { Shell } from "app/layout/Shell"
 import {
-  Box,
   Heading,
   ListItem,
-  Stack,
-  StackDivider,
-  Text,
   UnorderedList,
   Link,
+  Text,
+  Button,
+  useDisclosure,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerFooter,
+  DrawerBody,
+  Input,
+  DrawerHeader,
+  FormControl,
+  FormLabel,
+  FormHelperText,
 } from "@chakra-ui/react"
 import { PageTitle } from "app/components/PageTitle"
-import { o } from "@blitzjs/auth/dist/index-b6a6318c"
 import NextLink from "next/link"
-
-/*
- * This file is just for a pleasant getting started page for your new app.
- * You can delete everything in here and start from scratch if you like.
- */
-
-const UserInfo = () => {
-  const currentUser = useCurrentUser()
-  const [logoutMutation] = useMutation(logout)
-
-  if (currentUser) {
-    return (
-      <>
-        <button
-          className="button small"
-          onClick={async () => {
-            await logoutMutation()
-          }}
-        >
-          Logout
-        </button>
-        <div>
-          User id: <code>{currentUser.id}</code>
-          <br />
-          User role: <code>{currentUser.role}</code>
-        </div>
-      </>
-    )
-  } else {
-    return (
-      <>
-        <Link href="/auth/signup">
-          <a className="button small">
-            <strong>Sign Up</strong>
-          </a>
-        </Link>
-        <Link href="/auth/login">
-          <a className="button small">
-            <strong>Login</strong>
-          </a>
-        </Link>
-      </>
-    )
-  }
-}
+import { AddIcon } from "@chakra-ui/icons"
+import createOrganisationMutation from "app/organisations/mutations/createOrganisation"
+import Router from "next/router"
 
 function LandingPage() {
   return <p>Sign in to get started.</p>
@@ -73,10 +39,19 @@ const Dashboard = () => {
     return null
   }
 
+  const createOrgModal = useDisclosure()
+
+  const [createOrganisation] = useMutation(createOrganisationMutation)
+
   const [orgs] = useQuery(getOrganisations, null)
   return (
     <>
       <PageTitle title="welcome," name={user.name} suffix="!" />
+
+      <Text>
+        This is the Datafox Dashboard, your dataset knowledge tracker. To get started, enter your
+        organisation's workspace:
+      </Text>
 
       <Heading size="md" pt={4} pb={2}>
         Organisations
@@ -91,6 +66,59 @@ const Dashboard = () => {
           </ListItem>
         ))}
       </UnorderedList>
+      <Button leftIcon={<AddIcon />} onClick={createOrgModal.onOpen}>
+        Create Organisation
+      </Button>
+
+      <Drawer isOpen={createOrgModal.isOpen} onClose={createOrgModal.onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Create Organisation</DrawerHeader>
+          <DrawerBody>
+            <form
+              id="create-org"
+              onSubmit={async (e) => {
+                e.preventDefault()
+                const form = new FormData(e.target as any)
+                const org = await createOrganisation({
+                  name: form.get("name") as string,
+                  slug: form.get("slug") as string,
+                })
+                createOrgModal.onClose()
+                Router.push(`/${org.slug}`)
+              }}
+            >
+              <FormControl isInvalid={true}>
+                <FormLabel>
+                  Slug
+                  <Input name="slug" placeholder="Type here..." required />
+                </FormLabel>
+                <FormHelperText>URL-Safe shorthand for your organisation.</FormHelperText>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>
+                  Name
+                  <Input name="name" placeholder="Type here..." required />
+                </FormLabel>
+                <FormHelperText>
+                  Full display name, used in the dashboard, emails etc.
+                </FormHelperText>
+              </FormControl>
+            </form>
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={createOrgModal.onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" form="create-org">
+              Create
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }

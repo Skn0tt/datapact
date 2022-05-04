@@ -14,6 +14,9 @@ import {
   useColorModeValue,
   Link,
   Text,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
@@ -68,23 +71,23 @@ export function Shell(
               <Image src={foxImg} width={24} height={32} alt="Datafox Logo" />
             </NextLink>
           </HStack>
-          <HStack spacing={4}>
-            {props.breadcrumbs?.map((breadcrumb, index) => (
-              <>
-                {index !== 0 && <Text>{"/"}</Text>}
-
-                <NextLink href={breadcrumb.href} key={breadcrumb.label}>
-                  <Link
-                    textDecoration={
-                      index + 1 === props.breadcrumbs?.length ? "underline" : undefined
-                    }
-                  >
-                    {breadcrumb.label}
-                  </Link>
-                </NextLink>
-              </>
-            ))}
-          </HStack>
+          <Breadcrumb>
+            {props.breadcrumbs?.map((breadcrumb, index) => {
+              const isLastItem = index + 1 === props.breadcrumbs?.length
+              return (
+                <BreadcrumbItem>
+                  <NextLink href={breadcrumb.href}>
+                    <BreadcrumbLink
+                      isCurrentPage={isLastItem}
+                      textDecor={isLastItem ? "underline" : "none"}
+                    >
+                      {breadcrumb.label}
+                    </BreadcrumbLink>
+                  </NextLink>
+                </BreadcrumbItem>
+              )
+            })}
+          </Breadcrumb>
           <AuthArea />
         </Flex>
       </Box>

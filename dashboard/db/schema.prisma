@@ -14,14 +14,14 @@ generator client {
 
 model TestRun {
   id        Int      @id @default(autoincrement())
-  project   Project  @relation(fields: [projectId], references: [id])
-  projectId Int
+  dataset   Dataset  @relation(fields: [datasetId], references: [id])
+  datasetId Int
   createdAt DateTime
   result    Boolean
   body      String
 }
 
-model Project {
+model Dataset {
   id             Int          @id @default(autoincrement())
   slug           String
   token          String       @unique
@@ -42,7 +42,7 @@ model Organisation {
   ownerId Int
 
   members  User[]    @relation(name: "OrganisationMembers")
-  projects Project[]
+  datasets Dataset[]
 }
 
 model User {
@@ -62,7 +62,7 @@ model User {
 
   organisations Organisation[] @relation(name: "OrganisationMembers")
 
-  ownedProjects Project[]
+  ownedDatasets Dataset[]
 }
 
 model Session {

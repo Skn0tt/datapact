@@ -13,7 +13,7 @@ export default async function getOrganisations(_ = null, ctx: Ctx) {
       },
     },
     include: {
-      projects: true,
+      datasets: true,
       owner: {
         select: {
           name: true,

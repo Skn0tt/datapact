@@ -9,7 +9,7 @@ export default async function getTestRun(
   const testRun = await db.testRun.findFirst({
     where: {
       id,
-      project: {
+      dataset: {
         slug: project,
         organisation: {
           slug: organisation,
@@ -22,7 +22,7 @@ export default async function getTestRun(
       },
     },
     include: {
-      project: {
+      dataset: {
         include: {
           organisation: true,
         },
