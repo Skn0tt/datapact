@@ -80,7 +80,11 @@ export default function OrganisationPage() {
       </Heading>
       <AvatarGroup>
         {org.members.map((member) => (
-          <Avatar name={member.name} src={member.profilePictureUrl ?? undefined} />
+          <Avatar
+            key={member.name}
+            name={member.name}
+            src={member.profilePictureUrl ?? undefined}
+          />
         ))}
 
         {org.ownerId === currentUser?.id && (

@@ -26,6 +26,7 @@ import foxImg from "public/fox.png"
 import { invoke } from "@blitzjs/rpc"
 import logout from "app/auth/mutations/logout"
 import Router from "next/router"
+import { Suspense } from "react"
 
 function AuthArea() {
   const currentUser = useCurrentUser()
@@ -83,7 +84,7 @@ export function Shell(
             {props.breadcrumbs?.map((breadcrumb, index) => {
               const isLastItem = index + 1 === props.breadcrumbs?.length
               return (
-                <BreadcrumbItem>
+                <BreadcrumbItem key={index}>
                   <NextLink href={breadcrumb.href}>
                     <BreadcrumbLink
                       isCurrentPage={isLastItem}
@@ -96,12 +97,14 @@ export function Shell(
               )
             })}
           </Breadcrumb>
-          <AuthArea />
+          <Suspense fallback={<Box />}>
+            <AuthArea />
+          </Suspense>
         </Flex>
       </Box>
 
       <Box p={4} maxWidth="800px" margin="0 auto">
-        {props.children}
+        <Suspense fallback={null}>{props.children}</Suspense>
       </Box>
     </>
   )

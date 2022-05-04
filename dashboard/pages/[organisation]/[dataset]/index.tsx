@@ -83,7 +83,9 @@ datafox.connect(server="${serverUrl}", api_key="${dataset.token}")
               }}
             >
               {members.map((m) => (
-                <option value={m.id}>{m.name}</option>
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
               ))}
             </Select>
           </FormLabel>
