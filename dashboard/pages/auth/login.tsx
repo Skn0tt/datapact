@@ -8,7 +8,7 @@ const LoginPage = () => {
   return (
     <Box minH={"100vh"} bg={useColorModeValue("gray.50", "gray.800")}>
       <LoginForm
-        onSuccess={(_user) => {
+        onSuccess={() => {
           const next = router.query.next ? decodeURIComponent(router.query.next as string) : "/"
           return router.push(next)
         }}

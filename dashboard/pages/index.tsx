@@ -66,7 +66,8 @@ const Dashboard = () => {
           </ListItem>
         ))}
       </UnorderedList>
-      <Button leftIcon={<AddIcon />} onClick={createOrgModal.onOpen}>
+
+      <Button mt={4} size="sm" leftIcon={<AddIcon />} onClick={createOrgModal.onOpen}>
         Create Organisation
       </Button>
 

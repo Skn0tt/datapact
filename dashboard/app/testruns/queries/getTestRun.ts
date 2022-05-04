@@ -2,7 +2,7 @@ import { Ctx, NotFoundError } from "blitz"
 import { db } from "db"
 
 export default async function getTestRun(
-  { organisation, project, id }: { organisation: string; project: string; id: number },
+  { organisation, project, id }: { organisation: string; project: string; id: string },
   ctx: Ctx
 ) {
   ctx.session.$authorize()

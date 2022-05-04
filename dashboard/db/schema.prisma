@@ -13,12 +13,13 @@ generator client {
 // --------------------------------------
 
 model TestRun {
-  id        Int      @id @default(autoincrement())
+  id        String
   dataset   Dataset  @relation(fields: [datasetId], references: [id])
   datasetId Int
-  createdAt DateTime
-  result    Boolean
-  body      String
+  date      DateTime
+  payload   String
+
+  @@id([datasetId, id])
 }
 
 model Dataset {

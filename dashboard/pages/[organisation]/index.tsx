@@ -47,7 +47,7 @@ export default function OrganisationPage() {
     query: { organisation },
   } = router
 
-  const [org] = useQuery(getOrganisation, organisation as string)
+  const [org, orgMeta] = useQuery(getOrganisation, organisation as string)
 
   const addDatasetModal = useDisclosure()
 
@@ -126,6 +126,7 @@ export default function OrganisationPage() {
                         userId: userToAdd.id,
                       })
                       addMemberModal.onClose()
+                      orgMeta.refetch()
                     }}
                     loadingText="Adding..."
                     isLoading={addMemberMeta.isLoading}
@@ -152,7 +153,7 @@ export default function OrganisationPage() {
           </ListItem>
         ))}
       </UnorderedList>
-      <Button leftIcon={<AddIcon />} onClick={addDatasetModal.onOpen}>
+      <Button mt={4} size="sm" leftIcon={<AddIcon />} onClick={addDatasetModal.onOpen}>
         Add Dataset
       </Button>
 

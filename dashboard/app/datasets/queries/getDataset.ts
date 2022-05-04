@@ -24,7 +24,11 @@ export default async function getDataset(
           name: true,
         },
       },
-      testRuns: true,
+      testRuns: {
+        orderBy: {
+          date: "desc",
+        },
+      },
       organisation: true,
     },
   })

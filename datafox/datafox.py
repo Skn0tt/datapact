@@ -3,9 +3,12 @@ demo docstring
 """
 
 from typing import Optional, ContextManager, Union
+import uuid
+
 import pandas
 import pystache
 import scipy.stats
+import requests
 
 
 def connect(server: str = "datafox.dev", api_key: Optional[str] = None):
@@ -19,6 +22,17 @@ def generate_report(_filename: str):
     """
     collects all executed tests and generates a report
     """
+
+
+def upload(server: str, api_key: str):
+    runId = uuid.uuid4()
+    if not "://" in server:
+        server = "https://" + server
+    requests.put(
+        f"{server}/api/v1/testruns/{runId}",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={"this is a placeholder": {"for": "actual expectations and test runs"}},
+    )
 
 
 class SeriesTest(ContextManager):

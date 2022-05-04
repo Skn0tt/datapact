@@ -23,6 +23,9 @@ import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import NextLink from "next/link"
 import Image from "next/image"
 import foxImg from "public/fox.png"
+import { invoke } from "@blitzjs/rpc"
+import logout from "app/auth/mutations/logout"
+import Router from "next/router"
 
 function AuthArea() {
   const currentUser = useCurrentUser()
@@ -45,13 +48,18 @@ function AuthArea() {
         />
       </MenuButton>
       <MenuList>
-        <NextLink href="/todo/settings">
+        <NextLink href="/settings">
           <MenuItem>Settings</MenuItem>
         </NextLink>
         <MenuDivider />
-        <NextLink href="/todo/signout">
-          <MenuItem>Sign Out</MenuItem>
-        </NextLink>
+        <MenuItem
+          onClick={async () => {
+            await invoke(logout, null)
+            Router.push("/auth/login")
+          }}
+        >
+          Sign Out
+        </MenuItem>
       </MenuList>
     </Menu>
   )
