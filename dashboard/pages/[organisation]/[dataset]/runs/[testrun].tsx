@@ -1,6 +1,18 @@
 import { useQuery } from "@blitzjs/rpc"
 import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons"
-import { Code, Heading, HStack, Link, Stack, Text } from "@chakra-ui/react"
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Code,
+  Heading,
+  HStack,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react"
 import type { TestRun } from "@prisma/client"
 import { Shell } from "app/layout/Shell"
 import { isFinalised } from "app/testruns"
@@ -14,8 +26,8 @@ function TestRunViz(props: { testRun: TestRun }) {
 
     return (
       <Stack>
-        <Heading size="xl">{payload.title}</Heading>
-        <Text>{payload.description}</Text>
+        {payload.title && <Heading size="xl">{payload.title}</Heading>}
+
         {payload.url && (
           <Text>
             Location:{" "}
@@ -24,6 +36,13 @@ function TestRunViz(props: { testRun: TestRun }) {
             </Link>
           </Text>
         )}
+
+        {payload.description && (
+          <Text>
+            Description: <span>{payload.description}</span>
+          </Text>
+        )}
+
         <Text>Finalized: {isFinalised(props.testRun) ? "Yes" : "No"}</Text>
 
         {payload.series.map((series) => (
@@ -35,19 +54,41 @@ function TestRunViz(props: { testRun: TestRun }) {
             </Heading>
 
             <Stack spacing={2}>
-              {series.description && <Text>{series.description}</Text>}
+              {series.description && <Text>Description: {series.description}</Text>}
               {series.unit && (
                 <Text>
                   Unit: <Code>{series.unit}</Code>
                 </Text>
               )}
 
-              {series.lines.map((line, index) => (
-                <HStack key={index} align="center">
-                  {line.success ? <CheckCircleIcon color="green" /> : <WarningIcon color="red" />}
-                  <Text>{line.message ? `${line.type}: ${line.message}` : line.type}</Text>
-                </HStack>
-              ))}
+              <Accordion allowMultiple allowToggle>
+                {series.lines.map((line) => (
+                  <AccordionItem>
+                    <h2>
+                      <AccordionButton justifyContent="space-between">
+                        <HStack textAlign="left">
+                          {line.success ? (
+                            <CheckCircleIcon color="green" />
+                          ) : (
+                            <WarningIcon color="red" />
+                          )}
+                          <Text>{line.message ? `${line.type}: ${line.message}` : line.type}</Text>
+                        </HStack>
+
+                        <AccordionIcon float="right" />
+                      </AccordionButton>
+                    </h2>
+
+                    <AccordionPanel>
+                      <img
+                        src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
+                        height="200px"
+                        width="200px"
+                      />
+                    </AccordionPanel>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </Stack>
           </Stack>
         ))}

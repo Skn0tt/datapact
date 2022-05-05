@@ -1,5 +1,5 @@
 import { useMutation, useQuery, invoke } from "@blitzjs/rpc"
-import { AddIcon, CheckIcon } from "@chakra-ui/icons"
+import { AddIcon, CheckCircleIcon, CheckIcon } from "@chakra-ui/icons"
 import {
   Avatar,
   AvatarGroup,
@@ -165,14 +165,7 @@ export default function OrganisationPage() {
             <LinkBox rounded="sm" bg="gray.100" p={4}>
               <Heading size="md" mb={2}>
                 {dataset.slug}
-                <CheckIcon
-                  bg="green"
-                  rounded="full"
-                  color="white"
-                  boxSize={6}
-                  p={1}
-                  float="right"
-                />
+                <CheckCircleIcon color="green" boxSize={6} float="right" />
               </Heading>
 
               <Stat>
