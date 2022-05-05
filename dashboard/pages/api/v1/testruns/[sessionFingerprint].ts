@@ -1,10 +1,6 @@
 import { BlitzAPIHandler } from "@blitzjs/next"
-import { db, TestRun } from "db"
-import { addHours, isAfter } from "date-fns"
-
-function isFinalised(testRun: Pick<TestRun, "date">, now = new Date()) {
-  return isAfter(now, addHours(testRun.date, 24))
-}
+import { db } from "db"
+import { isFinalised } from "app/testruns"
 
 const handler: BlitzAPIHandler = async (req, res, ctx) => {
   if (req.method !== "PUT") {
@@ -29,44 +25,37 @@ const handler: BlitzAPIHandler = async (req, res, ctx) => {
     return
   }
 
-  const testRunId = req.query.id as string
-  const testRun = await db.testRun.findUnique({
+  const sessionFingerprint = req.query.sessionFingerprint as string
+
+  const testRun = await db.testRun.findFirst({
     where: {
-      datasetId_id: {
-        datasetId: dataset.id,
-        id: testRunId,
-      },
+      sessionFingerprint,
+      datasetId: dataset.id,
     },
   })
-  if (!testRun) {
-    await db.testRun.create({
+  if (!testRun || isFinalised(testRun)) {
+    const { id } = await db.testRun.create({
       data: {
+        sessionFingerprint,
         date: new Date(),
-        id: testRunId,
         payload: JSON.stringify(req.body),
         datasetId: dataset.id,
       },
     })
+    res.status(201).json({ id })
+    return
   } else {
-    if (isFinalised(testRun)) {
-      res.status(409).end("already finalised")
-      return
-    }
-
     await db.testRun.update({
       where: {
-        datasetId_id: {
-          datasetId: dataset.id,
-          id: testRunId,
-        },
+        id: testRun.id,
       },
       data: {
         payload: JSON.stringify(req.body),
       },
     })
+    res.status(202).json({ id: testRun.id })
+    return
   }
-
-  res.status(200).end()
 }
 
 export default handler

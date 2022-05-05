@@ -81,17 +81,16 @@ const seed = async () => {
 
   const iris = await db.dataset.create({
     data: {
-      token: randomUUID(),
+      token: "a752d76c-52d4-433b-aa2e-e5e5ac888d17",
       slug: "iris",
       organisationId: dacs.id,
-      ownerId: simon.id,
     },
   })
 
   await db.testRun.create({
     data: {
+      sessionFingerprint: "jupyter-session-123",
       datasetId: iris.id,
-      id: "test-run-1",
       date: new Date("2022-05-04T13:02:46.086Z"),
       payload: "lorem ipsum dolor sit amet this is a placeholder",
     },

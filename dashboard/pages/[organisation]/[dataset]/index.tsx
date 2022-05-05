@@ -37,6 +37,7 @@ import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python"
 import docco from "react-syntax-highlighter/dist/cjs/styles/hljs/docco"
 import { useState } from "react"
 import { BellIcon } from "@chakra-ui/icons"
+import { isFinalised } from "app/testruns"
 
 SyntaxHighlighter.registerLanguage("python", python)
 
@@ -60,7 +61,11 @@ export default function Dataset() {
   const codeString = `
 import datafox
 
-datafox.connect(server="${getServerUrl()}", api_key="${dataset.token}")
+df_test = datafox.test(df)
+df_test.connect(
+  server="${getServerUrl()}",
+  token="${dataset.token}"
+)
 `.trim()
 
   const addNotificationModal = useDisclosure()
@@ -88,11 +93,15 @@ datafox.connect(server="${getServerUrl()}", api_key="${dataset.token}")
         Token: <Code userSelect="all">{dataset.token}</Code>
       </Text>
 
-      <Text pb={2}>To connect to this dataset, place the following line in your script:</Text>
+      <Text pb={2}>
+        To connect to this dataset, call <Code>.connect</Code> in your script:
+      </Text>
 
-      <SyntaxHighlighter language="python" style={docco}>
-        {codeString}
-      </SyntaxHighlighter>
+      <Code display="block">
+        <SyntaxHighlighter language="python" style={docco}>
+          {codeString}
+        </SyntaxHighlighter>
+      </Code>
 
       <Button mt={4} size="sm" leftIcon={<BellIcon />} onClick={addNotificationModal.onOpen}>
         set up notifications
@@ -106,6 +115,7 @@ datafox.connect(server="${getServerUrl()}", api_key="${dataset.token}")
           <Thead>
             <Tr>
               <Th>Date</Th>
+              <Th>Finalised</Th>
               <Th></Th>
             </Tr>
           </Thead>
@@ -113,14 +123,15 @@ datafox.connect(server="${getServerUrl()}", api_key="${dataset.token}")
             {dataset.testRuns.map((run) => (
               <Tr
                 onClick={() =>
-                  router.push(`/${query.organisation}/${query.project}/runs/${run.id}`)
+                  router.push(`/${query.organisation}/${query.dataset}/runs/${run.id}`)
                 }
               >
                 <Td>
                   <time dateTime={run.date.toISOString()}>{run.date.toISOString()}</time>
                 </Td>
+                <Td>{isFinalised(run) ? "Yes" : "No"}</Td>
                 <Td isNumeric>
-                  <NextLink href={`/${query.organisation}/${query.project}/runs/${run.id}`}>
+                  <NextLink href={`/${query.organisation}/${query.dataset}/runs/${run.id}`}>
                     <Link>&rsaquo;</Link>
                   </NextLink>
                 </Td>
