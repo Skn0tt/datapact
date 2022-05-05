@@ -1,4 +1,4 @@
-import { useQuery } from "@blitzjs/rpc"
+import { invoke, useMutation, useQuery } from "@blitzjs/rpc"
 import {
   Button,
   Code,
@@ -38,6 +38,7 @@ import docco from "react-syntax-highlighter/dist/cjs/styles/hljs/docco"
 import { useState } from "react"
 import { BellIcon } from "@chakra-ui/icons"
 import { isFinalised } from "app/testruns"
+import updateNotificationMailMutation from "app/datasets/mutations/updateNotificationMail"
 
 SyntaxHighlighter.registerLanguage("python", python)
 
@@ -52,11 +53,13 @@ function getServerUrl() {
 export default function Dataset() {
   const router = useRouter()
   const { query } = router
-  const [dataset] = useQuery(getDataset, {
+  const [dataset, datasetMeta] = useQuery(getDataset, {
     organisation: query.organisation as string,
     slug: query.dataset as string,
   })
-  const toast = useToast()
+  const [udpateNotificationMail, udpateNotificationMailMeta] = useMutation(
+    updateNotificationMailMutation
+  )
 
   const codeString = `
 import datafox
@@ -97,15 +100,21 @@ df_test.connect(
         To connect to this dataset, call <Code>.connect</Code> in your script:
       </Text>
 
-      <Code display="block">
+      <Code display="block" mb={4}>
         <SyntaxHighlighter language="python" style={docco}>
           {codeString}
         </SyntaxHighlighter>
       </Code>
 
-      <Button mt={4} size="sm" leftIcon={<BellIcon />} onClick={addNotificationModal.onOpen}>
-        set up notifications
-      </Button>
+      {dataset.notificationMail ? (
+        <Text>
+          Notifications are sent to <Code>{dataset.notificationMail}</Code>.
+        </Text>
+      ) : (
+        <Button size="sm" leftIcon={<BellIcon />} onClick={addNotificationModal.onOpen}>
+          set up notifications
+        </Button>
+      )}
 
       <Heading size="md" pt={4} pb={2}>
         Runs
@@ -141,34 +150,78 @@ df_test.connect(
         </Table>
       </TableContainer>
 
-      <Drawer isOpen={addNotificationModal.isOpen} onClose={addNotificationModal.onClose}>
+      <Drawer size="lg" isOpen={addNotificationModal.isOpen} onClose={addNotificationModal.onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Add Notifications</DrawerHeader>
 
           <DrawerBody>
-            <FormControl>
-              <FormLabel>
-                Method
-                <Select onChange={(evt) => setAddNotificationType(evt.target.value as any)}>
-                  <option value="email">E-Mail</option>
-                  <option value="slack">Slack</option>
-                  <option value="teams">Teams</option>
-                </Select>
-              </FormLabel>
-            </FormControl>
+            <form
+              id="notificationForm"
+              onSubmit={async (evt) => {
+                evt.preventDefault()
 
-            {addNotificationType === "email" ? (
+                const form = new FormData(evt.target as any)
+
+                const email = form.get("email") as string
+                await udpateNotificationMail({
+                  datasetId: dataset.id,
+                  email,
+                })
+                addNotificationModal.onClose()
+                datasetMeta.refetch()
+              }}
+            >
               <FormControl>
                 <FormLabel>
-                  E-Mail
-                  <Input type="email" required />
+                  Method
+                  <Select
+                    value={addNotificationType}
+                    onChange={(evt) => setAddNotificationType(evt.target.value as any)}
+                  >
+                    <option value="email">E-Mail</option>
+                    <option value="slack">Slack</option>
+                    <option value="teams">Teams</option>
+                  </Select>
                 </FormLabel>
               </FormControl>
-            ) : (
-              <Text>🚧 Under Construction 🚧</Text>
-            )}
+
+              {addNotificationType === "email" && (
+                <FormControl>
+                  <FormLabel>
+                    E-Mail
+                    <Input type="email" name="email" required placeholder="data@company.com" />
+                  </FormLabel>
+                </FormControl>
+              )}
+              {addNotificationType === "teams" && (
+                <Text>
+                  Follow{" "}
+                  <Link
+                    color="blue.400"
+                    isExternal
+                    href="https://support.microsoft.com/en-us/office/send-an-email-to-a-channel-in-teams-d91db004-d9d7-4a47-82e6-fb1b16dfd51e"
+                  >
+                    this guide
+                  </Link>{" "}
+                  to get a channel-specific email, and use the email integration.
+                </Text>
+              )}
+              {addNotificationType === "slack" && (
+                <Text>
+                  Follow{" "}
+                  <Link
+                    color="blue.400"
+                    isExternal
+                    href="https://slack.com/help/articles/206819278-Send-emails-to-Slack"
+                  >
+                    this guide
+                  </Link>{" "}
+                  to get a channel-specific email, and use the email integration.
+                </Text>
+              )}
+            </form>
           </DrawerBody>
 
           <DrawerFooter>
@@ -177,11 +230,10 @@ df_test.connect(
             </Button>
             <Button
               colorScheme="blue"
-              onClick={() => {
-                toast({
-                  title: "Not Implemented yet",
-                })
-              }}
+              type="submit"
+              form="notificationForm"
+              loadingText="Saving ..."
+              isLoading={udpateNotificationMailMeta.isLoading}
             >
               Save
             </Button>

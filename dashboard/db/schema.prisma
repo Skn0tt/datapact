@@ -11,8 +11,6 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
-// --------------------------------------
-
 model TestRun {
   id                 String   @id @default(cuid())
   sessionFingerprint String
@@ -29,6 +27,8 @@ model Dataset {
   organisation   Organisation @relation(fields: [organisationId], references: [id])
   organisationId Int
   testRuns       TestRun[]
+
+  notificationMail String?
 
   @@unique([slug, organisationId])
 }
