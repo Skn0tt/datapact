@@ -2,21 +2,26 @@
 demo docstring
 """
 
-from abc import abstractmethod
-from dataclasses import dataclass, field
-from typing import Optional, ContextManager
 import os
 import subprocess
 import pwd
 import platform
+from typing import Callable, Optional
 import urllib.parse
 import re
 
 import pandas
 import pystache
-import scipy.stats
 import requests
-from dataclasses_json import dataclass_json
+
+from datafox.expectations.BeNormal import BeNormal
+from datafox.expectations.BeBetween import BeBetween
+from datafox.expectations.NotBeNull import NotBeNull
+from datafox.schema import (
+    Line,
+    DataframeTestEvaluationResult,
+    SeriesTestEvaluationResult,
+)
 
 
 class SeriesExpectation:
@@ -24,70 +29,19 @@ class SeriesExpectation:
     demo docstring
     """
 
-    def __init__(self):
-        self.success = True
-        self.message: Optional[str] = None
-
-    def fail(self, message: str):
-        self.success = False
-        self.message = message
-
-    @abstractmethod
-    def execute(self, series: pandas.Series):
-        pass
-
-    def to_line(self, critical: bool):
-        meta = self.__dict__.copy()
-        meta.pop("success")
-        meta.pop("message")
-        return Line(self.__class__.__name__, self.success, critical, self.message, meta)
-
-
-class IsBetween(SeriesExpectation):
-    """
-    demo docstring
-    """
-
-    def __init__(self, minimum: float, maximum: float):
-        self.minimum = minimum
-        self.maximum = maximum
-        super().__init__()
+    def __init__(
+        self,
+        asserter: "Asserter",
+        name: str,
+        execute_callable: Callable[[pandas.Series, Line], None],
+        meta: dict,
+    ):
+        self.execute_callable = execute_callable
+        self.line = Line(name, critical=asserter.critical, meta=meta)
 
     def execute(self, series: pandas.Series):
-        found_min = series.min()
-        found_max = series.max()
-
-        extends_left = found_min < self.minimum
-        extends_right = found_max > self.maximum
-
-        if extends_left and extends_right:
-            self.fail(
-                f"out of range. expected to be in $({self.minimum}, {self.maximum})$ \n"
-                + f"but found $({found_min}, {found_max})$."
-            )
-        elif extends_left:
-            self.fail(
-                f"expected values to be at least ${self.minimum}$, but found ${found_min}$"
-            )
-        elif extends_right:
-            self.fail(
-                f"expected values to be at most ${self.maximum}$, but found ${found_max}$"
-            )
-
-
-class IsNormal(SeriesExpectation):
-    """
-    demo docstring
-    """
-
-    def __init__(self, alpha: float):
-        self.alpha = alpha
-        super().__init__()
-
-    def execute(self, series: pandas.Series):
-        stat, p = scipy.stats.normaltest(series)
-        if p < self.alpha:
-            self.fail(f"not normal. p={p}, stat={stat}")
+        self.execute_callable(series, self.line)
+        return self.line
 
 
 def get_login():
@@ -131,7 +85,7 @@ def get_github_url() -> Optional[str]:
     return url
 
 
-class SeriesTest(ContextManager):
+class SeriesTest:
     """
     wraps a column
     """
@@ -142,8 +96,8 @@ class SeriesTest(ContextManager):
         self.title: Optional[str] = None
         self.description: Optional[str] = None
         self.unit: Optional[str] = None
-        self.should = Asserter(self, critical=False)
-        self.must = Asserter(self, critical=True)
+        self.should = Asserter(series, critical=False)
+        self.must = Asserter(series, critical=True)
 
     def describe(
         self,
@@ -175,86 +129,27 @@ class SeriesTest(ContextManager):
         self.parent.report(self.series.name, error)
 
 
-class Asserter:
+class Asserter(NotBeNull, BeBetween, BeNormal):
     """
     demo docstring
     """
 
-    def __init__(self, parent: SeriesTest, critical: bool):
-        self.parent = parent
+    def __init__(self, series: pandas.Series, critical: bool):
+        for base in self.__class__.__bases__:
+            if hasattr(base, "__init__"):
+                base.__init__(self)
+
+        self.series = series
         self.critical = critical
         self.expectations: "list[SeriesExpectation]" = []
 
-    @property
-    def series(self):
-        return self.parent.series
-
-    def report(self, error: str):
-        self.parent.report(error)
-
-    def add_expectation(self, expectation: SeriesExpectation):
-        self.expectations.append(expectation)
-
-    def be_numbers(self):
-        """
-        demo docstring
-        """
-        return self
-
-    def contain_null(self):
-        """
-        demo docstring
-        """
-        return self
-
-    def be_between(self, minimum: float, maximum: float):
-        self.add_expectation(IsBetween(minimum, maximum))
-        return self
-
-    def be_normal(self, alpha=0.05):
-        self.add_expectation(IsNormal(alpha))
-        return self
-
-
-@dataclass_json
-@dataclass
-class Line:
-    """
-    demo docstring
-    """
-
-    type: str
-    success: bool
-    critical: bool
-    message: Optional[str]
-    meta: dict
-
-
-@dataclass_json
-@dataclass
-class SeriesTestEvaluationResult:
-    """
-    demo docstring
-    """
-
-    name: str
-    title: Optional[str] = None
-    description: Optional[str] = None
-    unit: Optional[str] = None
-    lines: "list[Line]" = field(default_factory=list)
-
-
-@dataclass_json
-@dataclass
-class DataframeTestEvaluationResult:
-    """
-    demo docstring
-    """
-
-    title: Optional[str] = None
-    description: Optional[str] = None
-    url: Optional[str] = None
-    series: "list[SeriesTestEvaluationResult]" = field(default_factory=list)
+    def record(
+        self,
+        _type: str,
+        execute: Callable[[pandas.Series, "Line"], None],
+        meta: dict = None,
+    ):
+        self.expectations.append(SeriesExpectation(self, _type, execute, meta))
 
 
 # pylint: disable=too-many-instance-attributes
@@ -344,8 +239,7 @@ class DataframeTest:
 
             for asserter in [series_test.should, series_test.must]:
                 for expectation in asserter.expectations:
-                    expectation.execute(series_test.series)
-                    line = expectation.to_line(asserter.critical)
+                    line = expectation.execute(series_test.series)
                     series_result.lines.append(line)
 
         if self.is_connected():
