@@ -122,6 +122,7 @@ module.exports = function(eleventyConfig) {
    const searchFilter = require("./filters/searchFilter");
    eleventyConfig.addFilter("search", searchFilter);
    eleventyConfig.addCollection("results", collection => {
+     // TODO: make sure that expectations are searchable
     return [...collection.getFilteredByGlob("**/*.md")];
    });
   
@@ -180,7 +181,6 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("favicon.ico");
   eleventyConfig.addPassthroughCopy("images/")
   eleventyConfig.addPassthroughCopy("content/images/")
-  eleventyConfig.addPassthroughCopy("admin");
   eleventyConfig.addPassthroughCopy("_includes/assets/");
   eleventyConfig.addPassthroughCopy("_includes/experimental/");
 

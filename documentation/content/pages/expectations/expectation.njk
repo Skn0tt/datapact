@@ -1,0 +1,21 @@
+---
+pagination:
+    data: expectations
+    size: 1
+    alias: expectation
+permalink: "expectations/{{ expectation.name | slug }}/"
+
+eleventyComputed:
+  title: "{{ expectation.name }}"
+  eleventyNavigation:
+    key: "{{ expectation.name | slug }}"
+    parent: expectations
+    order: "{{ expectation.order }}"
+    title: "{{ expectation.name }}"
+---
+
+{{ expectation.name }}
+
+{{ expectation.path }}
+
+{{ expectation.docstring }}
