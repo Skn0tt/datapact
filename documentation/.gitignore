@@ -1,0 +1,6 @@
+_site/
+node_modules/
+.idea
+.vscode
+*~
+.cache
