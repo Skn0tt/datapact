@@ -10,12 +10,20 @@ eleventyComputed:
   eleventyNavigation:
     key: "{{ expectation.name | slug }}"
     parent: expectations
-    order: "{{ expectation.order }}"
     title: "{{ expectation.name }}"
 ---
 
-{{ expectation.name }}
+<a
+  href="{{ site.githubUrl }}/tree/{{ site.githubBranch }}/{{ expectation.path }}"
+  target="_blank"
+>
+  Source
+</a>
 
-{{ expectation.path }}
-
+<p>
+<pre>
+<code>
 {{ expectation.docstring }}
+</code>
+</pre>
+</p>
