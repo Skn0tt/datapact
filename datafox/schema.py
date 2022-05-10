@@ -1,6 +1,6 @@
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Optional
 from dataclasses_json import dataclass_json
 
 
@@ -20,6 +20,9 @@ class Line:
     def fail(self, message: str):
         self.success = False
         self.message = message
+    
+    def set(self, key: str, value: Any):
+        self.meta[key] = value
 
 
 @dataclass_json

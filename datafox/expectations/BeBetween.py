@@ -6,9 +6,7 @@ from datafox.expectations.ExpectationProtocol import ExpectationProtocol
 class BeBetween(ExpectationProtocol):
     def be_between(self, minimum: float, maximum: float) -> None:
         """
-        checks if the series is normal distributed.
-
-        :param: alpha defaults to 0.05
+        checks if the series is in the given range
         """
 
         def execute(series: pandas.Series, line: Line):
@@ -32,4 +30,4 @@ class BeBetween(ExpectationProtocol):
                     f"expected values to be at most ${maximum}$, but found ${found_max}$"
                 )
 
-        self.record("BeNormal", execute, {"minimum": minimum, "maximum": maximum})
+        self.record("BeBetween", execute, {"minimum": minimum, "maximum": maximum})

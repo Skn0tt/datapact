@@ -1,3 +1,4 @@
+import json
 import scipy.stats
 import pandas
 from datafox.schema import Line
@@ -14,6 +15,10 @@ class BeNormal(ExpectationProtocol):
 
         def execute(series: pandas.Series, line: Line):
             stat, p = scipy.stats.normaltest(series)
+            line.set("stat", stat)
+            line.set("p", p)
+            bins = pandas.cut(series, bins=10).value_counts()
+            line.set("bins", json.loads(bins.to_json()))
             if p < alpha:
                 line.fail(f"not normal. p={p}, stat={stat}")
 

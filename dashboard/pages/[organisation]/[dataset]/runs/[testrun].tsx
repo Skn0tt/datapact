@@ -19,6 +19,7 @@ import { isFinalised } from "app/testruns"
 import getTestRun from "app/testruns/queries/getTestRun"
 import { useRouter } from "next/router"
 import NextLink from "next/link"
+import ExpectationVisualisers from "app/expectations"
 
 function TestRunViz(props: { testRun: TestRun }) {
   try {
@@ -62,32 +63,41 @@ function TestRunViz(props: { testRun: TestRun }) {
               )}
 
               <Accordion allowMultiple allowToggle>
-                {series.lines.map((line) => (
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton justifyContent="space-between">
-                        <HStack textAlign="left">
-                          {line.success ? (
-                            <CheckCircleIcon color="green" />
-                          ) : (
-                            <WarningIcon color="red" />
-                          )}
-                          <Text>{line.message ? `${line.type}: ${line.message}` : line.type}</Text>
-                        </HStack>
+                {series.lines.map((line) => {
+                  const visualiser = ExpectationVisualisers[line.type]
+                  const defaultTitle = line.message ? `${line.type}: ${line.message}` : line.type
+                  const defaultBody = (
+                    <img
+                      src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
+                      height="200px"
+                      width="200px"
+                    />
+                  )
+                  return (
+                    <AccordionItem>
+                      <h2>
+                        <AccordionButton justifyContent="space-between">
+                          <HStack textAlign="left">
+                            {line.success ? (
+                              <CheckCircleIcon color="green" />
+                            ) : (
+                              <WarningIcon color="red" />
+                            )}
+                            <Text>
+                              {visualiser?.Title ? visualiser.Title({ line }) : defaultTitle}
+                            </Text>
+                          </HStack>
 
-                        <AccordionIcon float="right" />
-                      </AccordionButton>
-                    </h2>
+                          <AccordionIcon float="right" />
+                        </AccordionButton>
+                      </h2>
 
-                    <AccordionPanel>
-                      <img
-                        src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
-                        height="200px"
-                        width="200px"
-                      />
-                    </AccordionPanel>
-                  </AccordionItem>
-                ))}
+                      <AccordionPanel>
+                        {visualiser?.Body ? visualiser.Body({ line }) : defaultBody}
+                      </AccordionPanel>
+                    </AccordionItem>
+                  )
+                })}
               </Accordion>
             </Stack>
           </Stack>
