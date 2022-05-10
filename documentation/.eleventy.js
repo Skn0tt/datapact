@@ -212,7 +212,6 @@ module.exports = function(eleventyConfig) {
       const [attrName, href] = tokens[idx].attrs.find(attr => attr[0] === 'href')
       if (href && (!href.includes('franknoirot.co') && !href.startsWith('/') && !href.startsWith('#'))) {
         tokens[idx].attrPush([ 'target', '_blank' ])
-        tokens[idx].attrPush([ 'rel', 'noopener noreferrer' ])
       }
     })
     .use(markdownItAnchor, opts)
