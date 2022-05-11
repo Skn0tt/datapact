@@ -2,7 +2,7 @@ import { BeNormal } from "./BeNormal"
 import { ExpectationVisualiser } from "./ExpectationVisualiser"
 
 const list: Record<string, ExpectationVisualiser> = {
-  BeNormal,
+  be_normal: BeNormal,
 }
 
 export default list

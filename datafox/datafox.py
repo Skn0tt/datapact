@@ -2,6 +2,7 @@
 demo docstring
 """
 
+import json
 import os
 import subprocess
 import pwd
@@ -13,10 +14,8 @@ import re
 import pandas
 import pystache
 import requests
+import scipy
 
-from datafox.expectations.BeNormal import BeNormal
-from datafox.expectations.BeBetween import BeBetween
-from datafox.expectations.NotBeNull import NotBeNull
 from datafox.schema import (
     Line,
     DataframeTestEvaluationResult,
@@ -33,14 +32,14 @@ class SeriesExpectation:
         self,
         asserter: "Asserter",
         name: str,
-        execute_callable: Callable[[pandas.Series, Line], None],
+        execute_callable: Callable[[Line], None],
         meta: dict,
     ):
         self.execute_callable = execute_callable
         self.line = Line(name, critical=asserter.critical, meta=meta)
 
-    def execute(self, series: pandas.Series):
-        self.execute_callable(series, self.line)
+    def execute(self):
+        self.execute_callable(self.line)
         return self.line
 
 
@@ -129,11 +128,7 @@ class SeriesTest:
         self.parent.report(self.series.name, error)
 
 
-class Asserter(NotBeNull, BeBetween, BeNormal):
-    """
-    demo docstring
-    """
-
+class Asserter:
     def __init__(self, series: pandas.Series, critical: bool):
         for base in self.__class__.__bases__:
             if hasattr(base, "__init__"):
@@ -146,10 +141,138 @@ class Asserter(NotBeNull, BeBetween, BeNormal):
     def record(
         self,
         _type: str,
-        execute: Callable[[pandas.Series, "Line"], None],
+        execute: Callable[["Line"], None],
         meta: dict = None,
     ):
         self.expectations.append(SeriesExpectation(self, _type, execute, meta))
+
+    def bins(self):
+        bins = pandas.cut(self.series, bins=10).value_counts()
+        return json.loads(bins.to_json())
+
+    def be_normal(self, alpha: float = 0.05) -> None:
+        """
+        performs a normaltest.
+
+        uses `scipy.stats.normaltest` under the hood.
+
+        Args:
+            alpha :
+                sensitivity of the test. low value = more sensitive.
+
+        Examples:
+            >>> de.salary.should.be_normal(alpha=0.1)
+        """
+
+        def execute(line: Line):
+            stat, p = scipy.stats.normaltest(self.series)
+            line.set("stat", stat)
+            line.set("p", p)
+            line.set("bins", self.bins())
+            if p < alpha:
+                line.fail(f"not normal. p={p}, stat={stat}")
+
+        self.record("be_normal", execute, {"alpha": alpha})
+
+    def be_between(self, minimum: float, maximum: float) -> None:
+        """
+        checks the value range.
+
+        Args:
+            minimum :
+                if there's a value lower than this, it will fail.
+            maximum :
+                if there's a value higher than this, it will fail.
+
+        Examples:
+            >>> de.age.should.be_between(0, 150)
+        """
+
+        def execute(line: Line):
+            found_min = self.series.min()
+            found_max = self.series.max()
+
+            extends_left = found_min < minimum
+            extends_right = found_max > maximum
+
+            if extends_left and extends_right:
+                line.fail(
+                    f"out of range. expected to be in $({minimum}, {maximum})$ \n"
+                    + f"but found $({found_min}, {found_max})$."
+                )
+            elif extends_left:
+                line.fail(
+                    f"expected values to be at least ${minimum}$, but found ${found_min}$"
+                )
+            elif extends_right:
+                line.fail(
+                    f"expected values to be at most ${maximum}$, but found ${found_max}$"
+                )
+
+        self.record("be_between", execute, {"minimum": minimum, "maximum": maximum})
+
+    def be_positive(self) -> None:
+        """
+        checks if all values are 0 or higher.
+
+        Examples:
+            >>> de.age.should.be_positive()
+        """
+
+        def execute(line: Line):
+            found_min = self.series.min()
+
+            line.set("min", found_min)
+
+            if found_min < 0:
+                line.fail(f"negative value found: min is {found_min}")
+
+        self.record("be_positive", execute)
+
+    def be_negative(self) -> None:
+        """
+        checks if all values are 0 or smaller.
+
+        Examples:
+            >>> de.debt.should.be_negative()
+        """
+
+        def execute(line: Line):
+            found_max = self.series.max()
+
+            line.set("max", found_max)
+
+            if found_max < 0:
+                line.fail(f"positive value found: max is {found_max}")
+
+        self.record("be_negative", execute)
+
+    def not_be_null(self) -> None:
+        """
+        checks if there are any null values.
+
+        Examples:
+            >>> de.user_id.must.not_be_null()
+        """
+
+        def execute(line: Line):
+            if self.series.isnull().values.any():
+                line.fail("found null values")
+
+        self.record("not_be_null", execute)
+
+    def be_one_of(self, *args) -> None:
+        """
+        checks if there's any value not in the given list.
+
+        Examples:
+            >>> de.state.must.be_one_of("active", "sleeping", "inactive")
+        """
+
+        def execute(line: Line):
+            raise Exception("not implemented")
+
+        self.record("be_one_of", execute)
 
 
 # pylint: disable=too-many-instance-attributes
@@ -239,7 +362,7 @@ class DataframeTest:
 
             for asserter in [series_test.should, series_test.must]:
                 for expectation in asserter.expectations:
-                    line = expectation.execute(series_test.series)
+                    line = expectation.execute()
                     series_result.lines.append(line)
 
         if self.is_connected():
