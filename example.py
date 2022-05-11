@@ -21,10 +21,8 @@ with datapact.test(income_df).describe(
 ) as income:
     income.connect(server="datapact.services.netcheck.de", token="abcde")
     with income.age as age:
-        age.should.be_numbers()
         age.should.be_between(0, 100)
     with income.salary as salary:
-        salary.should.be_numbers()
         salary.should.be_between(0, 300000)
         salary.should.be_normal(alpha=0.05)
 
@@ -36,11 +34,9 @@ income_dp.describe(
 )
 
 income_dp.age.describe(title="age of participants")
-income_dp.age.should.be_numbers()
 income_dp.age.should.be_between(0, 100)
 
 income_dp.salary.describe(unit="$")
-income_dp.salary.should.be_numbers()
 income_dp.salary.should.be_between(0, 300000)
 income_dp.salary.should.be_normal(alpha=0.05)
 income_dp.salary.must.be_normal(alpha=0.05)

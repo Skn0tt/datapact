@@ -260,7 +260,7 @@ class Asserter:
 
         self.record("not_be_null", execute)
 
-    def be_one_of(self, *args) -> None:
+    def be_one_of(self, *_args) -> None:
         """
         checks if there's any value not in the given list.
 

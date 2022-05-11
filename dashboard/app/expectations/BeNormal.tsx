@@ -39,7 +39,7 @@ export const BeNormal: ExpectationVisualiser<{
               {
                 label: "Distribution",
                 data: Object.values(meta.bins).map((i) => parseInt(i)),
-                order: 1
+                order: 1,
               },
             ],
           }}
