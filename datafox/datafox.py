@@ -12,9 +12,8 @@ import urllib.parse
 import re
 
 import pandas
-import pystache
 import requests
-import scipy
+import scipy.stats
 
 from datafox.schema import (
     Line,
@@ -374,30 +373,26 @@ class DataframeTest:
         self.reports.append(f"`{column}`: {error}")
 
     def __repr__(self):
-        self.evaluate()
-        return pystache.render(
-            """
-{{#reports}}
-- {{.}}
-{{/reports}}
-""",
-            {"reports": self.reports},
-        )
+        return self._repr_markdown_()
 
     def _repr_markdown_(self):
         """
         see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
         """
-        self.evaluate()
-        return pystache.render(
-            """
-reports:
-{{#reports}}
-- {{.}}
-{{/reports}}
-""",
-            {"reports": self.reports},
-        )
+        result = self.evaluate()
+
+        md = ""
+
+        for series in result.series:
+            md += f"**{series.name}**  \n"
+            for line in series.lines:
+                if line.success:
+                    md += f"✅ {line.type}  \n"
+                else:
+                    md += f"❌ {line.type}: {line.message}  \n"
+            md += "\n"
+
+        return md
 
 
 def test(dataframe: pandas.DataFrame):
