@@ -1,5 +1,4 @@
 const { SecurePassword } = require("@blitzjs/auth")
-const { randomUUID } = require("crypto")
 const { PrismaClient } = require("@prisma/client")
 
 const seed = async () => {
@@ -8,7 +7,7 @@ const seed = async () => {
 
   const simon = await db.user.create({
     data: {
-      email: "simon@expact.dev",
+      email: "simon@datapact.dev",
       name: "Simon Knott",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "https://avatars.githubusercontent.com/u/14912729",
@@ -17,7 +16,7 @@ const seed = async () => {
 
   const renard = await db.user.create({
     data: {
-      email: "renard@expact.dev",
+      email: "renard@datapact.dev",
       name: "Renard Renard",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "http://www.renard.it/byr.jpg",
@@ -26,7 +25,7 @@ const seed = async () => {
 
   const jule = await db.user.create({
     data: {
-      email: "jule@expact.dev",
+      email: "jule@datapact.dev",
       name: "Jule Schmachtenberg",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "https://hpi.de/fileadmin/_processed_/e/9/csm_DSC02268_1_17e0b68732.jpg",
@@ -35,7 +34,7 @@ const seed = async () => {
 
   const ferdous = await db.user.create({
     data: {
-      email: "ferdous@expact.dev",
+      email: "ferdous@datapact.dev",
       name: "Ferdous Nasri",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "https://hpi.de/fileadmin/_processed_/a/c/csm_ferdousPic-2_bd99cb9fdc.jpg",
@@ -44,7 +43,7 @@ const seed = async () => {
 
   const conrad = await db.user.create({
     data: {
-      email: "conrad@expact.dev",
+      email: "conrad@datapact.dev",
       name: "Conrad Halle",
       hashedPassword: await SecurePassword.hash("password"),
     },
@@ -52,7 +51,7 @@ const seed = async () => {
 
   const wieler = await db.user.create({
     data: {
-      email: "wieler@expact.dev",
+      email: "wieler@datapact.dev",
       name: "Lothar Wieler",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl:

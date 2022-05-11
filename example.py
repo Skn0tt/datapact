@@ -12,14 +12,14 @@ assumptions behind design:
 """
 
 import pandas as pd
-import expact
+import datapact
 
 income_df = pd.read_csv("some_csv")
 
-with expact.test(income_df).describe(
+with datapact.test(income_df).describe(
     title="Income", description="Income description"
 ) as income:
-    income.connect(server="expact.services.netcheck.de", token="abcde")
+    income.connect(server="datapact.services.netcheck.de", token="abcde")
     with income.age as age:
         age.should.be_numbers()
         age.should.be_between(0, 100)
@@ -29,18 +29,18 @@ with expact.test(income_df).describe(
         salary.should.be_normal(alpha=0.05)
 
 
-income_ep = expact.test(income_df)
-income_ep.connect(server="expact.services.netcheck.de", token="abcde")
-income_ep.describe(
+income_dp = datapact.test(income_df)
+income_dp.connect(server="datapact.services.netcheck.de", token="abcde")
+income_dp.describe(
     title="Income Distribution", description="Used for analyzing market changes"
 )
 
-income_ep.age.describe(title="age of participants")
-income_ep.age.should.be_numbers()
-income_ep.age.should.be_between(0, 100)
+income_dp.age.describe(title="age of participants")
+income_dp.age.should.be_numbers()
+income_dp.age.should.be_between(0, 100)
 
-income_ep.salary.describe(unit="$")
-income_ep.salary.should.be_numbers()
-income_ep.salary.should.be_between(0, 300000)
-income_ep.salary.should.be_normal(alpha=0.05)
-income_ep.salary.must.be_normal(alpha=0.05)
+income_dp.salary.describe(unit="$")
+income_dp.salary.should.be_numbers()
+income_dp.salary.should.be_between(0, 300000)
+income_dp.salary.should.be_normal(alpha=0.05)
+income_dp.salary.must.be_normal(alpha=0.05)

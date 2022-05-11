@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "expact"
+project = "datapact"
 copyright = "2022, Simon Knott"  # pylint: disable=redefined-builtin
 author = "Simon Knott"
 

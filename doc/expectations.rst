@@ -3,9 +3,9 @@
 =============
 Expectations
 =============
-.. currentmodule:: expact
+.. currentmodule:: datapact
 
-This page gives an overview of all available expact expectations.
+This page gives an overview of all available datapact expectations.
 
-.. autoclass:: expact.Asserter
+.. autoclass:: datapact.Asserter
   :members:

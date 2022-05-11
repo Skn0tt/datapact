@@ -62,10 +62,10 @@ export default function Dataset() {
   )
 
   const codeString = `
-import expact
+import datapact
 
-ep = expact.test(df)
-ep.connect(
+dp = datapact.test(df)
+dp.connect(
   server="${getServerUrl()}",
   token="${dataset.token}"
 )

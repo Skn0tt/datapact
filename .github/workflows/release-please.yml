@@ -11,7 +11,7 @@ jobs:
         id: release
         with:
           release-type: python
-          package-name: expact
+          package-name: datapact
       - uses: actions/checkout@v2
         if: ${{ steps.release.outputs.release_created }}
       - name: Set up Python

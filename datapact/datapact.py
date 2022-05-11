@@ -15,7 +15,7 @@ import pandas
 import requests
 import scipy.stats
 
-from expact.schema import (
+from datapact.schema import (
     Line,
     DataframeTestEvaluationResult,
     SeriesTestEvaluationResult,

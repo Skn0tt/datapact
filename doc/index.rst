@@ -1,5 +1,5 @@
-expact
-=======
+datapact
+========
 
 .. toctree::
    :maxdepth: 2

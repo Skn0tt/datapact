@@ -2,7 +2,7 @@
 tests example
 """
 
-from expact.example import add_one
+from datapact.example import add_one
 
 
 def test_add_one():
