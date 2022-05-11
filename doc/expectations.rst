@@ -3,9 +3,9 @@
 =============
 Expectations
 =============
-.. currentmodule:: datafox
+.. currentmodule:: expact
 
-This page gives an overview of all available datafox expectations.
+This page gives an overview of all available expact expectations.
 
-.. autoclass:: datafox.Asserter
+.. autoclass:: expact.Asserter
   :members:

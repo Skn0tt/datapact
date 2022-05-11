@@ -49,7 +49,7 @@ const Dashboard = () => {
       <PageTitle title="welcome," name={user.name} suffix="!" />
 
       <Text>
-        This is the Datafox Dashboard, your dataset knowledge tracker. To get started, enter your
+        This is the Expact Dashboard, your dataset knowledge tracker. To get started, enter your
         organisation's workspace:
       </Text>
 

@@ -15,7 +15,7 @@ import pandas
 import requests
 import scipy.stats
 
-from datafox.schema import (
+from expact.schema import (
     Line,
     DataframeTestEvaluationResult,
     SeriesTestEvaluationResult,

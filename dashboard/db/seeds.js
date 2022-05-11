@@ -8,7 +8,7 @@ const seed = async () => {
 
   const simon = await db.user.create({
     data: {
-      email: "simon@datafox.dev",
+      email: "simon@expact.dev",
       name: "Simon Knott",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "https://avatars.githubusercontent.com/u/14912729",
@@ -17,7 +17,7 @@ const seed = async () => {
 
   const renard = await db.user.create({
     data: {
-      email: "renard@datafox.dev",
+      email: "renard@expact.dev",
       name: "Renard Renard",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "http://www.renard.it/byr.jpg",
@@ -26,7 +26,7 @@ const seed = async () => {
 
   const jule = await db.user.create({
     data: {
-      email: "jule@datafox.dev",
+      email: "jule@expact.dev",
       name: "Jule Schmachtenberg",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "https://hpi.de/fileadmin/_processed_/e/9/csm_DSC02268_1_17e0b68732.jpg",
@@ -35,7 +35,7 @@ const seed = async () => {
 
   const ferdous = await db.user.create({
     data: {
-      email: "ferdous@datafox.dev",
+      email: "ferdous@expact.dev",
       name: "Ferdous Nasri",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl: "https://hpi.de/fileadmin/_processed_/a/c/csm_ferdousPic-2_bd99cb9fdc.jpg",
@@ -44,7 +44,7 @@ const seed = async () => {
 
   const conrad = await db.user.create({
     data: {
-      email: "conrad@datafox.dev",
+      email: "conrad@expact.dev",
       name: "Conrad Halle",
       hashedPassword: await SecurePassword.hash("password"),
     },
@@ -52,7 +52,7 @@ const seed = async () => {
 
   const wieler = await db.user.create({
     data: {
-      email: "wieler@datafox.dev",
+      email: "wieler@expact.dev",
       name: "Lothar Wieler",
       hashedPassword: await SecurePassword.hash("password"),
       profilePictureUrl:

@@ -3,4 +3,4 @@ export function websiteUrl(path: string) {
   return origin + path
 }
 
-export const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN ?? "datafox.dev"
+export const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN ?? "expact.dev"

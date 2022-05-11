@@ -1,3 +1,3 @@
-# datafox (working title, this name has a trademark on it)
+# expact
 
 This repository houses my bachelor thesis project.

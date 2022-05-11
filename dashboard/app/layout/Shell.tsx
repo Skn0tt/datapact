@@ -77,7 +77,7 @@ export function Shell(
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <HStack spacing={8}>
             <NextLink href="/">
-              <Image src={foxImg} width={24} height={32} alt="Datafox Logo" />
+              <Image src={foxImg} width={24} height={32} alt="Expact Logo" />
             </NextLink>
           </HStack>
           <Breadcrumb>

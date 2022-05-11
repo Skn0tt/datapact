@@ -62,10 +62,10 @@ export default function Dataset() {
   )
 
   const codeString = `
-import datafox
+import expact
 
-df_test = datafox.test(df)
-df_test.connect(
+ep = expact.test(df)
+ep.connect(
   server="${getServerUrl()}",
   token="${dataset.token}"
 )
