@@ -8,6 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
+        id: release
         with:
           release-type: python
           package-name: expact
+      - uses: actions/checkout@v2
+        if: ${{ steps.release.outputs.release_created }}
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        if: ${{ steps.release.outputs.release_created }}
+      - run: pip install build
+      - run: python3 -m build
+      - name: Publish package to PyPI
+        if: ${{ steps.release.outputs.release_created }}
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
