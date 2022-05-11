@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.1](https://github.com/Skn0tt/expact/compare/v0.2.0...v0.2.1) (2022-05-11)
+
+
+### Bug Fixes
+
+* update package name ([be02482](https://github.com/Skn0tt/expact/commit/be02482f2070cc370fff66d90f19a39881b90654))
+
 ## [0.2.0](https://github.com/Skn0tt/datapact/compare/v0.1.0...v0.2.0) (2022-05-11)
 
 
