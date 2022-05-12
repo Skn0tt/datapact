@@ -14,6 +14,7 @@ Configuration file for the Sphinx documentation builder.
 
 import os
 import sys
+import configparser
 
 sys.path.insert(0, os.path.abspath("../"))
 
@@ -24,8 +25,9 @@ project = "datapact"
 copyright = "2022, Simon Knott"  # pylint: disable=redefined-builtin
 author = "Simon Knott"
 
-# The full version, including alpha/beta/rc tags
-release = "0.0.3"
+config = configparser.ConfigParser()
+config.read(r'../setup.cfg')
+release = config.get("metadata", "version")
 
 
 # -- General configuration ---------------------------------------------------
