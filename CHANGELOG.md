@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/Skn0tt/datapact/compare/v0.2.1...v0.3.0) (2022-05-12)
+
+
+### Features
+
+* add docker image pusher ([ea17485](https://github.com/Skn0tt/datapact/commit/ea174856be7dd200e75760fd034f3a9e2c590568))
+
+
+### Bug Fixes
+
+* pre-commit stuff ([8fcbd70](https://github.com/Skn0tt/datapact/commit/8fcbd708764a77c33b45b230ef427ba741dad597))
+
 ### [0.2.1](https://github.com/Skn0tt/expact/compare/v0.2.0...v0.2.1) (2022-05-11)
 
 ### Bug Fixes
