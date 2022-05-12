@@ -26,7 +26,7 @@ copyright = "2022, Simon Knott"  # pylint: disable=redefined-builtin
 author = "Simon Knott"
 
 config = configparser.ConfigParser()
-config.read(r'../setup.cfg')
+config.read(r"../setup.cfg")
 release = config.get("metadata", "version")
 
 
