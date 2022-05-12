@@ -1,5 +1,18 @@
 # Changelog
 
+### [0.3.1](https://github.com/Skn0tt/datapact/compare/v0.3.0...v0.3.1) (2022-05-12)
+
+
+### Bug Fixes
+
+* enable flavor: true ([b174ff9](https://github.com/Skn0tt/datapact/commit/b174ff9570ee217634d4f35d989f2cba905f98dc))
+* update tagging logic ([4f51ae1](https://github.com/Skn0tt/datapact/commit/4f51ae1bccc76000d5d9dc0047c916e8919fca06))
+
+
+### Documentation
+
+* add skn0tt as a contributor for code, doc, ideas, maintenance ([#8](https://github.com/Skn0tt/datapact/issues/8)) ([4c3e6e5](https://github.com/Skn0tt/datapact/commit/4c3e6e5d489e1ac06b6167659f5e0fc284a1d3f0))
+
 ## [0.3.0](https://github.com/Skn0tt/datapact/compare/v0.2.1...v0.3.0) (2022-05-12)
 
 
