@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.2](https://github.com/Skn0tt/datapact/compare/v0.3.1...v0.3.2) (2022-05-12)
+
+
+### Bug Fixes
+
+* run docker on every release ([75076fd](https://github.com/Skn0tt/datapact/commit/75076fd0df2c7f11bf985a91538c7e4928922745))
+
 ### [0.3.1](https://github.com/Skn0tt/datapact/compare/v0.3.0...v0.3.1) (2022-05-12)
 
 
