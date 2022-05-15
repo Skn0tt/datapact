@@ -1,5 +1,5 @@
 {
-  "name": "datapact-dashboard",
+  "name": "datapact-track",
   "private": true,
   "scripts": {
     "dev": "blitz dev",
