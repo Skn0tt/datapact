@@ -30,6 +30,8 @@ Here's some features:
 - two severence levels (`.should` for warnings, `.must` for failures)
 - failure notifications via E-Mail, MS Teams or Slack (via Datapact Track)
 
+Get Started here: https://docs.datafox.dev
+
 ## `Datapact` Track
 
 Datapact Track is an optional, browser-based data tracking service.
