@@ -28,7 +28,7 @@ Here's some features:
 - dozens of existing assertions, easy to add your own
 - great in-editor documentation via docstrings + types
 - two severence levels (`.should` for warnings, `.must` for failures)
-- failure notifications via E-Mail, MS Teams or Slack (via Datapact Track)
+- failure notifications via E-Mail, MS Teams, Slack or PagerDuty (via Datapact Track)
 
 Get Started here: https://docs.datafox.dev
 
@@ -51,7 +51,7 @@ dp.connect(
 
 Datapact track gives you:
 
-- notifications via E-Mail, Slack and MS Teams
+- notifications via E-Mail, Slack, MS Teams and PagerDuty
 - a central documentation of your datasets
 - history of data expectations + reality
 - data quality tracking

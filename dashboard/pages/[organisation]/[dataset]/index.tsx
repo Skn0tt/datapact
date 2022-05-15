@@ -73,9 +73,9 @@ dp.connect(
 
   const addNotificationModal = useDisclosure()
 
-  const [addNotificationType, setAddNotificationType] = useState<"email" | "slack" | "teams">(
-    "email"
-  )
+  const [addNotificationType, setAddNotificationType] = useState<
+    "email" | "slack" | "teams" | "pagerduty"
+  >("email")
 
   return (
     <Shell
@@ -183,6 +183,7 @@ dp.connect(
                     <option value="email">E-Mail</option>
                     <option value="slack">Slack</option>
                     <option value="teams">Teams</option>
+                    <option value="pagerduty">PagerDuty</option>
                   </Select>
                 </FormLabel>
               </FormControl>
@@ -219,6 +220,20 @@ dp.connect(
                     this guide
                   </Link>{" "}
                   to get a channel-specific email, and use the email integration.
+                </Text>
+              )}
+              {addNotificationType === "pagerduty" && (
+                <Text>
+                  Follow{" "}
+                  <Link
+                    color="blue.400"
+                    isExternal
+                    href="https://support.pagerduty.com/docs/email-integration-guide"
+                  >
+                    this guide
+                  </Link>{" "}
+                  to get a PagerDuty-owned email, and use the email integration.
+                  <Code></Code>
                 </Text>
               )}
             </form>
