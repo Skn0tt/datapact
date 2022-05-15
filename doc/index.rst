@@ -39,4 +39,5 @@ For a full list of available expectations, check
    :caption: Contents:
 
    expectations
+   track
 
