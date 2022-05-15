@@ -25,7 +25,7 @@
     ]
   },
   "dependencies": {
-    "@blitzjs/auth": "2.0.0-alpha.22",
+    "@blitzjs/auth": "2.0.0-alpha.24",
     "@blitzjs/next": "2.0.0-alpha.22",
     "@blitzjs/rpc": "2.0.0-alpha.22",
     "@chakra-ui/icons": "1.1.7",
