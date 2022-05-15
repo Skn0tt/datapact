@@ -34,23 +34,22 @@ function LandingPage() {
 }
 
 const Dashboard = () => {
+  const createOrgModal = useDisclosure()
+  const [createOrganisation] = useMutation(createOrganisationMutation)
+  const [orgs] = useQuery(getOrganisations, null)
+
   const user = useCurrentUser()
   if (!user) {
     return null
   }
 
-  const createOrgModal = useDisclosure()
-
-  const [createOrganisation] = useMutation(createOrganisationMutation)
-
-  const [orgs] = useQuery(getOrganisations, null)
   return (
     <>
       <PageTitle title="welcome," name={user.name} suffix="!" />
 
       <Text>
         This is the Datapact Dashboard, your dataset knowledge tracker. To get started, enter your
-        organisation's workspace:
+        organisations workspace:
       </Text>
 
       <Heading size="md" pt={4} pb={2}>

@@ -3,22 +3,18 @@ import {
   Flex,
   Avatar,
   HStack,
-  IconButton,
   Button,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
   MenuDivider,
-  useDisclosure,
   useColorModeValue,
   Link,
-  Text,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
 } from "@chakra-ui/react"
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import NextLink from "next/link"
 import Image from "next/image"
@@ -56,7 +52,7 @@ function AuthArea() {
         <MenuItem
           onClick={async () => {
             await invoke(logout, null)
-            Router.push("/auth/login")
+            await Router.push("/auth/login")
           }}
         >
           Sign Out

@@ -131,6 +131,7 @@ dp.connect(
           <Tbody>
             {dataset.testRuns.map((run) => (
               <Tr
+                key={run.id}
                 onClick={() =>
                   router.push(`/${query.organisation}/${query.dataset}/runs/${run.id}`)
                 }
@@ -170,7 +171,7 @@ dp.connect(
                   email,
                 })
                 addNotificationModal.onClose()
-                datasetMeta.refetch()
+                await datasetMeta.refetch()
               }}
             >
               <FormControl>

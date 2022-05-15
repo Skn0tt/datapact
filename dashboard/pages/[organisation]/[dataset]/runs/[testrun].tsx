@@ -63,18 +63,19 @@ function TestRunViz(props: { testRun: TestRun }) {
               )}
 
               <Accordion allowMultiple allowToggle>
-                {series.lines.map((line) => {
+                {series.lines.map((line, index) => {
                   const visualiser = ExpectationVisualisers[line.type]
                   const defaultTitle = line.message ? `${line.type}: ${line.message}` : line.type
                   const defaultBody = (
                     <img
                       src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
+                      alt="gif of a barchart, acting as a placeholder"
                       height="200px"
                       width="200px"
                     />
                   )
                   return (
-                    <AccordionItem>
+                    <AccordionItem key={index}>
                       <h2>
                         <AccordionButton justifyContent="space-between">
                           <HStack textAlign="left">

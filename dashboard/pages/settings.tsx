@@ -9,7 +9,10 @@ export default function Settings() {
 
         <Text>🚧 Under Construction 🚧</Text>
 
-        <img src="https://media.giphy.com/media/UZ9kYnpNms8bm/giphy.gif" />
+        <img
+          src="https://media.giphy.com/media/UZ9kYnpNms8bm/giphy.gif"
+          alt="a toy excavator, excavating in a family backyard"
+        />
       </Stack>
     </Shell>
   )

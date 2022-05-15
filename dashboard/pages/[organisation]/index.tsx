@@ -141,7 +141,7 @@ export default function OrganisationPage() {
                         userId: userToAdd.id,
                       })
                       addMemberModal.onClose()
-                      orgMeta.refetch()
+                      await orgMeta.refetch()
                     }}
                     loadingText="Adding..."
                     isLoading={addMemberMeta.isLoading}
@@ -161,7 +161,7 @@ export default function OrganisationPage() {
 
       <SimpleGrid columns={3} spacing={8}>
         {org.datasets.map((dataset) => (
-          <NextLink href={`/${organisation}/${dataset.slug}`}>
+          <NextLink key={dataset.id} href={`/${organisation}/${dataset.slug}`}>
             <LinkBox rounded="sm" bg="gray.100" p={4}>
               <Heading size="md" mb={2}>
                 {dataset.slug}
