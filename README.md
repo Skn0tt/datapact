@@ -19,7 +19,7 @@ dp.name.should.not_be_empty()
 
 <!-- TODO: add jupyter notebooks image here -->
 
-It works with any DataFrame-like object, and has special support for Jupyter Notebooks.
+It works with Pandas + Dask DataFrames, and has special support for Jupyter Notebooks.
 
 <!-- TODO: list out supported DataFrame kinds -->
 
