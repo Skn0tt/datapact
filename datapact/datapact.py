@@ -22,11 +22,13 @@ from datapact.schema import (
 )
 
 
-class SeriesExpectation:
-    """
-    demo docstring
-    """
+def line_to_markdown(line: Line) -> str:
+    if line.success:
+        return f"✅ {line.type}"
+    return f"❌ {line.type}: {line.message}"
 
+
+class SeriesExpectation:
     def __init__(
         self,
         asserter: "Asserter",
@@ -34,12 +36,19 @@ class SeriesExpectation:
         execute_callable: Callable[[Line], None],
         meta: dict,
     ):
+        self.name = name
+        self.asserter = asserter
         self.execute_callable = execute_callable
-        self.line = Line(name, critical=asserter.critical, meta=meta)
+        self.meta = meta
 
     def execute(self):
-        self.execute_callable(self.line)
-        return self.line
+        line = Line(self.name, critical=self.asserter.critical, meta=self.meta)
+        self.execute_callable(line)
+        return line
+
+    def _repr_markdown_(self):
+        line = self.execute()
+        return line_to_markdown(line)
 
 
 def get_login():
@@ -142,14 +151,16 @@ class Asserter:
         _type: str,
         execute: Callable[["Line"], None],
         meta: dict = None,
-    ):
-        self.expectations.append(SeriesExpectation(self, _type, execute, meta))
+    ) -> SeriesExpectation:
+        expectation = SeriesExpectation(self, _type, execute, meta)
+        self.expectations.append(expectation)
+        return expectation
 
     def bins(self):
         bins = pandas.cut(self.series, bins=10).value_counts()
         return json.loads(bins.to_json())
 
-    def be_normal(self, alpha: float = 0.05) -> None:
+    def be_normal(self, alpha: float = 0.05):
         """
         performs a normaltest.
 
@@ -171,9 +182,9 @@ class Asserter:
             if p < alpha:
                 line.fail(f"not normal. p={p}, stat={stat}")
 
-        self.record("be_normal", execute, {"alpha": alpha})
+        return self.record("be_normal", execute, {"alpha": alpha})
 
-    def be_between(self, minimum: float, maximum: float) -> None:
+    def be_between(self, minimum: float, maximum: float):
         """
         checks the value range.
 
@@ -208,9 +219,9 @@ class Asserter:
                     f"expected values to be at most ${maximum}$, but found ${found_max}$"
                 )
 
-        self.record("be_between", execute, {"minimum": minimum, "maximum": maximum})
+        return self.record("be_between", execute, {"minimum": minimum, "maximum": maximum})
 
-    def be_positive(self) -> None:
+    def be_positive(self):
         """
         checks if all values are 0 or higher.
 
@@ -226,9 +237,9 @@ class Asserter:
             if found_min < 0:
                 line.fail(f"negative value found: min is {found_min}")
 
-        self.record("be_positive", execute)
+        return self.record("be_positive", execute)
 
-    def be_negative(self) -> None:
+    def be_negative(self):
         """
         checks if all values are 0 or smaller.
 
@@ -244,9 +255,9 @@ class Asserter:
             if found_max < 0:
                 line.fail(f"positive value found: max is {found_max}")
 
-        self.record("be_negative", execute)
+        return self.record("be_negative", execute)
 
-    def not_be_null(self) -> None:
+    def not_be_null(self):
         """
         checks if there are any null values.
 
@@ -258,9 +269,9 @@ class Asserter:
             if self.series.isnull().values.any():
                 line.fail("found null values")
 
-        self.record("not_be_null", execute)
+        return self.record("not_be_null", execute)
 
-    def be_one_of(self, *_args) -> None:
+    def be_one_of(self, *_args):
         """
         checks if there's any value not in the given list.
 
@@ -271,7 +282,7 @@ class Asserter:
         def execute(line: Line):
             raise Exception("not implemented")
 
-        self.record("be_one_of", execute)
+        return self.record("be_one_of", execute)
 
 
 # pylint: disable=too-many-instance-attributes
@@ -386,10 +397,8 @@ class DataframeTest:
         for series in result.series:
             md += f"**{series.name}**  \n"
             for line in series.lines:
-                if line.success:
-                    md += f"✅ {line.type}  \n"
-                else:
-                    md += f"❌ {line.type}: {line.message}  \n"
+                md += line_to_markdown(line)
+                md += "  \n"
             md += "\n"
 
         return md
