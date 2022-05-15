@@ -28,7 +28,7 @@ def line_to_markdown(line: Line) -> str:
     return f"❌ {line.type}: {line.message}"
 
 
-class SeriesExpectation:
+class Expectation:
     def __init__(
         self,
         asserter: "Asserter",
@@ -144,15 +144,15 @@ class Asserter:
 
         self.series = series
         self.critical = critical
-        self.expectations: "list[SeriesExpectation]" = []
+        self.expectations: "list[Expectation]" = []
 
     def record(
         self,
         _type: str,
         execute: Callable[["Line"], None],
         meta: dict = None,
-    ) -> SeriesExpectation:
-        expectation = SeriesExpectation(self, _type, execute, meta)
+    ) -> Expectation:
+        expectation = Expectation(self, _type, execute, meta)
         self.expectations.append(expectation)
         return expectation
 
