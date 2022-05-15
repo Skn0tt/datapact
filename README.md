@@ -1,4 +1,4 @@
-# datapact
+# `datapact` - pytest, but for dataframes
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
@@ -6,7 +6,70 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-This repository houses my bachelor thesis project.
+`datapact` is a Python library for verifying your data.
+
+```py
+import datapact
+
+dp = datapact.test(df)
+
+dp.age.must.be_positive()
+dp.name.should.not_be_empty()
+```
+
+<!-- TODO: add jupyter notebooks image here -->
+
+It works with any DataFrame-like object, and has special support for Jupyter Notebooks.
+
+<!-- TODO: list out supported DataFrame kinds -->
+
+Here's some features:
+
+- dozens of existing assertions, easy to add your own
+- great in-editor documentation via docstrings + types
+- two severence levels (`.should` for warnings, `.must` for failures)
+- failure notifications via E-Mail, MS Teams or Slack (via Datapact Track)
+
+## `Datapact` Track
+
+Datapact Track is an optional, browser-based data tracking service.
+
+<!-- TODO: add image here -->
+
+It's fully self-hostable via Docker and Postgres, and there's a hosted version available at `track.datapact.dev`.
+
+Connecting your test suite is one line of code:
+
+```py
+dp.connect(
+  server="track.datapact.dev",
+  token="..." # get this from the UI
+)
+```
+
+Datapact track gives you:
+
+- notifications via E-Mail, Slack and MS Teams
+- a central documentation of your datasets
+- history of data expectations + reality
+- data quality tracking
+
+Try out Datapact Track at [track.datapact.dev](https://track.datapact.dev), or follow the [self-hosting guide](TODO:) to deploy your own instance.
+
+## `datapact` vs [Great Expectations](https://greatexpectations.io)
+
+Both datapact and Great Expectations help you improve Data Quality, but with a different approach.
+
+Great Expectations has its own JSON-based storage format for expectation suites, and it gives you a custom UI to edit them.
+It's way bigger than datapact - in project size, project scope, but also in complexity.
+
+`datapact` is a lot younger, community-run, and more of a _library_ than a _framework_.
+The main differentiator is that it allows you to express your test suites in Python code, right along your other code.
+This works in Python Scripts, Jupyter Notebooks, Pipeline Tests - everywhere that Python runs.
+And by having your tests _in code_, you can co-locate them with the rest of your code, and version control + review them just like all of it.
+
+If you already know how to use Great Expectations, you should use it.
+If you found its learning curve to steep, maybe look at `datapact` - it's designed to be easy to get started, and intuitive to use.
 
 ## Contributors ✨
 
