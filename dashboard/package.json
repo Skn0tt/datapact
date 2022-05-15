@@ -33,7 +33,7 @@
     "@emotion/react": "11.9.0",
     "@emotion/styled": "11.8.1",
     "@prisma/client": "3.9.0",
-    "blitz": "2.0.0-alpha.22",
+    "blitz": "2.0.0-alpha.24",
     "chakra-react-select": "3.3.1",
     "chart.js": "3.7.1",
     "date-fns": "2.28.0",
