@@ -135,12 +135,6 @@ class SeriesTest:
     def __exit__(self, _type, _value, _traceback):
         return self
 
-    def report(self, error: str):
-        """
-        demo docstring
-        """
-        self.parent.report(self.series.name, error)
-
 
 class Asserter:
     def __init__(self, series: pandas.Series, critical: bool):
@@ -307,7 +301,6 @@ class DataframeTest:
         self.title: Optional[str] = None
         self.description: Optional[str] = None
         self.url: Optional[str] = get_github_url()
-        self.reports: "list[str]" = []
         self.series_tests: "dict[str, SeriesTest]" = {}
         self.server: Optional[str] = None
         self.token: Optional[str] = None
@@ -390,9 +383,6 @@ class DataframeTest:
             self.upload(result)
 
         return result
-
-    def report(self, column: str, error: str):
-        self.reports.append(f"`{column}`: {error}")
 
     def __repr__(self):
         return self._repr_markdown_()
