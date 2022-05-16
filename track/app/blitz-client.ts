@@ -5,7 +5,7 @@ import { BlitzRpcPlugin } from "@blitzjs/rpc"
 export const { withBlitz } = setupBlitzClient({
   plugins: [
     AuthClientPlugin({
-      cookiePrefix: "dashboard-cookie-prefix",
+      cookiePrefix: "datapact-track-cookie-prefix",
     }),
     BlitzRpcPlugin({
       reactQueryOptions: {

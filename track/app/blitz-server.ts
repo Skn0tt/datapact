@@ -6,7 +6,7 @@ import { simpleRolesIsAuthorized } from "@blitzjs/auth"
 export const { gSSP, gSP, api } = setupBlitzServer({
   plugins: [
     AuthServerPlugin({
-      cookiePrefix: "dashboard-cookie-prefix",
+      cookiePrefix: "datapact-track-cookie-prefix",
       storage: PrismaStorage(db),
       isAuthorized: simpleRolesIsAuthorized,
     }),
