@@ -5,28 +5,15 @@ tests example
 import pytest
 import pandas
 import dask.dataframe
-import dask.delayed
-from datapact.example import add_one
 
-
-def compute(value):
-    if "compute" in dir(value):
-        return value.compute()
-    return value
-
-
-def test_add_one():
-    """
-    test
-    """
-    assert add_one(10) == 11
+from datapact.datapact import compute
 
 
 iris_pandas = pandas.read_csv("datapact/iris.csv")
 iris_dask = dask.dataframe.read_csv("datapact/iris.csv")
 
 
-@pytest.fixture(params=[iris_pandas, iris_dask])
+@pytest.fixture(params=[iris_pandas, iris_dask], ids=["pandas", "dask"])
 def iris_df(request) -> pandas.DataFrame:
     return request.param
 

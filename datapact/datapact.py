@@ -22,6 +22,12 @@ from datapact.schema import (
 )
 
 
+def compute(value):
+    if "compute" in dir(value):
+        return value.compute()
+    return value
+
+
 def line_to_markdown(line: Line) -> str:
     if line.success:
         return f"✅ {line.type}"
@@ -150,7 +156,7 @@ class Asserter:
         self,
         _type: str,
         execute: Callable[["Line"], None],
-        meta: dict = None,
+        meta: dict = {},
     ) -> Expectation:
         expectation = Expectation(self, _type, execute, meta)
         self.expectations.append(expectation)
@@ -199,8 +205,11 @@ class Asserter:
         """
 
         def execute(line: Line):
-            found_min = self.series.min()
-            found_max = self.series.max()
+            found_min = compute(self.series.min())
+            found_max = compute(self.series.max())
+
+            line.set("found_minimum", found_min)
+            line.set("found_maximum", found_max)
 
             extends_left = found_min < minimum
             extends_right = found_max > maximum
@@ -219,7 +228,9 @@ class Asserter:
                     f"expected values to be at most ${maximum}$, but found ${found_max}$"
                 )
 
-        return self.record("be_between", execute, {"minimum": minimum, "maximum": maximum})
+        return self.record(
+            "be_between", execute, {"minimum": minimum, "maximum": maximum}
+        )
 
     def be_positive(self):
         """
@@ -230,7 +241,7 @@ class Asserter:
         """
 
         def execute(line: Line):
-            found_min = self.series.min()
+            found_min = compute(self.series.min())
 
             line.set("min", found_min)
 
