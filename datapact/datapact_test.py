@@ -11,40 +11,35 @@ def test_iris(iris_df: pandas.DataFrame):
         description="A sepal is a part of the flower of angiosperms.",
         unit="cm",
     )
-    be_between_expectation = dp.SepalLength.must.be_between(3, 4)
+    be_between = dp.SepalLength.must.be_between(3, 4)
     dp.SepalLength.must.be_positive()
 
-    result = dp.evaluate()
+    result = dp.collect()
     assert len(result.series) == 1
 
     sepalLengthResult = result.series[0]
     assert sepalLengthResult.name == "SepalLength"
     assert sepalLengthResult.title == "flower Sepal Lenght"
     assert sepalLengthResult.unit == "cm"
-    assert len(sepalLengthResult.lines) == 2
+    assert len(sepalLengthResult.expectations) == 2
 
-    be_between_line = sepalLengthResult.lines[0]
-    assert be_between_line.success is False
-    assert (
-        be_between_line.message == "expected values to be at most $4$, but found $7.9$"
-    )
-    assert be_between_line.meta == {
-        "minimum": 3,
-        "maximum": 4,
-        "found_minimum": 4.3,
-        "found_maximum": 7.9,
+    assert sepalLengthResult.expectations[0] == be_between
+    assert be_between.success is False
+    assert be_between.message == "expected values to be at most $4$, but found $7.9$"
+    assert be_between.result == {
+        "minimum": 4.3,
+        "maximum": 7.9,
     }
-
-    assert be_between_expectation.execute() == be_between_line
+    assert be_between.args == {"minimum": 3, "maximum": 4}
     assert (
-        be_between_expectation._repr_markdown_()
+        be_between._repr_markdown_()
         == "❌ be_between: expected values to be at most $4$, but found $7.9$"
     )
 
-    be_positive_line = sepalLengthResult.lines[1]
-    assert be_positive_line.success is True
-    assert be_positive_line.meta == {
-        "min": 4.3,
+    be_positive = sepalLengthResult.expectations[1]
+    assert be_positive.success is True
+    assert be_positive.result == {
+        "minimum": 4.3,
     }
 
     expected_markdown = (

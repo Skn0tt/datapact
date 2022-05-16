@@ -1,51 +1,46 @@
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Optional
 from dataclasses_json import dataclass_json
 
 
 @dataclass_json
 @dataclass
-class Line:
-    """
-    demo docstring
-    """
-
-    type: str
+class Expectation:
+    name: str = None
     success: bool = True
     critical: bool = False
     message: Optional[str] = None
-    meta: dict = field(default_factory=dict)
+    args: dict = field(default_factory=dict)
+    result: dict = field(default_factory=dict)
 
-    def fail(self, message: str):
-        self.success = False
-        self.message = message
+    @staticmethod
+    def Fail(message: str, **kwargs):
+        return Expectation(success=False, message=message, result=kwargs)
 
-    def set(self, key: str, value: Any):
-        self.meta[key] = value
+    @staticmethod
+    def Pass(message: Optional[str] = None, **kwargs):
+        return Expectation(success=True, message=message, result=kwargs)
+
+    def _repr_markdown_(self):
+        if self.success:
+            return f"✅ {self.name}"
+        return f"❌ {self.name}: {self.message}"
 
 
 @dataclass_json
 @dataclass
-class SeriesTestEvaluationResult:
-    """
-    demo docstring
-    """
-
+class SeriesResult:
     name: str
     title: Optional[str] = None
     description: Optional[str] = None
     unit: Optional[str] = None
-    lines: "list[Line]" = field(default_factory=list)
+    expectations: "list[Expectation]" = field(default_factory=list)
 
 
 @dataclass_json
 @dataclass
-class DataframeTestEvaluationResult:
-    """
-    demo docstring
-    """
-
+class DataframeResult:
     title: Optional[str] = None
     description: Optional[str] = None
     url: Optional[str] = None
-    series: "list[SeriesTestEvaluationResult]" = field(default_factory=list)
+    series: "list[SeriesResult]" = field(default_factory=list)
