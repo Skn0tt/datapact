@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.3](https://github.com/Skn0tt/datapact/compare/v0.3.2...v0.3.3) (2022-05-17)
+
+
+### Bug Fixes
+
+* **deps:** update blitz to v2.0.0-alpha.24 ([#54](https://github.com/Skn0tt/datapact/issues/54)) ([e270cdd](https://github.com/Skn0tt/datapact/commit/e270cddeeeb8916dbdc5799c5810c2db592b5cd0))
+
 ### [0.3.2](https://github.com/Skn0tt/datapact/compare/v0.3.1...v0.3.2) (2022-05-12)
 
 
