@@ -21,7 +21,7 @@ jobs:
       - run: npm ci
         working-directory: track
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm run build:visualisation
+      - run: npm run build:visualiser
         working-directory: track
         if: ${{ steps.release.outputs.release_created }}
       - name: Set up Python
