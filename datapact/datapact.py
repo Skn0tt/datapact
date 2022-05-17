@@ -1,4 +1,5 @@
 from functools import wraps
+import importlib.resources
 import inspect
 import json
 import os
@@ -379,11 +380,9 @@ class DataframeTest:
     def _repr_html_(self):
         result = self.collect()
 
-        js = open(
-            Path(__file__ + "/../javascript/entrypoint.js").resolve(),
-            "r",
-            encoding="utf8",
-        ).read()
+        js = importlib.resources.read_text(
+            "datapact.javascript", "entrypoint.js", encoding="utf-8"
+        )
 
         html = f"""
 <script>{js}</script>
