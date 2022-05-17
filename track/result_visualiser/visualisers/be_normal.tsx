@@ -13,18 +13,19 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-export const BeNormal: ExpectationVisualiser<{
-  stat: number
-  p: number
-  alpha: number
-  bins: Record<string, string>
-}> = {
-  Body({ line: { meta } }) {
-    console.log(meta.bins, Object.keys(meta.bins))
+export const be_normal: ExpectationVisualiser<
+  { alpha: number },
+  {
+    stat: number
+    p: number
+    bins: Record<string, string>
+  }
+> = {
+  Body({ expectation: { meta, args } }) {
     return (
       <>
         <Text>
-          Alpha: <Code>{meta.alpha}</Code>
+          Alpha: <Code>{args.alpha}</Code>
         </Text>
         <Text>
           Stat: <Code>{meta.stat}</Code>

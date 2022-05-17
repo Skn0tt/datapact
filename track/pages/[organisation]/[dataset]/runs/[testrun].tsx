@@ -1,114 +1,10 @@
 import { useQuery } from "@blitzjs/rpc"
-import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons"
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Code,
-  Heading,
-  HStack,
-  Link,
-  Stack,
-  Text,
-} from "@chakra-ui/react"
-import type { TestRun } from "@prisma/client"
+import { Code, Text } from "@chakra-ui/react"
 import { Shell } from "app/layout/Shell"
 import { isFinalised } from "app/testruns"
 import getTestRun from "app/testruns/queries/getTestRun"
 import { useRouter } from "next/router"
-import NextLink from "next/link"
-import ExpectationVisualisers from "app/expectations"
-
-function TestRunViz(props: { testRun: TestRun }) {
-  try {
-    const payload = JSON.parse(props.testRun.payload)
-
-    return (
-      <Stack>
-        {payload.title && <Heading size="xl">{payload.title}</Heading>}
-
-        {payload.url && (
-          <Text>
-            Location:{" "}
-            <Link href={payload.url} isExternal color="blue.700">
-              {payload.url}
-            </Link>
-          </Text>
-        )}
-
-        {payload.description && (
-          <Text>
-            Description: <span>{payload.description}</span>
-          </Text>
-        )}
-
-        <Text>Finalized: {isFinalised(props.testRun) ? "Yes" : "No"}</Text>
-
-        {payload.series.map((series) => (
-          <Stack as="section" key={series.name} pt={4}>
-            <Heading size="md">
-              <NextLink href={`#${series.name}`} passHref>
-                <Link>{series.title ?? series.name}</Link>
-              </NextLink>
-            </Heading>
-
-            <Stack spacing={2}>
-              {series.description && <Text>Description: {series.description}</Text>}
-              {series.unit && (
-                <Text>
-                  Unit: <Code>{series.unit}</Code>
-                </Text>
-              )}
-
-              <Accordion allowMultiple allowToggle>
-                {series.lines.map((line, index) => {
-                  const visualiser = ExpectationVisualisers[line.type]
-                  const defaultTitle = line.message ? `${line.type}: ${line.message}` : line.type
-                  const defaultBody = (
-                    <img
-                      src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
-                      alt="gif of a barchart, acting as a placeholder"
-                      height="200px"
-                      width="200px"
-                    />
-                  )
-                  return (
-                    <AccordionItem key={index}>
-                      <h2>
-                        <AccordionButton justifyContent="space-between">
-                          <HStack textAlign="left">
-                            {line.success ? (
-                              <CheckCircleIcon color="green" />
-                            ) : (
-                              <WarningIcon color="red" />
-                            )}
-                            <Text>
-                              {visualiser?.Title ? visualiser.Title({ line }) : defaultTitle}
-                            </Text>
-                          </HStack>
-
-                          <AccordionIcon float="right" />
-                        </AccordionButton>
-                      </h2>
-
-                      <AccordionPanel>
-                        {visualiser?.Body ? visualiser.Body({ line }) : defaultBody}
-                      </AccordionPanel>
-                    </AccordionItem>
-                  )
-                })}
-              </Accordion>
-            </Stack>
-          </Stack>
-        ))}
-      </Stack>
-    )
-  } catch (error) {
-    return <Code>{props.testRun.payload}</Code>
-  }
-}
+import { TestRunResultVisualizer } from "result_visualiser"
 
 export default function TestRunPage() {
   const { query } = useRouter()
@@ -118,24 +14,33 @@ export default function TestRunPage() {
     dataset: query.dataset as string,
   })
 
-  return (
-    <Shell
-      breadcrumbs={[
-        {
-          label: testRun.dataset.organisation.name,
-          href: `/${testRun.dataset.organisation.slug}`,
-        },
-        {
-          label: testRun.dataset.slug,
-          href: `/${testRun.dataset.organisation.slug}/${testRun.dataset.slug}`,
-        },
-        {
-          label: `${testRun.date.toISOString()}`,
-          href: `/${testRun.dataset.organisation.slug}/${testRun.dataset.slug}/${testRun.id}`,
-        },
-      ]}
-    >
-      <TestRunViz testRun={testRun} />
-    </Shell>
-  )
+  try {
+    const payload = JSON.parse(testRun.payload)
+
+    return (
+      <Shell
+        breadcrumbs={[
+          {
+            label: testRun.dataset.organisation.name,
+            href: `/${testRun.dataset.organisation.slug}`,
+          },
+          {
+            label: testRun.dataset.slug,
+            href: `/${testRun.dataset.organisation.slug}/${testRun.dataset.slug}`,
+          },
+          {
+            label: `${testRun.date.toISOString()}`,
+            href: `/${testRun.dataset.organisation.slug}/${testRun.dataset.slug}/${testRun.id}`,
+          },
+        ]}
+      >
+        <TestRunResultVisualizer
+          payload={payload}
+          finalized={<Text>Finalized: {isFinalised(testRun) ? "Yes" : "No"}</Text>}
+        />
+      </Shell>
+    )
+  } catch (error) {
+    return <Code>{testRun.payload}</Code>
+  }
 }
