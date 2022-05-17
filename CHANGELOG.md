@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.4](https://github.com/Skn0tt/datapact/compare/v0.3.3...v0.3.4) (2022-05-17)
+
+
+### Bug Fixes
+
+* right "visualiser" script ([a9a6d19](https://github.com/Skn0tt/datapact/commit/a9a6d196f5630aff00ba19eecd4b296299a8345f))
+
 ### [0.3.3](https://github.com/Skn0tt/datapact/compare/v0.3.2...v0.3.3) (2022-05-17)
 
 
