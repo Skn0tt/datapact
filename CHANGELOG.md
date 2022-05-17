@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.5](https://github.com/Skn0tt/datapact/compare/v0.3.4...v0.3.5) (2022-05-17)
+
+
+### Bug Fixes
+
+* import from .schema ([c362a6a](https://github.com/Skn0tt/datapact/commit/c362a6a626cad91784f73d56e70d83595e5c8c4d))
+
 ### [0.3.4](https://github.com/Skn0tt/datapact/compare/v0.3.3...v0.3.4) (2022-05-17)
 
 
