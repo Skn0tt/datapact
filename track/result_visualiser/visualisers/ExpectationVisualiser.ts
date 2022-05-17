@@ -1,18 +1,9 @@
-import React from "react"
-
-interface Expectation<Args, Meta> {
-  name: string
-  success: boolean
-  critical: boolean
-  message: string
-  args: Args
-  meta: Meta
-}
-
+import type React from "react"
+import type { Expectation } from "result_visualiser"
 export interface ExpectationVisualiser<
-  Args extends Record<string, any>,
-  Meta extends Record<string, any> = {}
+  Args extends Record<string, any> = {},
+  Result extends Record<string, any> = {}
 > {
-  Title?: React.FC<{ expectation: Expectation<Args, Meta> }>
-  Body?: React.FC<{ expectation: Expectation<Args, Meta> }>
+  Title?: React.FC<{ expectation: Expectation<Args, Result> }>
+  Body?: React.FC<{ expectation: Expectation<Args, Result> }>
 }

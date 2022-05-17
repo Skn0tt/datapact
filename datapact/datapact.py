@@ -1,15 +1,12 @@
-"""
-demo docstring
-"""
-
 from functools import wraps
 import inspect
 import json
 import os
+from pathlib import Path
 import subprocess
 import pwd
 import platform
-from typing import Callable, Optional
+from typing import Optional
 import urllib.parse
 import re
 
@@ -378,6 +375,28 @@ class DataframeTest:
             md += "\n"
 
         return md
+
+    def _repr_html_(self):
+        result = self.collect()
+
+        js = open(
+            Path(__file__ + "/../javascript/entrypoint.js").resolve(),
+            "r",
+            encoding="utf8",
+        ).read()
+
+        html = f"""
+<script>{js}</script>
+<div id="root" />
+<script>
+    window.renderVisualisation(
+        document.getElementById('root'),
+        {json.dumps(result.to_dict())}
+    )
+</script>
+        """.strip()
+
+        return html
 
 
 def test(dataframe: pandas.DataFrame):

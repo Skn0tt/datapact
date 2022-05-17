@@ -21,25 +21,25 @@ export const be_normal: ExpectationVisualiser<
     bins: Record<string, string>
   }
 > = {
-  Body({ expectation: { meta, args } }) {
+  Body({ expectation: { result, args } }) {
     return (
       <>
         <Text>
           Alpha: <Code>{args.alpha}</Code>
         </Text>
         <Text>
-          Stat: <Code>{meta.stat}</Code>
+          Stat: <Code>{result.stat}</Code>
         </Text>
         <Text>
-          P: <Code>{meta.p}</Code>
+          P: <Code>{result.p}</Code>
         </Text>
         <Bar
           data={{
-            labels: Object.keys(meta.bins),
+            labels: Object.keys(result.bins),
             datasets: [
               {
                 label: "Distribution",
-                data: Object.values(meta.bins).map((i) => parseInt(i)),
+                data: Object.values(result.bins).map((i) => parseInt(i)),
                 order: 1,
               },
             ],

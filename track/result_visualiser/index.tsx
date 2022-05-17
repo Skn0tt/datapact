@@ -14,7 +14,34 @@ import {
 } from "@chakra-ui/react"
 import ExpectationVisualisers from "./visualisers"
 
-export function TestRunResultVisualizer(props: { payload: any; finalized?: React.ReactElement }) {
+interface DataframeResult {
+  title?: string
+  description?: string
+  url?: string
+  series: SeriesResult[]
+}
+
+interface SeriesResult {
+  name: string
+  title?: string
+  description?: string
+  unit?: string
+  expectations: Expectation<any, any>[]
+}
+
+export interface Expectation<Args, Result> {
+  name: string
+  success: boolean
+  critical: boolean
+  message: string
+  args: Args
+  result: Result
+}
+
+export function TestRunResultVisualizer(props: {
+  payload: DataframeResult
+  finalized?: React.ReactElement
+}) {
   const { payload } = props
   return (
     <Stack>
@@ -54,9 +81,12 @@ export function TestRunResultVisualizer(props: { payload: any; finalized?: React
             )}
 
             <Accordion allowMultiple allowToggle>
-              {series.lines.map((line, index) => {
-                const visualiser = ExpectationVisualisers[line.type]
-                const defaultTitle = line.message ? `${line.type}: ${line.message}` : line.type
+              {series.expectations.map((expectation: Expectation<any, any>, index) => {
+                const visualiser = ExpectationVisualisers[expectation.name]
+                const defaultTitle = expectation.message
+                  ? `${expectation.name}: ${expectation.message}`
+                  : expectation.name
+
                 const defaultBody = (
                   <img
                     src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
@@ -70,13 +100,13 @@ export function TestRunResultVisualizer(props: { payload: any; finalized?: React
                     <h2>
                       <AccordionButton justifyContent="space-between">
                         <HStack textAlign="left">
-                          {line.success ? (
+                          {expectation.success ? (
                             <CheckCircleIcon color="green" />
                           ) : (
                             <WarningIcon color="red" />
                           )}
                           <Text>
-                            {visualiser?.Title ? visualiser.Title({ line }) : defaultTitle}
+                            {visualiser?.Title ? visualiser.Title({ expectation }) : defaultTitle}
                           </Text>
                         </HStack>
 
@@ -85,7 +115,7 @@ export function TestRunResultVisualizer(props: { payload: any; finalized?: React
                     </h2>
 
                     <AccordionPanel>
-                      {visualiser?.Body ? visualiser.Body({ line }) : defaultBody}
+                      {visualiser?.Body ? visualiser.Body({ expectation }) : defaultBody}
                     </AccordionPanel>
                   </AccordionItem>
                 )
