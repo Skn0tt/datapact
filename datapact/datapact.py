@@ -15,7 +15,7 @@ import pandas
 import requests
 import scipy.stats
 
-from datapact.schema import (
+from .schema import (
     Expectation,
     DataframeResult,
     SeriesResult,
