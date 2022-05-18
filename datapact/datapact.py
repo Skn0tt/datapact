@@ -6,7 +6,7 @@ import os
 import subprocess
 import pwd
 import platform
-from typing import Optional
+from typing import Callable, Optional
 import urllib.parse
 import re
 from dataclasses import dataclass, field
@@ -215,7 +215,7 @@ class Asserter:
                 sensitivity of the test. low value = more sensitive.
 
         Examples:
-            >>> de.salary.should.be_normal(alpha=0.1)
+            >>> dp.salary.should.be_normal(alpha=0.1)
         """
 
         stat, p = scipy.stats.normaltest(self.series)
@@ -240,7 +240,7 @@ class Asserter:
                 if there's a value higher than this, it will fail.
 
         Examples:
-            >>> de.age.should.be_between(0, 150)
+            >>> dp.age.should.be_between(0, 150)
         """
 
         found_min = compute(self.series.min())
@@ -279,7 +279,7 @@ class Asserter:
         checks if all values are 0 or higher.
 
         Examples:
-            >>> de.age.should.be_positive()
+            >>> dp.age.should.be_positive()
         """
 
         found_min = compute(self.series.min())
@@ -299,7 +299,7 @@ class Asserter:
         checks if all values are 0 or smaller.
 
         Examples:
-            >>> de.debt.should.be_negative()
+            >>> dp.debt.should.be_negative()
         """
 
         found_max = self.series.max()
@@ -319,7 +319,7 @@ class Asserter:
         checks if there are any null values.
 
         Examples:
-            >>> de.user_id.must.not_be_null()
+            >>> dp.user_id.must.not_be_null()
         """
 
         if self.series.isnull().values.any():
@@ -333,10 +333,28 @@ class Asserter:
         checks if there's any value not in the given list.
 
         Examples:
-            >>> de.state.must.be_one_of("active", "sleeping", "inactive")
+            >>> dp.state.must.be_one_of("active", "sleeping", "inactive")
         """
 
         raise Exception("not implemented")
+
+    @expectation
+    def fulfill(self, predicate: Callable[[pandas.Series], Optional[str]]):
+        """
+        checks if series passes your custom validator
+
+        Examples:
+            >>> def custom_validator(series: pandas.Series):
+            ...     if series.max() > 100:
+            ...         return "too high"
+            >>> dp.user_id.must.fulfill(custom_validator)
+        """
+
+        message = predicate(self.series)
+        if message is not None:
+            return Expectation.Fail(message)
+
+        return Expectation.Pass()
 
 
 class DataframeTest:
