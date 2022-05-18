@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://github.com/Skn0tt/datapact/compare/v0.3.5...v0.4.0) (2022-05-18)
+
+
+### Features
+
+* add support for custom assertions ([00019e1](https://github.com/Skn0tt/datapact/commit/00019e1fee1684ae1a7549c6c5b684177f9681df))
+* implement __dir__, move schema file into main file, show full summary from all return values ([57dd087](https://github.com/Skn0tt/datapact/commit/57dd0872d17cf50bf611f5cfc5d857f9ab69b106))
+* infer name for custom assertion from function name ([282af4d](https://github.com/Skn0tt/datapact/commit/282af4d95741ef3b2edf182626d156638eb68942))
+
+
+### Bug Fixes
+
+* **deps:** update dependency chakra-react-select to v3.3.7 ([#45](https://github.com/Skn0tt/datapact/issues/45)) ([53df7e9](https://github.com/Skn0tt/datapact/commit/53df7e9e6fd8e49bdf2b4eac13f3f349d9f7e297))
+* **deps:** update dependency zod to v3.16.0 ([#60](https://github.com/Skn0tt/datapact/issues/60)) ([37a7350](https://github.com/Skn0tt/datapact/commit/37a73506ae4dffe380952a495911f404bf0db461))
+* **deps:** update prisma monorepo to v3.14.0 ([#61](https://github.com/Skn0tt/datapact/issues/61)) ([034513c](https://github.com/Skn0tt/datapact/commit/034513cecbfc00d190d6c1754994a7faac2243cf))
+* **deps:** update react monorepo to v18.1.0 ([#70](https://github.com/Skn0tt/datapact/issues/70)) ([7a506f0](https://github.com/Skn0tt/datapact/commit/7a506f079c127c9b3bda8208a55a4204f132e1c9))
+
 ### [0.3.5](https://github.com/Skn0tt/datapact/compare/v0.3.4...v0.3.5) (2022-05-17)
 
 
