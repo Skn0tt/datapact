@@ -3,23 +3,88 @@ import importlib.resources
 import inspect
 import json
 import os
-from pathlib import Path
 import subprocess
 import pwd
 import platform
 from typing import Optional
 import urllib.parse
 import re
+from dataclasses import dataclass, field
 
 import pandas
 import requests
 import scipy.stats
 
-from .schema import (
-    Expectation,
-    DataframeResult,
-    SeriesResult,
-)
+
+@dataclass
+class Expectation:
+    name: str = None
+    success: bool = True
+    critical: bool = False
+    message: Optional[str] = None
+    args: dict = field(default_factory=dict)
+    result: dict = field(default_factory=dict)
+    parent: "DataframeTest" = None
+
+    @staticmethod
+    def Fail(message: str, **kwargs):
+        return Expectation(success=False, message=message, result=kwargs)
+
+    @staticmethod
+    def Pass(message: Optional[str] = None, **kwargs):
+        return Expectation(success=True, message=message, result=kwargs)
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "success": self.success,
+            "critical": self.critical,
+            "message": self.message,
+            "args": self.args,
+            "result": self.result,
+        }
+
+    def _repr_markdown_(self):
+        if self.parent is not None:
+            return self.parent._repr_markdown_()
+
+    def _repr_html_(self):
+        if self.parent is not None:
+            return self.parent._repr_html_()
+
+
+@dataclass
+class SeriesResult:
+    name: str
+    title: Optional[str] = None
+    description: Optional[str] = None
+    unit: Optional[str] = None
+    expectations: "list[Expectation]" = field(default_factory=list)
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "title": self.title,
+            "description": self.description,
+            "unit": self.unit,
+            "expectations": [e.to_dict() for e in self.expectations],
+        }
+
+
+@dataclass
+class DataframeResult:
+    title: Optional[str] = None
+    description: Optional[str] = None
+    url: Optional[str] = None
+    series: "list[SeriesResult]" = field(default_factory=list)
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "description": self.description,
+            "url": self.url,
+            "series": [s.to_dict() for s in self.series],
+        }
 
 
 def compute(value):
@@ -113,6 +178,7 @@ def expectation(func):
         result: "Expectation" = func(self, *args, **kwargs)
         result.name = func.__name__
         result.critical = self.critical
+        result.parent = self.parent.parent
 
         args_names = list(inspect.signature(func).parameters.keys())[1:]
         result.args = {
@@ -316,6 +382,9 @@ class DataframeTest:
             self.url = url
         return self
 
+    def __dir__(self):
+        return self.dataframe.columns.to_list()
+
     def get_series_test(self, series: pandas.Series):
         if not series.name in self.series_tests:
             self.series_tests[series.name] = SeriesTest(self, series)
@@ -357,9 +426,6 @@ class DataframeTest:
 
         return result
 
-    def __repr__(self):
-        return self._repr_markdown_()
-
     def _repr_markdown_(self):
         """
         see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
@@ -371,13 +437,18 @@ class DataframeTest:
         for series in result.series:
             md += f"**{series.name}**  \n"
             for expectation in series.expectations:
-                md += expectation._repr_markdown_()
-                md += "  \n"
+                if expectation.success:
+                    md += f"✅ {expectation.name}  \n"
+                else:
+                    md += f"❌ {expectation.name}: {expectation.message}  \n"
             md += "\n"
 
         return md
 
     def _repr_html_(self):
+        """
+        see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
+        """
         result = self.collect()
 
         js = importlib.resources.read_text(
@@ -399,7 +470,4 @@ class DataframeTest:
 
 
 def test(dataframe: pandas.DataFrame):
-    """
-    demo docstring
-    """
     return DataframeTest(dataframe)
