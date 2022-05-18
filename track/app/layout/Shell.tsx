@@ -14,15 +14,59 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Text,
 } from "@chakra-ui/react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import NextLink from "next/link"
-import Image from "next/image"
-import foxImg from "public/fox.png"
 import { invoke } from "@blitzjs/rpc"
 import logout from "app/auth/mutations/logout"
 import Router from "next/router"
 import { Suspense } from "react"
+
+const TextLogo = () => {
+  return (
+    <Text fontSize={"lg"}>
+      datapact{" "}
+      <Text fontSize={"xl"} as="span">
+        <b>Track</b>
+      </Text>
+    </Text>
+  )
+}
+
+function LargeWithLogoCentered() {
+  return (
+    <Box
+      bg={useColorModeValue("gray.50", "gray.900")}
+      color={useColorModeValue("gray.700", "gray.200")}
+    >
+      <Box py={10}>
+        <Flex
+          align={"center"}
+          _before={{
+            content: '""',
+            borderBottom: "1px solid",
+            borderColor: useColorModeValue("gray.200", "gray.700"),
+            flexGrow: 1,
+            mr: 8,
+          }}
+          _after={{
+            content: '""',
+            borderBottom: "1px solid",
+            borderColor: useColorModeValue("gray.200", "gray.700"),
+            flexGrow: 1,
+            ml: 8,
+          }}
+        >
+          <TextLogo />
+        </Flex>
+        <Text pt={6} fontSize={"sm"} textAlign={"center"}>
+          © 2022 Simon Knott &amp; Datapact Contributors. All rights reserved
+        </Text>
+      </Box>
+    </Box>
+  )
+}
 
 function AuthArea() {
   const currentUser = useCurrentUser()
@@ -73,7 +117,9 @@ export function Shell(
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <HStack spacing={8}>
             <NextLink href="/">
-              <Image src={foxImg} width={24} height={32} alt="Datapact Logo" />
+              <Link>
+                <TextLogo />
+              </Link>
             </NextLink>
           </HStack>
           <Breadcrumb>
@@ -102,6 +148,8 @@ export function Shell(
       <Box p={4} maxWidth="800px" margin="0 auto">
         <Suspense fallback={null}>{props.children}</Suspense>
       </Box>
+
+      <LargeWithLogoCentered />
     </>
   )
 }
