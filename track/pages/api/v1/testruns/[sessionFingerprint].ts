@@ -38,7 +38,7 @@ const handler: BlitzAPIHandler = async (req, res, ctx) => {
       data: {
         sessionFingerprint,
         date: new Date(),
-        payload: JSON.stringify(req.body),
+        payload: req.body,
         datasetId: dataset.id,
       },
     })
@@ -50,7 +50,7 @@ const handler: BlitzAPIHandler = async (req, res, ctx) => {
         id: testRun.id,
       },
       data: {
-        payload: JSON.stringify(req.body),
+        payload: req.body,
       },
     })
     res.status(202).json({ id: testRun.id })

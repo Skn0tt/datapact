@@ -17,7 +17,7 @@ model TestRun {
   dataset            Dataset  @relation(fields: [datasetId], references: [id])
   datasetId          Int
   date               DateTime
-  payload            String
+  payload            Json
 }
 
 model Dataset {

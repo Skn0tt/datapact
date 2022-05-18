@@ -91,7 +91,30 @@ const seed = async () => {
       sessionFingerprint: "jupyter-session-123",
       datasetId: iris.id,
       date: new Date("2022-05-04T13:02:46.086Z"),
-      payload: "lorem ipsum dolor sit amet this is a placeholder",
+      payload: {
+        title: "Iris Dataset",
+        description: "Something about flowers",
+        url: "https://github.com/skn0tt/datapact",
+        series: [
+          {
+            name: "sepal_width",
+            expectations: [
+              {
+                name: "be_normal",
+                success: true,
+                args: {
+                  alpha: 0.05,
+                },
+                result: {
+                  stat: 5.3,
+                  p: 0.0005,
+                  bins: [],
+                },
+              },
+            ],
+          },
+        ],
+      },
     },
   })
 
