@@ -86,7 +86,7 @@ const Dashboard = () => {
                   slug: form.get("slug") as string,
                 })
                 createOrgModal.onClose()
-                Router.push(`/${org.slug}`)
+                await Router.push(`/${org.slug}`)
               }}
             >
               <FormControl isInvalid={true}>

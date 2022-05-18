@@ -200,7 +200,7 @@ export default function OrganisationPage() {
                   organisation: org.slug,
                 })
                 addDatasetModal.onClose()
-                router.push(`/${org.slug}/${dataset.slug}`)
+                await router.push(`/${org.slug}/${dataset.slug}`)
               }}
             >
               <FormControl isInvalid={true}>
