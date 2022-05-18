@@ -176,7 +176,8 @@ def expectation(func):
     @wraps(func)
     def wrap(self, *args, **kwargs):
         result: "Expectation" = func(self, *args, **kwargs)
-        result.name = func.__name__
+        if not result.name:
+            result.name = func.__name__
         result.critical = self.critical
         result.parent = self.parent.parent
 
@@ -339,22 +340,23 @@ class Asserter:
         raise Exception("not implemented")
 
     @expectation
-    def fulfill(self, predicate: Callable[[pandas.Series], Optional[str]]):
+    def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
         """
         checks if series passes your custom validator
 
         Examples:
-            >>> def custom_validator(series: pandas.Series):
+            >>> def custom_assertion(series: pandas.Series):
             ...     if series.max() > 100:
             ...         return "too high"
-            >>> dp.user_id.must.fulfill(custom_validator)
+            >>> dp.user_id.must.fulfill(custom_assertion)
         """
 
-        message = predicate(self.series)
+        result = Expectation.Pass()
+        message = custom_assertion(self.series)
         if message is not None:
-            return Expectation.Fail(message)
-
-        return Expectation.Pass()
+            result = Expectation.Fail(message)
+        result.name = custom_assertion.__name__
+        return result
 
 
 class DataframeTest:

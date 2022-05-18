@@ -1,5 +1,6 @@
 import pandas
 import datapact
+from datapact.datapact import compute
 
 from datapact.fixture_test import iris_df
 
@@ -31,10 +32,7 @@ def test_iris(iris_df: pandas.DataFrame):
         "maximum": 7.9,
     }
     assert be_between.args == {"minimum": 3, "maximum": 4}
-    assert (
-        be_between._repr_markdown_()
-        == "❌ be_between: expected values to be at most $4$, but found $7.9$"
-    )
+    assert be_between._repr_markdown_() == dp._repr_markdown_()
 
     be_positive = sepalLengthResult.expectations[1]
     assert be_positive.success is True
@@ -42,9 +40,17 @@ def test_iris(iris_df: pandas.DataFrame):
         "minimum": 4.3,
     }
 
+    def be_bigger_than_3(series: pandas.Series):
+        if compute(series.min()) < 3:
+            return "must be bigger than 3"
+
+    custom_result = dp.SepalLength.must.fulfill(be_bigger_than_3)
+    assert custom_result.name == "be_bigger_than_3"
+
     expected_markdown = (
         "**SepalLength**  \n"
         + "❌ be_between: expected values to be at most $4$, but found $7.9$  \n"
-        + "✅ be_positive  \n\n"
+        + "✅ be_positive  \n"
+        + "✅ be_bigger_than_3  \n\n"
     )
     assert dp._repr_markdown_() == expected_markdown
