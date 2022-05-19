@@ -1,13 +1,12 @@
 
 import os
 import platform
-import pwd
 
 import urllib.parse
 
 
 def get_login():
-    return pwd.getpwuid(os.getuid())[0]
+    return os.path.expanduser("~")
 
 
 def get_session_fingerprint() -> str:
