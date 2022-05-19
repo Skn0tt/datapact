@@ -92,6 +92,7 @@ def compute(value):
         return value.compute()
     return value
 
+
 class SeriesTest:
     """
     wraps a column

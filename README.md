@@ -5,6 +5,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 [![codecov](https://codecov.io/gh/Skn0tt/datapact/branch/main/graph/badge.svg?token=I9GG5WH8SU)](https://codecov.io/gh/Skn0tt/datapact)
 
 `datapact` is a Python library for verifying your data.

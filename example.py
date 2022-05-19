@@ -14,7 +14,9 @@ assumptions behind design:
 import pandas as pd
 import datapact
 
-income_df = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv")
+income_df = pd.read_csv(
+    "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
+)
 
 with datapact.test(income_df).describe(
     title="Income", description="Income description"
@@ -29,9 +31,7 @@ with datapact.test(income_df).describe(
 
 income_dp = datapact.test(income_df)
 # income_dp.connect(server="datapact.services.netcheck.de", token="abcde")
-income_dp.describe(
-    title="Iris Dataset"
-)
+income_dp.describe(title="Iris Dataset")
 
 income_dp.sepal_width.describe(unit="$")
 income_dp.sepal_width.should.be_between(3, 4)

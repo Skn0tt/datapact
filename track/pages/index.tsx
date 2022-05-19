@@ -36,12 +36,7 @@ import Router from "next/router"
 function CallToActionWithIllustration() {
   return (
     <Container maxW={"5xl"}>
-      <Stack
-        textAlign={"center"}
-        align={"center"}
-        spacing={{ base: 8, md: 10 }}
-        py={12}
-      >
+      <Stack textAlign={"center"} align={"center"} spacing={{ base: 8, md: 10 }} py={12}>
         <Heading
           fontWeight={600}
           fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
