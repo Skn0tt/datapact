@@ -1,5 +1,6 @@
 bundle:
 	rm -rf dist
+	cd track && npm run build:visualiser
 	python3 -m build
 
 test-bundled: bundle
