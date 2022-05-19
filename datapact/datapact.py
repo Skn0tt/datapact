@@ -85,6 +85,9 @@ class DataframeResult:
 
 
 def compute(value):
+    """
+    Checks if a value is a Dask Delayed, and computes it.
+    """
     if "compute" in dir(value):
         return value.compute()
     return value
