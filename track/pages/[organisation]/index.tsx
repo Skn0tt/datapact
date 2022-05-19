@@ -159,10 +159,10 @@ export default function OrganisationPage() {
         Datasets
       </Heading>
 
-      <SimpleGrid columns={3} spacing={8}>
+      <SimpleGrid spacing={8} minChildWidth="150px">
         {org.datasets.map((dataset) => (
           <NextLink key={dataset.id} href={`/${organisation}/${dataset.slug}`}>
-            <LinkBox rounded="sm" bg="gray.100" p={4}>
+            <LinkBox rounded="sm" bg="gray.100" p={4} maxWidth="300px">
               <Heading size="md" mb={2}>
                 {dataset.slug}
                 <CheckCircleIcon color="green" boxSize={6} float="right" />

@@ -34,7 +34,7 @@ const TextLogo = () => {
   )
 }
 
-function LargeWithLogoCentered() {
+function Footer() {
   return (
     <Box
       bg={useColorModeValue("gray.50", "gray.900")}
@@ -112,8 +112,8 @@ export function Shell(
   }>
 ) {
   return (
-    <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={8}>
+    <Flex flexDirection="column" minHeight="100vh" justifyContent="start">
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={8} flex="0 0 auto">
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <HStack spacing={8}>
             <NextLink href="/">
@@ -145,11 +145,20 @@ export function Shell(
         </Flex>
       </Box>
 
-      <Box p={4} maxWidth="800px" margin="0 auto">
+      <Box
+        px={8}
+        py={4}
+        width="container.lg"
+        maxWidth="100vw"
+        margin="0 auto"
+        flex="1 0 auto"
+      >
         <Suspense fallback={null}>{props.children}</Suspense>
       </Box>
 
-      <LargeWithLogoCentered />
-    </>
+      <Box flex="0 0 auto">
+        <Footer />
+      </Box>
+    </Flex>
   )
 }
