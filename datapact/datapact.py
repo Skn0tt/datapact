@@ -2,18 +2,15 @@ from functools import wraps
 import importlib.resources
 import inspect
 import json
-import os
-import subprocess
-import pwd
-import platform
 from typing import Callable, Optional
-import urllib.parse
-import re
 from dataclasses import dataclass, field
 
 import pandas
 import requests
 import scipy.stats
+
+from datapact.util.github import get_github_url
+from datapact.util.session_fingerprint import get_session_fingerprint
 
 
 @dataclass
@@ -91,48 +88,6 @@ def compute(value):
     if "compute" in dir(value):
         return value.compute()
     return value
-
-
-def get_login():
-    return pwd.getpwuid(os.getuid())[0]
-
-
-def get_session_fingerprint() -> str:
-    return urllib.parse.quote(f"{get_login()}@{platform.node()}", safe="")
-
-
-def get_github_url() -> Optional[str]:
-    originUrlP = subprocess.run(
-        ["git", "remote", "get-url", "origin"], check=False, capture_output=True
-    )
-    if originUrlP.returncode != 0:
-        return None
-
-    originUrl = originUrlP.stdout.decode("utf-8").strip()
-    match = re.search(r"git@github\.com:(.*)\/(.*)\.git", originUrl)
-    if match is None:
-        return None
-    org = match.group(1)
-    repo = match.group(2)
-
-    refP = subprocess.run(
-        ["git", "show", "-s", "--format=%H"], check=True, capture_output=True
-    )
-    ref = refP.stdout.decode("utf-8").strip()
-
-    url = f"https://github.com/{org}/{repo}/tree/{ref}"
-
-    isClean = (
-        subprocess.run(
-            ["git", "diff", "--exit-code"], check=False, capture_output=True
-        ).returncode
-        == 0
-    )
-    if not isClean:
-        url += "#dirty"
-
-    return url
-
 
 class SeriesTest:
     """

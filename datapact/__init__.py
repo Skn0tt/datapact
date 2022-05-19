@@ -1,1 +1,2 @@
-from .datapact import *
+from .datapact import test
+
