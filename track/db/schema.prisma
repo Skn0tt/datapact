@@ -12,12 +12,13 @@ generator client {
 }
 
 model TestRun {
-  id                 String   @id @default(cuid())
+  id                 String    @id @default(cuid())
   sessionFingerprint String
-  dataset            Dataset  @relation(fields: [datasetId], references: [id])
+  dataset            Dataset   @relation(fields: [datasetId], references: [id])
   datasetId          Int
   date               DateTime
   payload            Json
+  emailSent          DateTime?
 }
 
 model Dataset {

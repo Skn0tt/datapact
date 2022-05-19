@@ -14,14 +14,14 @@ import {
 } from "@chakra-ui/react"
 import ExpectationVisualisers from "./visualisers"
 
-interface DataframeResult {
+export interface DataframeResult {
   title?: string
   description?: string
   url?: string
   series: SeriesResult[]
 }
 
-interface SeriesResult {
+export interface SeriesResult {
   name: string
   title?: string
   description?: string

@@ -8,7 +8,6 @@ function getDevelopmentTransport() {
     jsonTransport: true,
   })
   jsonTransport.send = (mail, callback) => {
-    console.log(mail)
     previewEmail(mail.data)
     callback(null, null as any)
   }

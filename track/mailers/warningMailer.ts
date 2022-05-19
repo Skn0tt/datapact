@@ -3,21 +3,21 @@ import { EMAIL_DOMAIN, websiteUrl } from "./util"
 
 export function warningMailer({
   to,
-  orgId,
-  datasetId,
+  orgSlug,
+  datasetSlug,
   runId,
 }: {
   to: string
-  orgId: string
-  datasetId: string
+  orgSlug: string
+  datasetSlug: string
   runId: string
 }) {
-  const runUrl = websiteUrl(`/${orgId}/${datasetId}/${runId}`)
+  const runUrl = websiteUrl(`/${orgSlug}/${datasetSlug}/runs/${runId}`)
 
   const msg = {
     from: `noreply@${EMAIL_DOMAIN}`,
     to,
-    subject: `Warning: expectations about dataset ${datasetId} failed`,
+    subject: `Warning: expectations about dataset ${datasetSlug} failed`,
     html: `
       <h1>Expectations Failed</h1>
 
