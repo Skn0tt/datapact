@@ -3,24 +3,24 @@ import JSONTransport from "nodemailer/lib/json-transport"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
 import previewEmail from "preview-email"
 
-export function getMailTransport() {
-  if (process.env.SMTP_URL) {
-    return nodemailer.createTransport(
-      new SMTPTransport({
-        url: process.env.SMTP_URL,
-      })
-    )
-  } else {
-    const jsonTransport = new JSONTransport({
-      jsonTransport: true,
-    })
-    const oldSend = jsonTransport.send
-    jsonTransport.send = (mail, callback) => {
-      oldSend(mail, (...args) => {
-        previewEmail(mail as any)
-        callback(...args)
-      })
-    }
-    return nodemailer.createTransport(jsonTransport)
+function getDevelopmentTransport() {
+  const jsonTransport = new JSONTransport({
+    jsonTransport: true,
+  })
+  jsonTransport.send = (mail, callback) => {
+    console.log(mail)
+    previewEmail(mail.data)
+    callback(null, null as any)
   }
+  return jsonTransport
+}
+
+export function getMailTransport() {
+  return nodemailer.createTransport(
+    process.env.SMTP_URL
+      ? new SMTPTransport({
+          url: process.env.SMTP_URL,
+        })
+      : getDevelopmentTransport()
+  )
 }
