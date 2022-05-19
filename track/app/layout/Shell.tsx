@@ -62,7 +62,15 @@ function Footer() {
           <TextLogo />
         </Flex>
         <Text pt={6} fontSize={"sm"} textAlign={"center"}>
-          © 2022 Simon Knott &amp; Datapact Contributors. All rights reserved
+          © 2022{" "}
+          <Link href="https://simonknott.de" isExternal>
+            Simon Knott
+          </Link>{" "}
+          &amp;{" "}
+          <Link href="https://github.com/skn0tt/datapact#contributors-" isExternal>
+            Datapact Contributors
+          </Link>
+          . All rights reserved.
         </Text>
       </Box>
     </Box>
@@ -107,6 +115,48 @@ function AuthArea() {
   )
 }
 
+function Header(
+  props: React.PropsWithChildren<{
+    breadcrumbs?: { label: string; href: string }[]
+  }>
+) {
+  return (
+    <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+      <HStack spacing={8}>
+        <NextLink href="/">
+          <Link>
+            <TextLogo />
+          </Link>
+        </NextLink>
+
+        <Link href="https://datapact.dev" isExternal color="gray.600">
+          Docs <ExternalLinkIcon fontSize="sm" mb={1} />
+        </Link>
+      </HStack>
+      <Breadcrumb>
+        {props.breadcrumbs?.map((breadcrumb, index) => {
+          const isLastItem = index + 1 === props.breadcrumbs?.length
+          return (
+            <BreadcrumbItem key={index}>
+              <NextLink href={breadcrumb.href}>
+                <BreadcrumbLink
+                  isCurrentPage={isLastItem}
+                  textDecor={isLastItem ? "underline" : "none"}
+                >
+                  {breadcrumb.label}
+                </BreadcrumbLink>
+              </NextLink>
+            </BreadcrumbItem>
+          )
+        })}
+      </Breadcrumb>
+      <Suspense fallback={<Box />}>
+        <AuthArea />
+      </Suspense>
+    </Flex>
+  )
+}
+
 export function Shell(
   props: React.PropsWithChildren<{
     breadcrumbs?: { label: string; href: string }[]
@@ -115,39 +165,7 @@ export function Shell(
   return (
     <Flex flexDirection="column" minHeight="100vh" justifyContent="start">
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={8} flex="0 0 auto">
-        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <HStack spacing={8}>
-            <NextLink href="/">
-              <Link>
-                <TextLogo />
-              </Link>
-            </NextLink>
-
-            <Link href="https://datapact.dev" isExternal color="gray.600">
-              Docs <ExternalLinkIcon fontSize="sm" mb={1} />
-            </Link>
-          </HStack>
-          <Breadcrumb>
-            {props.breadcrumbs?.map((breadcrumb, index) => {
-              const isLastItem = index + 1 === props.breadcrumbs?.length
-              return (
-                <BreadcrumbItem key={index}>
-                  <NextLink href={breadcrumb.href}>
-                    <BreadcrumbLink
-                      isCurrentPage={isLastItem}
-                      textDecor={isLastItem ? "underline" : "none"}
-                    >
-                      {breadcrumb.label}
-                    </BreadcrumbLink>
-                  </NextLink>
-                </BreadcrumbItem>
-              )
-            })}
-          </Breadcrumb>
-          <Suspense fallback={<Box />}>
-            <AuthArea />
-          </Suspense>
-        </Flex>
+        <Header breadcrumbs={props.breadcrumbs} />
       </Box>
 
       <Box px={8} py={4} width="container.lg" maxWidth="100vw" margin="0 auto" flex="1 0 auto">
