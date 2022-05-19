@@ -22,6 +22,7 @@ import { invoke } from "@blitzjs/rpc"
 import logout from "app/auth/mutations/logout"
 import Router from "next/router"
 import { Suspense } from "react"
+import { ExternalLinkIcon } from "@chakra-ui/icons"
 
 const TextLogo = () => {
   return (
@@ -121,6 +122,10 @@ export function Shell(
                 <TextLogo />
               </Link>
             </NextLink>
+
+            <Link href="https://datapact.dev" isExternal color="gray.600">
+              Docs <ExternalLinkIcon fontSize="sm" mb={1} />
+            </Link>
           </HStack>
           <Breadcrumb>
             {props.breadcrumbs?.map((breadcrumb, index) => {
@@ -145,14 +150,7 @@ export function Shell(
         </Flex>
       </Box>
 
-      <Box
-        px={8}
-        py={4}
-        width="container.lg"
-        maxWidth="100vw"
-        margin="0 auto"
-        flex="1 0 auto"
-      >
+      <Box px={8} py={4} width="container.lg" maxWidth="100vw" margin="0 auto" flex="1 0 auto">
         <Suspense fallback={null}>{props.children}</Suspense>
       </Box>
 
