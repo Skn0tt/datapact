@@ -1,1 +1,2 @@
 include datapact/javascript/*.js
+exclude datapact/**/*_test.py
