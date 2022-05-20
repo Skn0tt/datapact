@@ -30,6 +30,27 @@ aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
 aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
+It is crucial to have a good understanding of the datasets you're working with. For static datasets, you can explore it once, and document your findings for other team members to consume.
+If you're working with continuously evolving datasets like occupancy stats for intensive care units, live-udpated sensor data, or usage data emitted by your company's software product, this does not work. Data changes continuously, sometimes because there's changes in the data, sometimes because there's problems in the delivery pipeline. To ensure your understanding of the dataset is up-to-date, you need to continuously verify it.
+datapact is a Python library that allows you to do just that. It works with Pandas + Dask DataFrames, and allows you to write assertions on your data fluently:
+
+```python
+import datapact
+
+df = pandas.read_csv(...)
+dp = datapact.test(df)
+
+dp.Name.must.be_string()
+
+dp.Age.must.be_integer()
+dp.Age.must.be_positive()
+dp.Age.should.be_normal()
+```
+
+Datapact has dozens of built-in assertions, an easy way to build custom ones, allows you to run different assertions for each segment of your data, two different severity levels (“should” and “must”), special support for Jupyter Notebooks, html-based test reports, an optional web app to track those, and much more.
+It’s designed to be easy to get started even for not-so-technical folks, increases data quality, and will help you notice when data changes or breaks a lot quicker. And with the automatic HTML reports, your team gets data documentation for free! Almost as easy as if your data was static all along.
+
+
 # Summary
 
 The forces on stars, galaxies, and dark matter under external gravitational
