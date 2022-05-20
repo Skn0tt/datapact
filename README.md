@@ -32,7 +32,7 @@ Here's some features:
 - two severence levels (`.should` for warnings, `.must` for failures)
 - failure notifications via E-Mail, MS Teams, Slack or PagerDuty (via Datapact Track)
 
-Get Started here: https://docs.datafox.dev
+Get Started here: https://datapact.dev
 
 ## `Datapact` Track
 
