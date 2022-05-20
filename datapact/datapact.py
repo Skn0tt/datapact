@@ -314,6 +314,46 @@ class Asserter:
         return Expectation.Pass(used_pct=used_pct)
 
     @expectation
+    def be_date(self):
+        """
+        checks if all values are ISO8601-compliant dates.
+        datetimes will be rejected.
+
+        Examples:
+            >>> dp.day.must.be_date()
+        """
+
+        # TODO: implement
+
+        return Expectation.Pass()
+
+    @expectation
+    def be_datetime(self):
+        """
+        checks if all values are ISO8601-compliant datetimes.
+
+        Examples:
+            >>> dp.timestamp.must.be_datetime()
+        """
+
+        # TODO: implement
+
+        return Expectation.Pass()
+
+    @expectation
+    def be_unix_epoch(self):
+        """
+        checks if all values are unix epoch-compliant timestamps.
+
+        Examples:
+            >>> dp.timestamp.must.be_unix_epoch()
+        """
+
+        # TODO: implement
+
+        return Expectation.Pass()
+
+    @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
         """
         checks if series passes your custom validator
