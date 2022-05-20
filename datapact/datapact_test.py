@@ -54,3 +54,13 @@ def test_iris(iris_df: pandas.DataFrame):
         + "✅ be_bigger_than_3  \n\n"
     )
     assert dp._repr_markdown_() == expected_markdown
+
+
+def test_be_between(iris_df: pandas.DataFrame):
+    dp = datapact.test(iris_df)
+    assert dp.Name.should.be_one_of("Iris-setosa").message == "found additional values: ['Iris-versicolor', 'Iris-virginica']"
+    assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor").success is True
+    assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional").result["used_pct"] == .75
+    # TODO: implement
+    # assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional").args == {}
+    

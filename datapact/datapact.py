@@ -296,7 +296,22 @@ class Asserter:
             >>> dp.state.must.be_one_of("active", "sleeping", "inactive")
         """
 
-        raise Exception("not implemented")
+        existing = set(compute(self.series.unique()))
+        expected = set(args)
+
+        additional = existing - expected
+
+        used_pct = len(existing) / len(expected)
+
+        if len(additional) > 0:
+            additional_values = list(additional)
+            additional_values.sort()
+            return Expectation.Fail(
+                f"found additional values: {additional_values}",
+                used_pct=used_pct,
+            )
+
+        return Expectation.Pass(used_pct=used_pct)
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
