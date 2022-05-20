@@ -319,11 +319,11 @@ class Asserter:
         checks if all values are ISO8601-compliant dates.
         datetimes will be rejected.
 
+        TODO: implement
+
         Examples:
             >>> dp.day.must.be_date()
         """
-
-        # TODO: implement
 
         return Expectation.Pass()
 
@@ -332,11 +332,11 @@ class Asserter:
         """
         checks if all values are ISO8601-compliant datetimes.
 
+        TODO: implement
+
         Examples:
             >>> dp.timestamp.must.be_datetime()
         """
-
-        # TODO: implement
 
         return Expectation.Pass()
 
@@ -345,11 +345,11 @@ class Asserter:
         """
         checks if all values are unix epoch-compliant timestamps.
 
+        TODO: implement
+
         Examples:
             >>> dp.timestamp.must.be_unix_epoch()
         """
-
-        # TODO: implement
 
         return Expectation.Pass()
 
@@ -441,9 +441,8 @@ class DataframeTest:
 
     def collect(self) -> DataframeResult:
         """
-        Runs all tests on the dataframe.
+        Collects all tests and returns a DataframeResult object.
         If connected, uploads results.
-        Returns a JSON representation of the results. (TODO: make this a real JSON)
         """
 
         result = DataframeResult(self.title, self.description, self.url)
