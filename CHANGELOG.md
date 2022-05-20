@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0](https://github.com/Skn0tt/datapact/compare/v0.4.0...v0.5.0) (2022-05-20)
+
+
+### Features
+
+* add bundle step to Makefile ([df8872c](https://github.com/Skn0tt/datapact/commit/df8872caf09af198b313dc5e55e7688138fbc127))
+* add docs link ([1e6b8f8](https://github.com/Skn0tt/datapact/commit/1e6b8f8da36515963d822fd704ab55f0ddc61acf))
+* add footer ([d10abc9](https://github.com/Skn0tt/datapact/commit/d10abc999e679cd59842cf702c2be5eb4147bffe))
+* add links to footer ([39677de](https://github.com/Skn0tt/datapact/commit/39677deee718f1d5bb7ee9727e2b57f4359320e7))
+* add login redirect ([efeb492](https://github.com/Skn0tt/datapact/commit/efeb49245a9dfc970991437c9fb7d48aaaa343df))
+* add nice illustration ([877c12f](https://github.com/Skn0tt/datapact/commit/877c12f5c598e861b2f9529b6caf5c5f00d1c9a3))
+* implement warning email (Closes [#53](https://github.com/Skn0tt/datapact/issues/53)) ([d6f6665](https://github.com/Skn0tt/datapact/commit/d6f6665eb8d1cc417dc94e98f25b77ff75320a0e))
+* styling ([c7af5ee](https://github.com/Skn0tt/datapact/commit/c7af5ee318f926b7fb287bc29a46f6d420b0dc8e))
+
+
+### Bug Fixes
+
+* dont use pwd ([be20d28](https://github.com/Skn0tt/datapact/commit/be20d28731a644339b6f7188641e631589d376ce))
+* exclude test files from bundle ([f0989de](https://github.com/Skn0tt/datapact/commit/f0989de84d0f98556600e58b2435b4494d1df4f3))
+* listen on $PORT ([2a86a81](https://github.com/Skn0tt/datapact/commit/2a86a8100736b8633d277be94c935574e33ef179))
+* remove dollar signs ([c34bb62](https://github.com/Skn0tt/datapact/commit/c34bb62334a37936cf8ca080861fdace9a7a10c7))
+* types ([0e8fad3](https://github.com/Skn0tt/datapact/commit/0e8fad30e872c3e8aecbb4671448518144e58716))
+
 ## [0.4.0](https://github.com/Skn0tt/datapact/compare/v0.3.5...v0.4.0) (2022-05-18)
 
 
