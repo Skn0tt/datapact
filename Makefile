@@ -10,5 +10,5 @@ test-bundled: bundle
 	python3 -m venv env; \
 	source env/bin/activate; \
 	pip install "$$(ls ${PWD}/dist/*.tar.gz)"; \
-	cp "${PWD}/e2e-test.py" .; \
-	python e2e-test.py
+	cp "${PWD}/bundle-test.py" .; \
+	python bundle-test.py

@@ -26,7 +26,7 @@ def test_iris(iris_df: pandas.DataFrame):
 
     assert sepalLengthResult.expectations[0] == be_between
     assert be_between.success is False
-    assert be_between.message == "expected values to be at most $4$, but found $7.9$"
+    assert be_between.message == "expected values to be at most 4, but found 7.9"
     assert be_between.result == {
         "minimum": 4.3,
         "maximum": 7.9,
@@ -49,7 +49,7 @@ def test_iris(iris_df: pandas.DataFrame):
 
     expected_markdown = (
         "**SepalLength**  \n"
-        + "❌ be_between: expected values to be at most $4$, but found $7.9$  \n"
+        + "❌ be_between: expected values to be at most 4, but found 7.9  \n"
         + "✅ be_positive  \n"
         + "✅ be_bigger_than_3  \n\n"
     )
