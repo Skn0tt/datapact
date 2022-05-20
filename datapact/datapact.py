@@ -164,7 +164,7 @@ class Asserter:
         return json.loads(bins.to_json())
 
     @expectation
-    def be_normal(self, alpha: float = 0.05):
+    def be_normal_distributed(self, alpha: float = 0.05):
         """
         performs a normaltest.
 
@@ -288,7 +288,7 @@ class Asserter:
         return Expectation.Pass()
 
     @expectation
-    def be_one_of(self):
+    def be_one_of(self, *args):
         """
         checks if there's any value not in the given list.
 
@@ -374,6 +374,9 @@ class DataframeTest:
             raise AttributeError
         series = self.dataframe[attr]
         return self.get_series_test(series)
+
+    def __getitem__(self, key):
+        return self.__getattr__(key)
 
     def __enter__(self):
         return self

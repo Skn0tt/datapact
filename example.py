@@ -26,7 +26,7 @@ with datapact.test(income_df).describe(
         age.should.be_between(0, 100)
     with income.salary as salary:
         salary.should.be_between(0, 300000)
-        salary.should.be_normal(alpha=0.05)
+        salary.should.be_normal_distributed(alpha=0.05)
 
 
 income_dp = datapact.test(income_df)
