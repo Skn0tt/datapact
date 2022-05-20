@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/Skn0tt/datapact/compare/v0.5.0...v0.6.0) (2022-05-20)
+
+
+### Features
+
+* detect gravatar URLs ([f139bc9](https://github.com/Skn0tt/datapact/commit/f139bc973351e7805d5260737fbbc8edf5794796))
+* implement be_one_of ([e5a525c](https://github.com/Skn0tt/datapact/commit/e5a525c6c8039afca0ef1fbfa2d0493e402ce977))
+
+
+### Bug Fixes
+
+* include entrypoint.js in distro ([5065ae7](https://github.com/Skn0tt/datapact/commit/5065ae79ae83347b6986aba29b39ade170742d94))
+
 ## [0.5.0](https://github.com/Skn0tt/datapact/compare/v0.4.0...v0.5.0) (2022-05-20)
 
 
