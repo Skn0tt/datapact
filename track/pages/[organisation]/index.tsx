@@ -1,9 +1,8 @@
 import { useMutation, useQuery, invoke } from "@blitzjs/rpc"
-import { AddIcon, CheckCircleIcon, CheckIcon } from "@chakra-ui/icons"
+import { AddIcon, CheckCircleIcon } from "@chakra-ui/icons"
 import {
   Avatar,
   AvatarGroup,
-  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -15,21 +14,16 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  Grid,
-  GridItem,
   Heading,
   IconButton,
   Input,
-  Link,
   LinkBox,
-  LinkOverlay,
-  ListItem,
   Popover,
   PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger as _PopoverTrigger,
   SimpleGrid,
   Stat,
   StatArrow,
@@ -37,7 +31,6 @@ import {
   StatLabel,
   StatNumber,
   Text,
-  UnorderedList,
   useDisclosure,
 } from "@chakra-ui/react"
 import { PageTitle } from "app/components/PageTitle"
@@ -51,6 +44,8 @@ import { AsyncSelect } from "chakra-react-select"
 import searchUsers from "app/users/queries/searchUsers"
 import { useState } from "react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+
+const PopoverTrigger = _PopoverTrigger as any
 
 export default function OrganisationPage() {
   const router = useRouter()
