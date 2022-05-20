@@ -216,18 +216,18 @@ class Asserter:
 
         if extends_left and extends_right:
             return Expectation.Fail(
-                f"out of range. expected to be in $({minimum}, {maximum})$ \n"
-                + f"but found $({found_min}, {found_max})$.",
+                f"out of range. expected to be in ({minimum}, {maximum}) \n"
+                + f"but found ({found_min}, {found_max}).",
                 **result,
             )
         elif extends_left:
             return Expectation.Fail(
-                f"expected values to be at least ${minimum}$, but found ${found_min}$",
+                f"expected values to be at least {minimum}, but found {found_min}",
                 **result,
             )
         elif extends_right:
             return Expectation.Fail(
-                f"expected values to be at most ${maximum}$, but found ${found_max}$",
+                f"expected values to be at most {maximum}, but found {found_max}",
                 **result,
             )
 
