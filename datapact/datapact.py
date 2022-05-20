@@ -328,7 +328,7 @@ class DataframeTest:
         self.server: Optional[str] = None
         self.token: Optional[str] = None
 
-    def connect(self, server: str = "datafox.dev", token: Optional[str] = None):
+    def connect(self, server: str = "track.datapact.dev", token: Optional[str] = None):
         if "://" not in server:
             server = "https://" + server
         self.server = server
