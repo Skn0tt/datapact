@@ -141,14 +141,17 @@ def expectation(func):
         result.critical = self.critical
         result.parent = self.parent.parent
 
-        result.args = { **kwargs }
+        result.args = {**kwargs}
         for i, parameter in enumerate(inspect.signature(func).parameters.values()):
             if parameter.name == "self":
                 continue
-            if parameter.kind in [inspect.Parameter.VAR_KEYWORD, inspect.Parameter.VAR_POSITIONAL]:
+            if parameter.kind in [
+                inspect.Parameter.VAR_KEYWORD,
+                inspect.Parameter.VAR_POSITIONAL,
+            ]:
                 result.args[parameter.name] = list(args)
             else:
-                result.args[parameter.name] = args[i-1]
+                result.args[parameter.name] = args[i - 1]
 
         self.expectations.append(result)
         return result
@@ -323,8 +326,6 @@ class Asserter:
         checks if all values are ISO8601-compliant dates.
         datetimes will be rejected.
 
-        TODO: implement
-
         Examples:
             >>> dp.day.must.be_date()
         """
@@ -339,11 +340,12 @@ class Asserter:
         """
         checks if all values are ISO8601-compliant datetimes.
 
-        TODO: implement
-
         Examples:
             >>> dp.timestamp.must.be_datetime()
         """
+
+        if compute(pandas.to_datetime(self.series, errors="coerce").isna().any()):
+            return Expectation.Fail("found non-datetime values")
 
         return Expectation.Pass()
 
