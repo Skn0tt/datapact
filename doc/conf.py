@@ -58,6 +58,12 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "furo"
+html_title = f"{project} <span style='font-size: 0.7em'>{release}</span>"
+html_theme_options = {
+  "source_repository": "https://github.com/skn0tt/datapact/",
+  "source_branch": "main",
+  "source_directory": "doc/",
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

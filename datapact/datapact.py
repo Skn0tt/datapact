@@ -284,7 +284,7 @@ class Asserter:
     @expectation
     def not_be_null(self):
         """
-        checks if there are any null values.
+        checks if all values are non-null.
 
         Examples:
             >>> dp.user_id.must.not_be_null()
@@ -296,9 +296,23 @@ class Asserter:
         return Expectation.Pass()
 
     @expectation
+    def not_be_na(self):
+        """
+        checks if all values are non-na.
+
+        Examples:
+            >>> dp.user_id.must.not_be_na()
+        """
+
+        if self.series.isna().values.any():
+            return Expectation.Fail("found na values")
+
+        return Expectation.Pass()
+
+    @expectation
     def be_one_of(self, *allowed_values):
         """
-        checks if there's any value not in the given list.
+        checks if values are in the allowed values.
 
         Examples:
             >>> dp.state.must.be_one_of("active", "sleeping", "inactive")
