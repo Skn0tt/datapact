@@ -1,3 +1,4 @@
+from ast import Expression
 from functools import wraps
 import importlib.resources
 import inspect
@@ -324,6 +325,9 @@ class Asserter:
         Examples:
             >>> dp.day.must.be_date()
         """
+
+        if not compute(self.series.str.match(r"\d{4}-\d{2}-\d{2}").all()):
+            return Expectation.Fail("found non-date values")
 
         return Expectation.Pass()
 

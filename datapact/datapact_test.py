@@ -2,7 +2,7 @@ import pandas
 import datapact
 from datapact.datapact import compute
 
-from datapact.fixture_test import iris_df
+from datapact.fixture_test import iris_df, covid_df
 
 
 def test_iris(iris_df: pandas.DataFrame):
@@ -58,9 +58,35 @@ def test_iris(iris_df: pandas.DataFrame):
 
 def test_be_between(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
-    assert dp.Name.should.be_one_of("Iris-setosa").message == "found additional values: ['Iris-versicolor', 'Iris-virginica']"
-    assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor").success is True
-    assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional").result["used_pct"] == .75
+    assert (
+        dp.Name.should.be_one_of("Iris-setosa").message
+        == "found additional values: ['Iris-versicolor', 'Iris-virginica']"
+    )
+    assert dp.Name.should.be_one_of(
+        "Iris-setosa", "Iris-virginica", "Iris-versicolor"
+    ).success
+    assert (
+        dp.Name.should.be_one_of(
+            "Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional"
+        ).result["used_pct"]
+        == 0.75
+    )
     # TODO: implement
     # assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional").args == {}
-    
+
+
+def test_spaces_in_series_name(covid_df: pandas.DataFrame):
+    dp = datapact.test(covid_df)
+    assert (
+        dp["age group"]
+        .should.be_one_of(
+            "A00-A04", "A05-A14", "A15-A34", "A35-A59", "A60-A79", "A80+", "unbekannt"
+        )
+        .success
+    )
+
+
+def test_be_date(covid_df: pandas.DataFrame):
+    dp = datapact.test(covid_df)
+    assert dp.report_date.should.be_date().success
+    assert not dp["age group"].should.be_date().success
