@@ -11,16 +11,18 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-export function BinDistribution({ bins }: { bins: Record<string, string> }) {
+export function BinDistribution({ bins, name }: { bins: Record<string, string>; name?: string }) {
+  const entries = Object.entries(bins).sort(([a], [b]) => a.localeCompare(b))
   return (
     <Bar
       data={{
-        labels: Object.keys(bins),
+        labels: entries.map(([bin]) => bin),
         datasets: [
           {
-            label: "Distribution",
-            data: Object.values(bins).map((i) => parseInt(i)),
+            label: name ?? "count",
+            data: entries.map(([bin, count]) => parseInt(count)),
             order: 1,
+            backgroundColor: "lightblue"
           },
         ],
       }}

@@ -161,7 +161,9 @@ export function TestRunResultVisualizer(props: {
                             <WarningIcon color="red" />
                           )}
                           <Text>
-                            {visualiser?.Title ? visualiser.Title({ expectation }) : defaultTitle}
+                            {visualiser?.Title
+                              ? visualiser.Title({ expectation, series })
+                              : defaultTitle}
                           </Text>
                         </HStack>
 
@@ -170,7 +172,7 @@ export function TestRunResultVisualizer(props: {
                     </h2>
 
                     <AccordionPanel>
-                      {visualiser?.Body ? visualiser.Body({ expectation }) : defaultBody}
+                      {visualiser?.Body ? visualiser.Body({ expectation, series }) : defaultBody}
 
                       {expectation.failed_sample && (
                         <Box as="section" pt="4">

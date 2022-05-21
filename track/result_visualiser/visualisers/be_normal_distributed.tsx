@@ -10,7 +10,7 @@ export const be_normal_distributed: ExpectationVisualiser<
     bins: Record<string, string>
   }
 > = {
-  Body({ expectation: { result, args } }) {
+  Body({ expectation: { result, args }, series }) {
     return (
       <>
         <Text>
@@ -22,7 +22,7 @@ export const be_normal_distributed: ExpectationVisualiser<
         <Text>
           P: <Code>{result.p}</Code>
         </Text>
-        <BinDistribution bins={result.bins} />
+        <BinDistribution bins={result.bins} name={series.name} />
       </>
     )
   },
