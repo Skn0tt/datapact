@@ -12,3 +12,6 @@ test-bundled: bundle
 	pip install "$$(ls ${PWD}/dist/*.tar.gz)"; \
 	cp "${PWD}/bundle-test.py" .; \
 	python bundle-test.py
+
+test:
+	pytest
