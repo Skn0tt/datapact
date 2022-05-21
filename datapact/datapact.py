@@ -556,6 +556,46 @@ class DataframeTest:
 
         return result
 
+    def expectations(self) -> "list[Expectation]":
+        """
+        Returns a list of all executed expectations.
+        """
+        result = []
+        for s in self.collect().series:
+            result += s.expectations
+        return result
+
+    def failed_expectations(self) -> Expectation:
+        """
+        Returns a list of all failed expectations.
+        """
+        return [e for e in self.expectations() if not e.success]
+
+    def failed_critical_expectations(self) -> Expectation:
+        """
+        Returns a list of all failed critical expectations.
+        """
+        return [e for e in self.failed_expectations() if e.critical]
+
+    def is_failure(self) -> bool:
+        """
+        Returns True if one of the expectations failed.
+        """
+        return len(self.failed_expectations()) > 0
+
+    def is_critical_failure(self) -> bool:
+        """
+        Returns True if a critical expectation failed.
+        """
+        return len(self.failed_critical_expectations()) > 0
+
+    def check(self):
+        """
+        Raises an exception if a critical expectation failed.
+        """
+        if self.is_critical_failure():
+            raise Exception("critical expectation failed")
+
     def _repr_markdown_(self):
         """
         see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
@@ -566,11 +606,11 @@ class DataframeTest:
 
         for series in result.series:
             md += f"**{series.name}**  \n"
-            for expectation in series.expectations:
-                if expectation.success:
-                    md += f"✅ {expectation.name}  \n"
+            for e in series.expectations:
+                if e.success:
+                    md += f"✅ {e.name}  \n"
                 else:
-                    md += f"❌ {expectation.name}: {expectation.message}  \n"
+                    md += f"❌ {e.name}: {e.message}  \n"
             md += "\n"
 
         return md
