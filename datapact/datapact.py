@@ -1,4 +1,3 @@
-from ast import Expression
 import datetime
 from functools import wraps
 import importlib.resources
@@ -6,6 +5,7 @@ import inspect
 import json
 from typing import Callable, Optional
 from dataclasses import dataclass, field
+import dask.dataframe
 
 import pandas
 import requests
@@ -24,10 +24,17 @@ class Expectation:
     args: dict = field(default_factory=dict)
     result: dict = field(default_factory=dict)
     parent: "DataframeTest" = None
+    failed_sample_indices: Optional[list] = None
+    failed_sample: Optional[pandas.DataFrame] = None
 
     @staticmethod
-    def Fail(message: str, **kwargs):
-        return Expectation(success=False, message=message, result=kwargs)
+    def Fail(message: str, failed_sample_indices=None, **kwargs):
+        return Expectation(
+            success=False,
+            message=message,
+            failed_sample_indices=failed_sample_indices,
+            result=kwargs,
+        )
 
     @staticmethod
     def Pass(message: Optional[str] = None, **kwargs):
@@ -41,6 +48,8 @@ class Expectation:
             "message": self.message,
             "args": self.args,
             "result": self.result,
+            "failed_sample_indices": self.failed_sample_indices,
+            "failed_sample": self.failed_sample,
         }
 
     def _repr_markdown_(self):
@@ -154,6 +163,12 @@ def expectation(func):
             else:
                 result.args[parameter.name] = args[i - 1] if len(args) >= i else None
 
+        if result.failed_sample_indices and not result.failed_sample:
+            if type(self.parent.parent.dataframe) == pandas.DataFrame:
+                result.failed_sample = self.parent.parent.dataframe.filter(
+                    items=result.failed_sample_indices, axis=0
+                )
+
         self.expectations.append(result)
         return result
 
@@ -226,16 +241,22 @@ class Asserter:
             return Expectation.Fail(
                 f"out of range. expected to be in ({minimum}, {maximum}) \n"
                 + f"but found ({found_min}, {found_max}).",
+                failed_sample_indices=[
+                    compute(self.series.idxmin()),
+                    compute(self.series.idxmax()),
+                ],
                 **result,
             )
         elif extends_left:
             return Expectation.Fail(
                 f"expected values to be at least {minimum}, but found {found_min}",
+                failed_sample_indices=[compute(self.series.idxmin())],
                 **result,
             )
         elif extends_right:
             return Expectation.Fail(
                 f"expected values to be at most {maximum}, but found {found_max}",
+                failed_sample_indices=[compute(self.series.idxmax())],
                 **result,
             )
 

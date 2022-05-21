@@ -98,3 +98,23 @@ def test_be_date(covid_df: pandas.DataFrame):
     dp = datapact.test(covid_df)
     assert dp.report_date.should.be_date().success
     assert not dp["age group"].should.be_date().success
+
+
+def test_failed_sample(iris_df: pandas.DataFrame):
+    dp = datapact.test(iris_df)
+    assert dp.SepalLength.should.be_between(3, 4).failed_sample_indices == [131]
+
+    if type(iris_df) is pandas.DataFrame:
+        assert dp.SepalLength.should.be_between(3, 4).failed_sample.to_dict(
+            orient="records"
+        ) == [
+            {
+                "Name": "Iris-virginica",
+                "SepalLength": 7.9,
+                "SepalWidth": 3.8,
+                "PetalLength": 6.4,
+                "PetalWidth": 2.0,
+            }
+        ]
+    else:
+        assert dp.SepalLength.should.be_between(3, 4).failed_sample is None
