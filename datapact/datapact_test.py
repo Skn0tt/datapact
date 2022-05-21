@@ -56,12 +56,16 @@ def test_iris(iris_df: pandas.DataFrame):
     assert dp._repr_markdown_() == expected_markdown
 
 
-def test_be_between(iris_df: pandas.DataFrame):
+def test_be_one_of(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
     assert (
         dp.Name.should.be_one_of("Iris-setosa").message
         == "found additional values: ['Iris-versicolor', 'Iris-virginica']"
     )
+    if type(iris_df) is pandas.DataFrame:
+        assert dp.Name.should.be_one_of("Iris-setosa").failed_sample.to_dict(
+            orient="list"
+        )["Name"] == ["Iris-versicolor", "Iris-virginica"]
     assert dp.Name.should.be_one_of(
         "Iris-setosa", "Iris-virginica", "Iris-versicolor"
     ).success
@@ -98,6 +102,7 @@ def test_be_date(covid_df: pandas.DataFrame):
     dp = datapact.test(covid_df)
     assert dp.report_date.should.be_date().success
     assert not dp["age group"].should.be_date().success
+    assert dp["age group"].should.be_date().failed_sample_indices == [0, 1, 2, 3, 4]
 
 
 def test_failed_sample(iris_df: pandas.DataFrame):

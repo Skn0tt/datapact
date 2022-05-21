@@ -277,7 +277,9 @@ class Asserter:
 
         if found_min < 0:
             return Expectation.Fail(
-                f"negative value found: min is {found_min}", **result
+                f"negative value found: min is {found_min}",
+                failed_sample_indices=[compute(self.series.idxmin())],
+                **result,
             )
 
         return Expectation.Pass(**result)
@@ -297,7 +299,9 @@ class Asserter:
 
         if found_max < 0:
             return Expectation.Fail(
-                f"positive value found: max is {found_max}", **result
+                f"positive value found: max is {found_max}",
+                failed_sample_indices=[compute(self.series.idxmax())],
+                **result,
             )
 
         return Expectation.Pass(**result)
@@ -311,8 +315,13 @@ class Asserter:
             >>> dp.user_id.must.not_be_null()
         """
 
-        if self.series.isnull().values.any():
-            return Expectation.Fail("found null values")
+        null_index = self.series.isnull().first_valid_index()
+
+        if null_index:
+            return Expectation.Fail(
+                "found null values",
+                failed_sample_indices=[null_index],
+            )
 
         return Expectation.Pass()
 
@@ -325,8 +334,10 @@ class Asserter:
             >>> dp.user_id.must.not_be_na()
         """
 
-        if self.series.isna().values.any():
-            return Expectation.Fail("found na values")
+        na_index = self.series.isna().first_valid_index()
+
+        if na_index:
+            return Expectation.Fail("found na values", failed_sample_indices=[na_index])
 
         return Expectation.Pass()
 
@@ -349,8 +360,13 @@ class Asserter:
         if len(additional) > 0:
             additional_values = list(additional)
             additional_values.sort()
+
             return Expectation.Fail(
                 f"found additional values: {additional_values}",
+                failed_sample_indices=[
+                    compute(self.series.eq(value)).idxmax()
+                    for value in additional_values[:5]
+                ],
                 used_pct=used_pct,
             )
 
@@ -366,8 +382,14 @@ class Asserter:
             >>> dp.day.must.be_date()
         """
 
-        if not compute(self.series.str.match(r"\d{4}-\d{2}-\d{2}").all()):
-            return Expectation.Fail("found non-date values")
+        rejected = compute(
+            self.series[-self.series.str.match(r"\d{4}-\d{2}-\d{2}")].index
+        ).to_list()
+
+        if len(rejected) > 0:
+            return Expectation.Fail(
+                "found non-date values", failed_sample_indices=rejected[:5]
+            )
 
         return Expectation.Pass()
 
@@ -380,8 +402,14 @@ class Asserter:
             >>> dp.timestamp.must.be_datetime()
         """
 
-        if compute(pandas.to_datetime(self.series, errors="coerce").isna().any()):
-            return Expectation.Fail("found non-datetime values")
+        rejected = compute(
+            self.series[-pandas.to_datetime(self.series, errors="coerce").isna()].index
+        ).to_list()
+
+        if len(rejected) > 0:
+            return Expectation.Fail(
+                "found non-datetime values", failed_sample_indices=rejected[:5]
+            )
 
         return Expectation.Pass()
 
@@ -405,13 +433,16 @@ class Asserter:
         if found_min < 0:
             return Expectation.Fail(
                 f"unix epoch times should be positive. found {found_min}, which is before 1970.",
+                failed_sample_indices=[compute(self.series.idxmin())],
                 **result,
             )
 
         max_timestamp = datetime.datetime(2100, 0, 0).timestamp()
         if found_max > max_timestamp:
             return Expectation.Fail(
-                f"found {found_max}, which is after the year 2100", **result
+                f"found {found_max}, which is after the year 2100",
+                failed_sample_indices=[compute(self.series.idxmax())],
+                **result,
             )
 
         return Expectation.Pass(**result)
