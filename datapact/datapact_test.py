@@ -71,8 +71,16 @@ def test_be_between(iris_df: pandas.DataFrame):
         ).result["used_pct"]
         == 0.75
     )
-    # TODO: implement
-    # assert dp.Name.should.be_one_of("Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional").args == {}
+    assert dp.Name.should.be_one_of(
+        "Iris-setosa", "Iris-virginica", "Iris-versicolor", "additional"
+    ).args == {
+        "allowed_values": [
+            "Iris-setosa",
+            "Iris-virginica",
+            "Iris-versicolor",
+            "additional",
+        ]
+    }
 
 
 def test_spaces_in_series_name(covid_df: pandas.DataFrame):

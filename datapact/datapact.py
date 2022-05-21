@@ -141,11 +141,14 @@ def expectation(func):
         result.critical = self.critical
         result.parent = self.parent.parent
 
-        args_names = list(inspect.signature(func).parameters.keys())[1:]
-        result.args = {
-            **dict(zip(args_names, args)),
-            **kwargs,
-        }
+        result.args = { **kwargs }
+        for i, parameter in enumerate(inspect.signature(func).parameters.values()):
+            if parameter.name == "self":
+                continue
+            if parameter.kind in [inspect.Parameter.VAR_KEYWORD, inspect.Parameter.VAR_POSITIONAL]:
+                result.args[parameter.name] = list(args)
+            else:
+                result.args[parameter.name] = args[i-1]
 
         self.expectations.append(result)
         return result
@@ -289,7 +292,7 @@ class Asserter:
         return Expectation.Pass()
 
     @expectation
-    def be_one_of(self, *args):
+    def be_one_of(self, *allowed_values):
         """
         checks if there's any value not in the given list.
 
@@ -298,7 +301,7 @@ class Asserter:
         """
 
         existing = set(compute(self.series.unique()))
-        expected = set(args)
+        expected = set(allowed_values)
 
         additional = existing - expected
 
