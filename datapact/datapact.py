@@ -1,4 +1,5 @@
 from ast import Expression
+import datetime
 from functools import wraps
 import importlib.resources
 import inspect
@@ -354,13 +355,31 @@ class Asserter:
         """
         checks if all values are unix epoch-compliant timestamps.
 
-        TODO: implement
-
         Examples:
             >>> dp.timestamp.must.be_unix_epoch()
         """
 
-        return Expectation.Pass()
+        found_min = compute(self.series.min())
+        found_max = compute(self.series.max())
+
+        result = {
+            "minimum": found_min,
+            "maximum": found_max,
+        }
+
+        if found_min < 0:
+            return Expectation.Fail(
+                f"unix epoch times should be positive. found {found_min}, which is before 1970.",
+                **result,
+            )
+
+        max_timestamp = datetime.datetime(2100, 0, 0).timestamp()
+        if found_max > max_timestamp:
+            return Expectation.Fail(
+                f"found {found_max}, which is after the year 2100", **result
+            )
+
+        return Expectation.Pass(**result)
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
