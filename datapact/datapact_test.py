@@ -55,6 +55,10 @@ def test_iris(iris_df: pandas.DataFrame):
     )
     assert dp._repr_markdown_() == expected_markdown
 
+def test_be_normal_distributed(iris_df: pandas.DataFrame):
+    dp = datapact.test(iris_df)
+    assert dp.SepalWidth.should.be_normal_distributed().success
+    assert dp.SepalWidth.should.be_normal_distributed().args == {"alpha": 0.05}
 
 def test_be_one_of(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)

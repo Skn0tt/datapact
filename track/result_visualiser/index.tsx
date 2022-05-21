@@ -5,12 +5,19 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Box,
   Code,
   Heading,
   HStack,
   Link,
   Stack,
+  Table,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react"
 import ExpectationVisualisers from "./visualisers"
 
@@ -36,6 +43,34 @@ export interface Expectation<Args, Result> {
   message: string
   args: Args
   result: Result
+  failed_sample_indices?: number[]
+  failed_sample?: Record<string, any>[]
+}
+
+function RecordTable(props: { items: Record<string, any>[] }) {
+  const columnNames: string[] = Object.keys(props.items[0]!)
+  const rows: string[][] = props.items.map((item) => Object.values(item))
+
+  return (
+    <Table>
+      <Thead>
+        <Tr>
+          {[...columnNames].map((colName) => (
+            <Th>{colName}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {rows.map((row) => (
+          <Tr>
+            {row.map((cell) => (
+              <Td>{cell}</Td>
+            ))}
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  )
 }
 
 export function TestRunResultVisualizer(props: {
@@ -87,13 +122,33 @@ export function TestRunResultVisualizer(props: {
                   ? `${expectation.name}: ${expectation.message}`
                   : expectation.name
 
+                expectation.args
+
                 const defaultBody = (
-                  <img
-                    src="https://media.giphy.com/media/8gNQZ9IpkcdiAjfOgN/giphy.gif"
-                    alt="gif of a barchart, acting as a placeholder"
-                    height="200px"
-                    width="200px"
-                  />
+                  <Box>
+                    <Text>
+                      <Text as="b" fontWeight="semibold" pr="2">
+                        Arguments:
+                      </Text>
+                      {Object.entries(expectation.args).map(([key, value], i) => (
+                        <>
+                          {i !== 0 && <span>, </span>}
+                          <Code>{`${key}=${value}`}</Code>
+                        </>
+                      ))}
+                    </Text>
+                    <Text>
+                      <Text as="b" fontWeight="semibold" pr="2">
+                        Results:
+                      </Text>
+                      {Object.entries(expectation.result).map(([key, value], i) => (
+                        <>
+                          {i !== 0 && <span>, </span>}
+                          <Code>{`${key}=${value}`}</Code>
+                        </>
+                      ))}
+                    </Text>
+                  </Box>
                 )
                 return (
                   <AccordionItem key={index}>
@@ -116,6 +171,17 @@ export function TestRunResultVisualizer(props: {
 
                     <AccordionPanel>
                       {visualiser?.Body ? visualiser.Body({ expectation }) : defaultBody}
+
+                      {expectation.failed_sample && (
+                        <Box as="section" pt="4">
+                          <Heading size="md">Failed Items Sample</Heading>
+                          <RecordTable items={expectation.failed_sample} />
+                        </Box>
+                      )}
+
+                      {!expectation.failed_sample && expectation.failed_sample_indices && (
+                        <p>Failed Indices: {expectation.failed_sample_indices.join(", ")}</p>
+                      )}
                     </AccordionPanel>
                   </AccordionItem>
                 )

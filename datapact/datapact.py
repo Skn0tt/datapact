@@ -49,7 +49,9 @@ class Expectation:
             "args": self.args,
             "result": self.result,
             "failed_sample_indices": self.failed_sample_indices,
-            "failed_sample": self.failed_sample,
+            "failed_sample": self.failed_sample.to_dict(orient="records")
+            if self.failed_sample is not None
+            else None,
         }
 
     def _repr_markdown_(self):
@@ -161,7 +163,9 @@ def expectation(func):
             ]:
                 result.args[parameter.name] = list(args)
             else:
-                result.args[parameter.name] = args[i - 1] if len(args) >= i else None
+                result.args[parameter.name] = (
+                    args[i - 1] if len(args) >= i else parameter.default
+                )
 
         if result.failed_sample_indices and not result.failed_sample:
             if type(self.parent.parent.dataframe) == pandas.DataFrame:
@@ -183,6 +187,10 @@ class Asserter:
         self.expectations: "list[Expectation]" = []
 
     def bins(self):
+        if type(self.series) is not pandas.Series:
+            # TODO: implement for dask
+            return None
+
         bins = pandas.cut(self.series, bins=10).value_counts()
         return json.loads(bins.to_json())
 
