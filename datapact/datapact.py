@@ -152,7 +152,7 @@ def expectation(func):
             ]:
                 result.args[parameter.name] = list(args)
             else:
-                result.args[parameter.name] = args[i - 1]
+                result.args[parameter.name] = args[i - 1] if len(args) >= i else None
 
         self.expectations.append(result)
         return result
