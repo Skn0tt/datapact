@@ -19,7 +19,21 @@ export default async function getOrganisation(slug: string, ctx: Ctx) {
           name: true,
         },
       },
-      datasets: true,
+      datasets: {
+        include: {
+          testRuns: {
+            take: 1,
+            orderBy: {
+              date: "desc",
+            },
+          },
+          _count: {
+            select: {
+              testRuns: true
+            }
+          }
+        },
+      },
       members: {
         select: {
           id: true,

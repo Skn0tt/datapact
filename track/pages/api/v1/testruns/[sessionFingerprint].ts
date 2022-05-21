@@ -1,14 +1,8 @@
 import { BlitzAPIHandler } from "@blitzjs/next"
 import { db } from "db"
-import { isFinalised } from "app/testruns"
+import { isFailure, isFinalised } from "app/testruns"
 import type { DataframeResult } from "result_visualiser"
 import { warningMailer } from "mailers/warningMailer"
-
-function isFailure(result: DataframeResult): boolean {
-  return result.series.some((series) =>
-    series.expectations.some((expectation) => expectation.success === false)
-  )
-}
 
 const handler: BlitzAPIHandler = async (req, res, ctx) => {
   if (req.method !== "PUT") {

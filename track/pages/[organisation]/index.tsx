@@ -1,5 +1,5 @@
 import { useMutation, useQuery, invoke } from "@blitzjs/rpc"
-import { AddIcon, CheckCircleIcon } from "@chakra-ui/icons"
+import { AddIcon, CheckCircleIcon, WarningIcon } from "@chakra-ui/icons"
 import {
   Avatar,
   AvatarGroup,
@@ -25,11 +25,6 @@ import {
   PopoverContent,
   PopoverTrigger as _PopoverTrigger,
   SimpleGrid,
-  Stat,
-  StatArrow,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
   Text,
   useDisclosure,
 } from "@chakra-ui/react"
@@ -44,6 +39,7 @@ import { AsyncSelect } from "chakra-react-select"
 import searchUsers from "app/users/queries/searchUsers"
 import { useState } from "react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { isFailure } from "app/testruns"
 
 const PopoverTrigger = _PopoverTrigger as any
 
@@ -160,17 +156,23 @@ export default function OrganisationPage() {
             <LinkBox rounded="sm" bg="gray.100" p={4} maxWidth="300px">
               <Heading size="md" mb={2}>
                 {dataset.slug}
-                <CheckCircleIcon color="green" boxSize={6} float="right" />
+                {dataset.testRuns[0] && isFailure(dataset.testRuns[0]?.payload as any) ? (
+                  <WarningIcon color="red" boxSize={6} float="right" />
+                ) : (
+                  <CheckCircleIcon color="green" boxSize={6} float="right" />
+                )}
               </Heading>
 
-              <Stat>
-                <StatLabel>Confidence</StatLabel>
-                <StatNumber>100%</StatNumber>
-                <StatHelpText>
-                  <StatArrow type="increase" />
-                  23.36%
-                </StatHelpText>
-              </Stat>
+              <Text>Number of runs: {dataset._count.testRuns}</Text>
+
+              {dataset.testRuns[0] && (
+                <Text>
+                  Last run:{" "}
+                  <time dateTime={dataset.testRuns[0].date.toISOString()}>
+                    {dataset.testRuns[0].date.toLocaleDateString()}
+                  </time>
+                </Text>
+              )}
             </LinkBox>
           </NextLink>
         ))}
