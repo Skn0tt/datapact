@@ -10,6 +10,7 @@ datapact
 - two severence levels (`.should` for warnings, `.must` for failures)
 - failure notifications via E-Mail, MS Teams, Slack or PagerDuty (via Datapact Track)
 
+
 :doc:`Get Started! <getting_started>`
 
 .. toctree::
@@ -18,3 +19,14 @@ datapact
    getting_started
    expectations
    track
+
+
+missing things to document
+--------------------------
+
+- how to use this in scripts (.check)
+- how to build custom assertions
+- how to use the `.should` and `.must` methods
+- how this is intended to be used
+- how to export reports as html
+- likely some more things, *to be added!*
