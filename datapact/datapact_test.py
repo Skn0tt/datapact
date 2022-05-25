@@ -1,4 +1,5 @@
 import pandas
+import pytest
 import datapact
 from datapact.datapact import compute
 
@@ -14,6 +15,17 @@ def test_iris(iris_df: pandas.DataFrame):
     )
     be_between = dp.SepalLength.must.be_between(3, 4)
     dp.SepalLength.must.be_positive()
+
+    assert dir(dp) == [
+        "Name",
+        "PetalLength",
+        "PetalWidth",
+        "SepalLength",
+        "SepalWidth",
+    ]
+
+    with pytest.raises(AttributeError):
+        dp.NonExistant
 
     result = dp.collect()
     assert len(result.series) == 1
@@ -46,19 +58,26 @@ def test_iris(iris_df: pandas.DataFrame):
 
     custom_result = dp.SepalLength.must.fulfill(be_bigger_than_3)
     assert custom_result.name == "be_bigger_than_3"
+    assert dp.PetalLength.must.fulfill(be_bigger_than_3).success is False
 
     expected_markdown = (
         "**SepalLength**  \n"
         + "❌ be_between: expected values to be at most 4, but found 7.9  \n"
         + "✅ be_positive  \n"
         + "✅ be_bigger_than_3  \n\n"
+        + "**PetalLength**  \n"
+        + "❌ be_bigger_than_3: must be bigger than 3  \n\n"
     )
     assert dp._repr_markdown_() == expected_markdown
+    assert dp._repr_html_() == be_positive._repr_html_()
+    assert isinstance(dp.collect().to_dict(), dict)
+
 
 def test_be_normal_distributed(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
     assert dp.SepalWidth.should.be_normal_distributed().success
     assert dp.SepalWidth.should.be_normal_distributed().args == {"alpha": 0.05}
+
 
 def test_be_one_of(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
@@ -127,3 +146,31 @@ def test_failed_sample(iris_df: pandas.DataFrame):
         ]
     else:
         assert dp.SepalLength.should.be_between(3, 4).failed_sample is None
+
+
+def test_checks(iris_df: pandas.DataFrame):
+    dp = datapact.test(iris_df)
+
+    assert dp.SepalLength.should.be_between(3, 10).success
+    assert dp.is_failure() is False
+    assert len(dp.failed_expectations()) == 0
+    dp.check()
+
+    failingExpectation = dp.SepalLength.should.be_between(3, 4)
+    assert failingExpectation.success is False
+    assert dp.is_failure() is True
+    assert len(dp.failed_expectations()) == 1
+    assert failingExpectation in dp.failed_expectations()
+    assert dp.is_critical_failure() is False
+    dp.check()
+
+    failingCriticalExpectation = dp.SepalLength.must.be_between(3, 4)
+    assert failingCriticalExpectation.success is False
+    assert dp.is_failure() is True
+    assert len(dp.failed_expectations()) == 2
+    assert len(dp.failed_critical_expectations()) == 1
+    assert failingCriticalExpectation in dp.failed_expectations()
+    assert failingCriticalExpectation in dp.failed_critical_expectations()
+    assert dp.is_critical_failure() is True
+    with pytest.raises(Exception):
+        assert dp.check()

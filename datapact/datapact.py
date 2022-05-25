@@ -5,7 +5,7 @@ import inspect
 import json
 from typing import Callable, Optional
 from dataclasses import dataclass, field
-import dask.dataframe
+from numpy import int64
 
 import pandas
 import requests
@@ -48,7 +48,11 @@ class Expectation:
             "message": self.message,
             "args": self.args,
             "result": self.result,
-            "failed_sample_indices": self.failed_sample_indices,
+            "failed_sample_indices": [
+                coerce_to_json(i) for i in self.failed_sample_indices
+            ]
+            if self.failed_sample_indices
+            else None,
             "failed_sample": self.failed_sample.to_dict(orient="records")
             if self.failed_sample is not None
             else None,
@@ -137,11 +141,12 @@ class SeriesTest:
             self.unit = unit
         return self
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, _type, _value, _traceback):
-        return self
+def coerce_to_json(arg):
+    if inspect.isfunction(arg):
+        return arg.__name__
+    if isinstance(arg, int64):
+        return int(arg)
+    return arg
 
 
 def expectation(func):
@@ -161,9 +166,9 @@ def expectation(func):
                 inspect.Parameter.VAR_KEYWORD,
                 inspect.Parameter.VAR_POSITIONAL,
             ]:
-                result.args[parameter.name] = list(args)
+                result.args[parameter.name] = [coerce_to_json(arg) for arg in args]
             else:
-                result.args[parameter.name] = (
+                result.args[parameter.name] = coerce_to_json(
                     args[i - 1] if len(args) >= i else parameter.default
                 )
 
@@ -534,12 +539,6 @@ class DataframeTest:
 
     def __getitem__(self, key):
         return self.__getattr__(key)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, _type, _value, _traceback):
-        return self
 
     def collect(self) -> DataframeResult:
         """

@@ -14,4 +14,4 @@ test-bundled: bundle
 	python bundle-test.py
 
 test:
-	pytest
+	pytest --cov=datapact --cov-report=html
