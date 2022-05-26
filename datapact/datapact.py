@@ -16,7 +16,7 @@ from datapact.util.session_fingerprint import get_session_fingerprint
 
 
 @dataclass
-class Expectation:
+class Expectation:  # pylint: disable=too-many-instance-attributes
     name: str = None
     success: bool = True
     critical: bool = False
@@ -60,11 +60,13 @@ class Expectation:
 
     def _repr_markdown_(self):
         if self.parent is not None:
-            return self.parent._repr_markdown_()
+            return self.parent._repr_markdown_()  # pylint: disable=protected-access
+        return None
 
     def _repr_html_(self):
         if self.parent is not None:
-            return self.parent._repr_html_()
+            return self.parent._repr_html_()  # pylint: disable=protected-access
+        return None
 
 
 @dataclass
@@ -141,6 +143,7 @@ class SeriesTest:
             self.unit = unit
         return self
 
+
 def coerce_to_json(arg):
     if inspect.isfunction(arg):
         return arg.__name__
@@ -173,7 +176,7 @@ def expectation(func):
                 )
 
         if result.failed_sample_indices and not result.failed_sample:
-            if type(self.parent.parent.dataframe) == pandas.DataFrame:
+            if isinstance(self.parent.parent.dataframe, pandas.DataFrame):
                 result.failed_sample = self.parent.parent.dataframe.filter(
                     items=result.failed_sample_indices, axis=0
                 )
@@ -192,9 +195,8 @@ class Asserter:
         self.expectations: "list[Expectation]" = []
 
     def bins(self):
-        if type(self.series) is not pandas.Series:
-            # TODO: implement for dask
-            return None
+        if not isinstance(self.series, pandas.Series):
+            return None  # not implemented
 
         bins = pandas.cut(self.series, bins=10).value_counts()
         return json.loads(bins.to_json())
@@ -260,13 +262,13 @@ class Asserter:
                 ],
                 **result,
             )
-        elif extends_left:
+        if extends_left:
             return Expectation.Fail(
                 f"expected values to be at least {minimum}, but found {found_min}",
                 failed_sample_indices=[compute(self.series.idxmin())],
                 **result,
             )
-        elif extends_right:
+        if extends_right:
             return Expectation.Fail(
                 f"expected values to be at most {maximum}, but found {found_max}",
                 failed_sample_indices=[compute(self.series.idxmax())],
@@ -572,13 +574,13 @@ class DataframeTest:
             result += s.expectations
         return result
 
-    def failed_expectations(self) -> Expectation:
+    def failed_expectations(self) -> "list[Expectation]":
         """
         Returns a list of all failed expectations.
         """
         return [e for e in self.expectations() if not e.success]
 
-    def failed_critical_expectations(self) -> Expectation:
+    def failed_critical_expectations(self) -> "list[Expectation]":
         """
         Returns a list of all failed critical expectations.
         """
@@ -603,26 +605,7 @@ class DataframeTest:
         if self.is_critical_failure():
             raise Exception("critical expectation failed")
 
-    def _repr_markdown_(self):
-        """
-        see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
-        """
-        result = self.collect()
-
-        md = ""
-
-        for series in result.series:
-            md += f"**{series.name}**  \n"
-            for e in series.expectations:
-                if e.success:
-                    md += f"✅ {e.name}  \n"
-                else:
-                    md += f"❌ {e.name}: {e.message}  \n"
-            md += "\n"
-
-        return md
-
-    def _repr_html_(self):
+    def to_html(self):
         """
         see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
         """
@@ -644,6 +627,34 @@ class DataframeTest:
         """.strip()
 
         return html
+
+    def to_markdown(self):
+        result = self.collect()
+
+        md = ""
+
+        for series in result.series:
+            md += f"**{series.name}**  \n"
+            for e in series.expectations:
+                if e.success:
+                    md += f"✅ {e.name}  \n"
+                else:
+                    md += f"❌ {e.name}: {e.message}  \n"
+            md += "\n"
+
+        return md
+
+    def _repr_markdown_(self):
+        """
+        see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
+        """
+        return self.to_markdown()
+
+    def _repr_html_(self):
+        """
+        see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
+        """
+        return self.to_html()
 
 
 def test(dataframe: pandas.DataFrame):

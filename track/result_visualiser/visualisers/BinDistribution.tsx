@@ -22,7 +22,7 @@ export function BinDistribution({ bins, name }: { bins: Record<string, string>; 
             label: name ?? "count",
             data: entries.map(([bin, count]) => parseInt(count)),
             order: 1,
-            backgroundColor: "lightblue"
+            backgroundColor: "lightblue",
           },
         ],
       }}

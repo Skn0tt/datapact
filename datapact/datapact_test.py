@@ -1,9 +1,11 @@
+# pylint: disable=protected-access,redefined-outer-name
+
 import pandas
 import pytest
 import datapact
 from datapact.datapact import compute
 
-from datapact.fixture_test import iris_df, covid_df
+from datapact.fixture_test import iris_df, covid_df  # pylint: disable=unused-import
 
 
 def test_iris(iris_df: pandas.DataFrame):
@@ -25,7 +27,7 @@ def test_iris(iris_df: pandas.DataFrame):
     ]
 
     with pytest.raises(AttributeError):
-        dp.NonExistant
+        dp.NonExistant  # pylint: disable=pointless-statement
 
     result = dp.collect()
     assert len(result.series) == 1
@@ -55,6 +57,7 @@ def test_iris(iris_df: pandas.DataFrame):
     def be_bigger_than_3(series: pandas.Series):
         if compute(series.min()) < 3:
             return "must be bigger than 3"
+        return None
 
     custom_result = dp.SepalLength.must.fulfill(be_bigger_than_3)
     assert custom_result.name == "be_bigger_than_3"
@@ -85,7 +88,7 @@ def test_be_one_of(iris_df: pandas.DataFrame):
         dp.Name.should.be_one_of("Iris-setosa").message
         == "found additional values: ['Iris-versicolor', 'Iris-virginica']"
     )
-    if type(iris_df) is pandas.DataFrame:
+    if isinstance(iris_df, pandas.DataFrame):
         assert dp.Name.should.be_one_of("Iris-setosa").failed_sample.to_dict(
             orient="list"
         )["Name"] == ["Iris-versicolor", "Iris-virginica"]
@@ -132,7 +135,7 @@ def test_failed_sample(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
     assert dp.SepalLength.should.be_between(3, 4).failed_sample_indices == [131]
 
-    if type(iris_df) is pandas.DataFrame:
+    if isinstance(iris_df, pandas.DataFrame):
         assert dp.SepalLength.should.be_between(3, 4).failed_sample.to_dict(
             orient="records"
         ) == [

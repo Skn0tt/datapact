@@ -8,9 +8,7 @@ import { Shell } from "app/layout/Shell"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
-    window.location.replace(
-      `/auth/login?next=${encodeURIComponent(window.location.toString())}`
-    )
+    window.location.replace(`/auth/login?next=${encodeURIComponent(window.location.toString())}`)
     return null
   } else if (error instanceof AuthorizationError) {
     return (

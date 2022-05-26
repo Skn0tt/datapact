@@ -18,17 +18,6 @@ income_df = pd.read_csv(
     "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
 )
 
-with datapact.test(income_df).describe(
-    title="Income", description="Income description"
-) as income:
-    income.connect(server="datapact.services.netcheck.de", token="abcde")
-    with income.age as age:
-        age.should.be_between(0, 100)
-    with income.salary as salary:
-        salary.should.be_between(0, 300000)
-        salary.should.be_normal_distributed(alpha=0.05)
-
-
 income_dp = datapact.test(income_df)
 # income_dp.connect(server="datapact.services.netcheck.de", token="abcde")
 income_dp.describe(title="Iris Dataset")
@@ -36,4 +25,4 @@ income_dp.describe(title="Iris Dataset")
 income_dp.sepal_width.describe(unit="$")
 income_dp.sepal_width.should.be_between(3, 4)
 
-income_dp._repr_html_()
+income_dp.to_html()

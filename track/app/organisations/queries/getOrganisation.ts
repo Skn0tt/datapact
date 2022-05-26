@@ -29,9 +29,9 @@ export default async function getOrganisation(slug: string, ctx: Ctx) {
           },
           _count: {
             select: {
-              testRuns: true
-            }
-          }
+              testRuns: true,
+            },
+          },
         },
       },
       members: {
