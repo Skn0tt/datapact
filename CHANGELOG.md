@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.7.0](https://github.com/Skn0tt/datapact/compare/v0.6.0...v0.7.0) (2022-05-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* add a bunch of tests, remove __enter__, __exit__
+
+### Features
+
+* add .check ([7e56b11](https://github.com/Skn0tt/datapact/commit/7e56b117ec35a88e6d8ae50273bf9eb0672b9452))
+* add a bunch of tests, remove __enter__, __exit__ ([033e86f](https://github.com/Skn0tt/datapact/commit/033e86f3928275d32c238922fc8c099e2093a86f))
+* collect "failed_sample ([bf054f6](https://github.com/Skn0tt/datapact/commit/bf054f661da41644ea68f69ac0ee5f36bb8f25d4))
+* collect more failed samples ([c1db317](https://github.com/Skn0tt/datapact/commit/c1db317182f54f79e117668f86a67f8b7524198a))
+* docs + add expectation ([4ce78dd](https://github.com/Skn0tt/datapact/commit/4ce78dd6016725457fe2ac3744d7ab9e808793a7))
+* implement be_date ([36bdd87](https://github.com/Skn0tt/datapact/commit/36bdd876603f7c79bb50cec602e8f3c07f547fd0))
+* implement be_datetime ([2ce4519](https://github.com/Skn0tt/datapact/commit/2ce45195e7b9d4ebecaf4e9db216fa4eb9addd70))
+* implement be_unix_epoch ([b47eca5](https://github.com/Skn0tt/datapact/commit/b47eca5c98345460e339e03200313aceea351e2b))
+* implement keyword capturing for var-args ([2b7b571](https://github.com/Skn0tt/datapact/commit/2b7b571a2d72daabcaeeda9c7e6935c0d2898dc3))
+* implement sensible default viz ([bf3154d](https://github.com/Skn0tt/datapact/commit/bf3154dca58119c874ee1ef303c3fcf78e9bd8ff))
+* remove placeholder stats ([920249e](https://github.com/Skn0tt/datapact/commit/920249ebd6cc70e3a6d57a8925d7062b4f10f3f2))
+
+
+### Bug Fixes
+
+* distribution viz ([f748e7a](https://github.com/Skn0tt/datapact/commit/f748e7a01eb897dd75cf7185eeb194e8a7b27c76))
+* dont go over tuple bounds ([d86d61e](https://github.com/Skn0tt/datapact/commit/d86d61e618dd74c7b13878ec74de28551e7e40b9))
+
+
+### Miscellaneous Chores
+
+* release 0.7.0 ([e40c489](https://github.com/Skn0tt/datapact/commit/e40c4890dd16a869085940eeaa0c0fc7aa9d44ca))
+
 ## [0.6.0](https://github.com/Skn0tt/datapact/compare/v0.5.0...v0.6.0) (2022-05-20)
 
 
