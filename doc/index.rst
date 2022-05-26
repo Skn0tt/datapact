@@ -21,7 +21,7 @@ datapact
    track
 
 
-missing things to document
+TODO: things that are yet to be documented
 --------------------------
 
 - how to use this in scripts (.check)
