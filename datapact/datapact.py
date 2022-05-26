@@ -148,7 +148,7 @@ def coerce_to_json(arg):
     if inspect.isfunction(arg):
         return arg.__name__
     if isinstance(arg, int64):
-        return int(arg)
+        return str(arg)
     return arg
 
 
