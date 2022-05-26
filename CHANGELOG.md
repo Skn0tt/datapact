@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.7.1](https://github.com/Skn0tt/datapact/compare/v0.7.0...v0.7.1) (2022-05-26)
+
+
+### Bug Fixes
+
+* doc build ([e859d1f](https://github.com/Skn0tt/datapact/commit/e859d1f7fbab7a1dc0f6c8a5924d1abb61eef022))
+* represent int64 as string ([bf7a6fb](https://github.com/Skn0tt/datapact/commit/bf7a6fba527f57e22a7117a4001c3f946e230058))
+
 ## [0.7.0](https://github.com/Skn0tt/datapact/compare/v0.6.0...v0.7.0) (2022-05-25)
 
 
