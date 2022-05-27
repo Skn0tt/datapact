@@ -8,6 +8,12 @@
 <a href="https://codecov.io/gh/Skn0tt/datapact">
   <img alt="codecov" src="https://codecov.io/gh/Skn0tt/datapact/branch/main/graph/badge.svg?token=I9GG5WH8SU" />
 </a>
+<a href="https://pypi.org/project/datapact">
+  <img alt="Pypi" src="https://img.shields.io/pypi/v/datapact" />
+</a>
+<a href="https://github.com/Skn0tt/datapact/actions/workflows/test.yml">
+  <img alt="Test" src="https://github.com/Skn0tt/datapact/actions/workflows/test.yml/badge.svg" />
+</a>
 
 `datapact` is a Python library for verifying your data.
 
