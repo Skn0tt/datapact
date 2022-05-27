@@ -32,6 +32,14 @@ def test_get_github_url(tmp_path: Path):
             "--local",
             "user.email",
             "bot@datapact.dev",
+        ],
+        cwd=subdir_with_git,
+    )
+    subprocess.call(
+        [
+            "git",
+            "config",
+            "--local",
             "user.name",
             "Test Bot",
         ],
