@@ -8,7 +8,9 @@ from datapact import compute
 
 
 iris_pandas = pandas.read_csv("datapact/iris.csv")
-iris_dask = dask.dataframe.read_csv("datapact/iris.csv")
+iris_dask = dask.dataframe.read_csv(  # pyright: ignore [reportPrivateImportUsage]
+    "datapact/iris.csv"
+)
 
 
 @pytest.fixture(params=[iris_pandas, iris_dask], ids=["pandas", "dask"])
@@ -21,7 +23,9 @@ def test_fixture_iris_df(iris_df: pandas.DataFrame):
 
 
 covid_pandas = pandas.read_csv("datapact/covid.csv")
-covid_dask = dask.dataframe.read_csv("datapact/covid.csv")
+covid_dask = dask.dataframe.read_csv(  # pyright: ignore [reportPrivateImportUsage]
+    "datapact/covid.csv"
+)
 
 
 @pytest.fixture(params=[covid_pandas, covid_dask], ids=["pandas", "dask"])

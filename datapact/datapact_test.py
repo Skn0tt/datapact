@@ -89,9 +89,12 @@ def test_be_one_of(iris_df: pandas.DataFrame):
         == "found additional values: ['Iris-versicolor', 'Iris-virginica']"
     )
     if isinstance(iris_df, pandas.DataFrame):
-        assert dp.Name.should.be_one_of("Iris-setosa").failed_sample.to_dict(
-            orient="list"
-        )["Name"] == ["Iris-versicolor", "Iris-virginica"]
+        result = dp.Name.should.be_one_of("Iris-setosa")
+        assert result.failed_sample is not None
+        assert result.failed_sample.to_dict(orient="list")["Name"] == [
+            "Iris-versicolor",
+            "Iris-virginica",
+        ]
     assert dp.Name.should.be_one_of(
         "Iris-setosa", "Iris-virginica", "Iris-versicolor"
     ).success
@@ -136,9 +139,9 @@ def test_failed_sample(iris_df: pandas.DataFrame):
     assert dp.SepalLength.should.be_between(3, 4).failed_sample_indices == [131]
 
     if isinstance(iris_df, pandas.DataFrame):
-        assert dp.SepalLength.should.be_between(3, 4).failed_sample.to_dict(
-            orient="records"
-        ) == [
+        result = dp.SepalLength.should.be_between(3, 4)
+        assert result.failed_sample is not None
+        assert result.failed_sample.to_dict(orient="records") == [
             {
                 "Name": "Iris-virginica",
                 "SepalLength": 7.9,
