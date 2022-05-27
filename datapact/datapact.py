@@ -5,6 +5,7 @@ import inspect
 import json
 from typing import Callable, Optional
 from dataclasses import dataclass, field
+import dask
 from numpy import int64
 
 import pandas
@@ -67,6 +68,9 @@ class Expectation:  # pylint: disable=too-many-instance-attributes
         if self.parent is not None:
             return self.parent._repr_html_()  # pylint: disable=protected-access
         return None
+
+    def __bool__(self):
+        return self.success
 
 
 @dataclass
@@ -216,6 +220,11 @@ class Asserter:
             >>> dp.salary.should.be_normal(alpha=0.1)
         """
 
+        if not pandas.api.types.is_numeric_dtype(self.series):
+            return Expectation.Fail(
+                "not numeric. cannot perform normaltest.",
+            )
+
         stat, p = scipy.stats.normaltest(self.series)
         bins = self.bins()
 
@@ -254,8 +263,8 @@ class Asserter:
 
         if extends_left and extends_right:
             return Expectation.Fail(
-                f"out of range. expected to be in ({minimum}, {maximum}) \n"
-                + f"but found ({found_min}, {found_max}).",
+                f"expected values to be in ({minimum}, {maximum}), "
+                + f"but found ({found_min}, {found_max})",
                 failed_sample_indices=[
                     compute(self.series.idxmin()),
                     compute(self.series.idxmax()),
@@ -308,11 +317,11 @@ class Asserter:
             >>> dp.debt.should.be_negative()
         """
 
-        found_max = self.series.max()
+        found_max = compute(self.series.max())
 
         result = {"maximum": found_max}
 
-        if found_max < 0:
+        if found_max > 0:
             return Expectation.Fail(
                 f"positive value found: max is {found_max}",
                 failed_sample_indices=[compute(self.series.idxmax())],
@@ -320,25 +329,6 @@ class Asserter:
             )
 
         return Expectation.Pass(**result)
-
-    @expectation
-    def not_be_null(self):
-        """
-        checks if all values are non-null.
-
-        Examples:
-            >>> dp.user_id.must.not_be_null()
-        """
-
-        null_index = self.series.isnull().first_valid_index()
-
-        if null_index:
-            return Expectation.Fail(
-                "found null values",
-                failed_sample_indices=[null_index],
-            )
-
-        return Expectation.Pass()
 
     @expectation
     def not_be_na(self):
@@ -349,10 +339,13 @@ class Asserter:
             >>> dp.user_id.must.not_be_na()
         """
 
-        na_index = self.series.isna().first_valid_index()
+        isna = self.series.isna()
 
-        if na_index:
-            return Expectation.Fail("found na values", failed_sample_indices=[na_index])
+        if compute(isna.any()):
+            failed_sample_indices = compute(self.series[isna].index).to_list()[:5]
+            return Expectation.Fail(
+                "found na values", failed_sample_indices=failed_sample_indices
+            )
 
         return Expectation.Pass()
 
@@ -417,13 +410,18 @@ class Asserter:
             >>> dp.timestamp.must.be_datetime()
         """
 
-        rejected = compute(
-            self.series[-pandas.to_datetime(self.series, errors="coerce").isna()].index
-        ).to_list()
+        to_datetime = (
+            pandas.to_datetime
+            if isinstance(self.series, pandas.Series)
+            else dask.dataframe.to_datetime
+        )
 
-        if len(rejected) > 0:
+        invalid_datetimes = to_datetime(self.series, errors="coerce").isna()
+        invalid_rows = compute(self.series[invalid_datetimes].index).to_list()
+
+        if len(invalid_rows) > 0:
             return Expectation.Fail(
-                "found non-datetime values", failed_sample_indices=rejected[:5]
+                "found non-datetime values", failed_sample_indices=invalid_rows[:5]
             )
 
         return Expectation.Pass()
@@ -452,7 +450,7 @@ class Asserter:
                 **result,
             )
 
-        max_timestamp = datetime.datetime(2100, 0, 0).timestamp()
+        max_timestamp = datetime.datetime(2100, 1, 1).timestamp()
         if found_max > max_timestamp:
             return Expectation.Fail(
                 f"found {found_max}, which is after the year 2100",

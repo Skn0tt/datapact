@@ -3,9 +3,13 @@
 import pandas
 import pytest
 import datapact
-from datapact.datapact import compute
+from datapact.datapact import Expectation, compute
 
-from datapact.fixture_test import iris_df, covid_df  # pylint: disable=unused-import
+from datapact.fixture_test import (  # pylint: disable=unused-import
+    iris_df,
+    covid_df,
+    contrived_df,
+)
 
 
 def test_iris(iris_df: pandas.DataFrame):
@@ -76,10 +80,79 @@ def test_iris(iris_df: pandas.DataFrame):
     assert isinstance(dp.collect().to_dict(), dict)
 
 
-def test_be_normal_distributed(iris_df: pandas.DataFrame):
+def test_describe(iris_df: pandas.DataFrame):
+    dp = datapact.test(iris_df)
+    dp.describe(title="foo", description="bar", url="https://datapact.dev")
+    assert "foo" in dp.to_html()
+    assert "bar" in dp.to_html()
+    assert "https://datapact.dev" in dp.to_html()
+
+
+def test_be_normal_distributed(iris_df: pandas.DataFrame, covid_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
     assert dp.SepalWidth.should.be_normal_distributed().success
     assert dp.SepalWidth.should.be_normal_distributed().args == {"alpha": 0.05}
+    result = dp.SepalWidth.should.be_normal_distributed().result
+    assert 0.1 < result["p"] < 0.2
+    assert 3 < result["stat"] < 4
+
+    assert (
+        dp.Name.should.be_normal_distributed().message
+        == "not numeric. cannot perform normaltest."
+    )
+
+    covid_dp = datapact.test(covid_df)
+    assert covid_dp.new_case.should.be_normal_distributed().success is False
+
+
+def test_be_between(iris_df: pandas.DataFrame):
+    dp = datapact.test(iris_df)
+    assert (
+        dp.SepalWidth.should.be_between(3, 4).message
+        == "expected values to be in (3, 4), but found (2.0, 4.4)"
+    )
+    assert (
+        dp.SepalWidth.should.be_between(3, 50).message
+        == "expected values to be at least 3, but found 2.0"
+    )
+
+
+def test_be_positive(covid_df: pandas.DataFrame):
+    dp = datapact.test(covid_df)
+    assert dp.new_recovered.should.be_positive().success is False
+
+
+def test_be_negative(covid_df: pandas.DataFrame):
+    copy = covid_df.copy()
+    copy["negative"] = copy.new_case * -1
+    dp = datapact.test(copy)
+    assert dp.negative.should.be_negative().success is True
+    assert dp.number_recovered.should.be_negative().success is False
+
+
+def test_not_be_na(contrived_df: pandas.DataFrame):
+    dp = datapact.test(contrived_df)
+    assert dp.full.should.not_be_na()
+    assert not dp.optional.should.not_be_na()
+
+
+def test_be_datetime(contrived_df: pandas.DataFrame):
+    dp = datapact.test(contrived_df)
+    assert dp.datetime.should.be_datetime()
+    assert not dp.datetimebroken.should.be_datetime()
+
+
+def test_be_unix_epoch(contrived_df: pandas.DataFrame):
+    dp = datapact.test(contrived_df)
+    assert dp.unix.should.be_unix_epoch()
+    assert (
+        dp.unixtoofar.should.be_unix_epoch().message
+        == "found 5000000000, which is after the year 2100"
+    )
+    assert (
+        dp.unixnegative.should.be_unix_epoch().message
+        == "unix epoch times should be positive. found -100, which is before 1970."
+    )
 
 
 def test_be_one_of(iris_df: pandas.DataFrame):
@@ -180,3 +253,9 @@ def test_checks(iris_df: pandas.DataFrame):
     assert dp.is_critical_failure() is True
     with pytest.raises(Exception):
         assert dp.check()
+
+
+def test_expectation_without_parent():
+    e = Expectation.Pass()
+    assert e._repr_markdown_() is None
+    assert e._repr_html_() is None

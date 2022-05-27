@@ -1,5 +1,6 @@
 # pylint: disable=redefined-outer-name
 
+from numpy import dtype
 import pytest
 import pandas
 import dask.dataframe
@@ -35,3 +36,18 @@ def covid_df(request) -> pandas.DataFrame:
 
 def test_fixture_covid_df(covid_df: pandas.DataFrame):
     assert compute(covid_df.size) == 1199988
+
+
+contrived_pandas = pandas.read_csv("datapact/contrived.csv")
+contrived_dask = dask.dataframe.read_csv(  # pyright: ignore [reportPrivateImportUsage]
+    "datapact/contrived.csv"
+)
+
+
+@pytest.fixture(params=[contrived_pandas, contrived_dask], ids=["pandas", "dask"])
+def contrived_df(request) -> pandas.DataFrame:
+    return request.param
+
+
+def test_fixture_contrived_df(contrived_df: pandas.DataFrame):
+    assert contrived_df.optional.dtype == dtype("float64")
