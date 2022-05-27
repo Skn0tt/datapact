@@ -1,5 +1,5 @@
 import { getMailTransport } from "integrations/email"
-import { EMAIL_DOMAIN, websiteUrl } from "./util"
+import { EMAIL_DOMAIN, mjmlMail, websiteUrl } from "./util"
 
 export function warningMailer({
   to,
@@ -17,14 +17,14 @@ export function warningMailer({
   const msg = {
     from: `noreply@${EMAIL_DOMAIN}`,
     to,
-    subject: `Warning: expectations about dataset ${datasetSlug} failed`,
-    html: `
-      <h1>Expectations Failed</h1>
-
-      <a href="${runUrl}">
-        ${runUrl}
-      </a>
-    `,
+    subject: `[datapact/${orgSlug}/${datasetSlug}] warning: test run failed`,
+    html: mjmlMail(`
+      <mj-text font-size="20px">Test Run Failed</mj-text> 
+      <mj-text>
+        A test run on the dataset "${datasetSlug}" failed:
+        <a href="${runUrl}">${runUrl}</a>
+      </mj-text>
+    `),
   }
 
   return {
