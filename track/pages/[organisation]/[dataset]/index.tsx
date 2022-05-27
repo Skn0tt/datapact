@@ -1,4 +1,4 @@
-import { invoke, useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import {
   Button,
   Code,
@@ -12,6 +12,7 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  IconButton,
   Input,
   Link,
   Select,
@@ -22,10 +23,8 @@ import {
   Text,
   Th,
   Thead,
-  toast,
   Tr,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react"
 import { PageTitle } from "app/components/PageTitle"
 import { Shell } from "app/layout/Shell"
@@ -36,9 +35,10 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python"
 import docco from "react-syntax-highlighter/dist/cjs/styles/hljs/docco"
 import { useState } from "react"
-import { BellIcon } from "@chakra-ui/icons"
+import { BellIcon, DeleteIcon } from "@chakra-ui/icons"
 import { isFinalised } from "app/testruns"
 import updateNotificationMailMutation from "app/datasets/mutations/updateNotificationMail"
+import removeNotificationMailMutation from "app/datasets/mutations/removeNotificationMail"
 
 SyntaxHighlighter.registerLanguage("python", python)
 
@@ -59,6 +59,9 @@ export default function Dataset() {
   })
   const [udpateNotificationMail, udpateNotificationMailMeta] = useMutation(
     updateNotificationMailMutation
+  )
+  const [removeNotificationMail, removeNotificationMailMeta] = useMutation(
+    removeNotificationMailMutation
   )
 
   const codeString = `
@@ -108,7 +111,19 @@ dp.connect(
 
       {dataset.notificationMail ? (
         <Text>
-          Notifications are sent to <Code>{dataset.notificationMail}</Code>.
+          Notifications are sent to <Code>{dataset.notificationMail}</Code>
+          <IconButton
+            aria-label="remove email notifications"
+            size="xs"
+            isLoading={removeNotificationMailMeta.isLoading}
+            onClick={async () => {
+              await removeNotificationMail({ datasetId: dataset.id })
+              await datasetMeta.refetch()
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+          .
         </Text>
       ) : (
         <Button size="sm" leftIcon={<BellIcon />} onClick={addNotificationModal.onOpen}>
