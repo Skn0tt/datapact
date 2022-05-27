@@ -33,6 +33,7 @@ jobs:
       - name: Test with pytest
         run: pytest -vv --cov
       - run: make test-bundled
+        if: matrix.os != 'windows-latest'
       - uses: codecov/codecov-action@v3
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.8'
         with:
