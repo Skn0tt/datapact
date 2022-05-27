@@ -20,5 +20,5 @@ def test_upload(httpserver: pytest_httpserver.HTTPServer, iris_df: pandas.DataFr
 def test_protocol_default_https(iris_df: pandas.DataFrame):
     dp = datapact.test(iris_df)
     dp.connect("track.datapact.dev", "foo")
-    assert dp.url is not None
-    assert dp.url.startswith("https://")
+    assert dp.server is not None
+    assert dp.server.startswith("https://")
