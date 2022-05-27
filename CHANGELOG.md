@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/Skn0tt/datapact/compare/v0.7.1...v0.8.0) (2022-05-27)
+
+
+### Features
+
+* allow removal of notification emails ([053f314](https://github.com/Skn0tt/datapact/commit/053f314420faa2b2879c02754c04ceece2b0601b))
+* make emails more beautiful ([c7f6983](https://github.com/Skn0tt/datapact/commit/c7f6983dca63a7e992403460f3bc12d896417da9))
+
 ### [0.7.1](https://github.com/Skn0tt/datapact/compare/v0.7.0...v0.7.1) (2022-05-26)
 
 
