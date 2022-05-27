@@ -1,11 +1,15 @@
 import re
 import subprocess
 from typing import Optional
+from os import PathLike  # pylint: disable=unused-import
 
 
-def get_github_url() -> Optional[str]:
+def get_github_url(cwd: "Optional[PathLike]" = None) -> Optional[str]:
     originUrlP = subprocess.run(
-        ["git", "remote", "get-url", "origin"], check=False, capture_output=True
+        ["git", "remote", "get-url", "origin"],
+        check=False,
+        capture_output=True,
+        cwd=cwd,
     )
     if originUrlP.returncode != 0:
         return None
@@ -18,15 +22,24 @@ def get_github_url() -> Optional[str]:
     repo = match.group(2)
 
     refP = subprocess.run(
-        ["git", "show", "-s", "--format=%H"], check=True, capture_output=True
+        ["git", "show", "-s", "--format=%H"],
+        check=False,
+        capture_output=True,
+        cwd=cwd,
     )
+    if refP.returncode != 0:
+        return None
+
     ref = refP.stdout.decode("utf-8").strip()
 
     url = f"https://github.com/{org}/{repo}/tree/{ref}"
 
     isClean = (
         subprocess.run(
-            ["git", "diff", "--exit-code"], check=False, capture_output=True
+            ["git", "diff", "--exit-code"],
+            check=False,
+            capture_output=True,
+            cwd=cwd,
         ).returncode
         == 0
     )
