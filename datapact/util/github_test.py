@@ -26,6 +26,19 @@ def test_get_github_url(tmp_path: Path):
     assert get_github_url(cwd=subdir_with_git) is None
 
     subprocess.call(
+        [
+            "git",
+            "config",
+            "--local",
+            "user.email",
+            "bot@datapact.dev",
+            "user.name",
+            "Test Bot",
+        ],
+        cwd=subdir_with_git,
+    )
+
+    subprocess.call(
         ["git", "commit", "--allow-empty", "-m", "init"],
         cwd=subdir_with_git,
     )
