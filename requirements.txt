@@ -1,7 +1,6 @@
 pandas==1.3.5
 scipy==1.7.3
 dask==2022.2.0
-dataclasses_json==0.5.7
 requests==2.27.1
 
 pre-commit
