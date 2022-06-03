@@ -1,9 +1,7 @@
 # `datapact` - pytest, but for dataframes
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-">
-  <img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square" />
-</a>
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <a href="https://codecov.io/gh/Skn0tt/datapact">
   <img alt="codecov" src="https://codecov.io/gh/Skn0tt/datapact/branch/main/graph/badge.svg?token=I9GG5WH8SU" />
@@ -92,6 +90,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="http://simonknott.de"><img src="https://avatars.githubusercontent.com/u/14912729?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Simon Knott</b></sub></a><br /><a href="https://github.com/Skn0tt/datapact/commits?author=skn0tt" title="Code">💻</a> <a href="https://github.com/Skn0tt/datapact/commits?author=skn0tt" title="Documentation">📖</a> <a href="#ideas-skn0tt" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-skn0tt" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/st-sch"><img src="https://avatars.githubusercontent.com/u/62374911?v=4?s=100" width="100px;" alt=""/><br /><sub><b>st-sch</b></sub></a><br /><a href="https://github.com/Skn0tt/datapact/issues?q=author%3Ast-sch" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
