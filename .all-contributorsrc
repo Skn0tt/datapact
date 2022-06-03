@@ -16,6 +16,15 @@
         "ideas",
         "maintenance"
       ]
+    },
+    {
+      "login": "st-sch",
+      "name": "st-sch",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62374911?v=4",
+      "profile": "https://github.com/st-sch",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
