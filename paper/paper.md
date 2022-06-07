@@ -65,11 +65,45 @@ As opposed to unit tests, which run at development time, Pipeline Tests run whil
   - geared towards data engineering. does some limited tests really well (data missing, average moving, ...)
   - only for snowflake & co
   - only cloud-hosted
+  - just became a unicorn!
 - this other tool I found which is datadog for sql
   - only for snowflake & co
   - only cloud-hosted
 - Exploratory Thingy
   - TODO: find out what it does differently!
+
+- https://metaplane.dev
+  - datadog for data o11y
+  - connects to
+    - data warehouses (redshift, snowflake, bigquery, postgres, mysql)
+    - dbt
+    - BI tools
+    - slack
+  - browser-based
+  - allows adding tests to data: row count, col count, freshness, cardinality, uniqueness, nullness, sortedness, distribution (center, extent, cut points, spread, distribution (skew, kurtosis))
+  - custom sql tests (tracks scalar metric over time + alerts on outlier; tracks result set + alerts on outlier)
+  - basic idea: capture metrics + do outlier detection with model feedback
+  - supports ssh tunnels for warehouse access
+  
+- Acceldata
+  - reliability across full data stack (includes compute monitoring, lineage + usage o11y)
+  - really badly explained, not sure if I'll even list them
+- Bigeye
+  - "industry leader" aha
+  - freshness tracking
+  - tracks categorical data categories
+  - tracks volume (row number, nullability, ...)
+  - outlier detection
+  - can validate formats (UUID, zip codes, ...)
+  - summary statistic tracking
+  - connects to basically everything (snowflake, redshift, etc, but also sap, oracle, ...)
+- Datafold
+  - in a dbt+PR-based workflow, datafold does monitoring + CI reporting on PRs
+  - connects to your database to alert on SQL-pulled scalars
+  - can be deployed On Prem
+- Manta
+  - data lineage
+  - not mention-worthy
 
 Summary table:
 
