@@ -11,6 +11,7 @@ from datapact.fixture_test import (  # pylint: disable=unused-import
     iris_df,
     covid_df,
     contrived_df,
+    distribution_df,
 )
 
 
@@ -263,17 +264,8 @@ def test_expectation_without_parent():
     assert e._repr_html_() is None
 
 
-def test_match_distribution():
-    numpy.random.seed(0)
-
-    df = pandas.DataFrame(
-        {
-            "poisson": numpy.random.poisson(5, 100),
-            "exp": numpy.random.exponential(5, 100),
-        }
-    )
-
-    dp = datapact.test(df)
+def test_match_distribution(distribution_df):
+    dp = datapact.test(distribution_df)
 
     assert dp.poisson.should.match_distribution(numpy.random.poisson(5, 100))
     assert not dp.poisson.should.match_distribution(numpy.random.poisson(10, 50))
