@@ -69,7 +69,7 @@ def test_iris(iris_df: pandas.DataFrame):
 
     custom_result = dp.SepalLength.must.fulfill(be_bigger_than_3)
     assert custom_result.name == "be_bigger_than_3"
-    assert custom_result.__repr__() == "be_bigger_than_3: Success"
+    assert custom_result.__repr__() == "Pass(be_bigger_than_3)"
     assert dp.PetalLength.must.fulfill(be_bigger_than_3).success is False
 
     expected_markdown = (
@@ -312,3 +312,11 @@ def test_summary_stats(iris_df):
     else:
         with pytest.raises(NotImplementedError):
             assert dp.SepalWidth.should.have_median_between(3, 4)
+
+
+def test_have_no_outliers(iris_df, distribution_df):
+    iris_dp = datapact.test(iris_df)
+    distribution_dp = datapact.test(distribution_df)
+
+    assert iris_dp.SepalWidth.should.have_no_outliers()
+    assert not distribution_dp.exp.should.have_no_outliers()

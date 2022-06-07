@@ -12,6 +12,7 @@ from numpy import int64
 
 import pandas
 import requests
+import outliers
 import scipy.stats
 
 from datapact.util.github import get_github_url
@@ -62,7 +63,9 @@ class Expectation:  # pylint: disable=too-many-instance-attributes
         }
 
     def __repr__(self) -> str:
-        return f"{self.name}: {self.message or 'Success'}"
+        if self.success:
+            return f"Pass({self.name})"
+        return f"Fail({self.name}: {self.message})"
 
     def _repr_markdown_(self):
         if self.parent is not None:
@@ -623,6 +626,23 @@ class Asserter:
         return check_range(
             minimum, maximum, compute(self.series.quantile(p)), "percentile"
         )
+
+    @expectation
+    def have_no_outliers(self, alpha=0.05):
+        """
+        verifies that series has no outliers using Grubbs test.
+
+        Examples:
+            >>> dp.size.should.have_no_outliers()
+        """
+
+        indices = outliers.smirnov_grubbs.two_sided_test_indices(
+            compute(self.series), alpha=alpha
+        )
+        if len(indices) > 0:
+            return Expectation.Fail("found outliers", failed_sample_indices=indices[:5])
+
+        return Expectation.Pass()
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
