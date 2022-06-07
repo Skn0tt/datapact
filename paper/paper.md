@@ -55,6 +55,7 @@ To ensure that `datapact`'s developer-facing API is intuitive + ergonomic to use
 As opposed to unit tests, which run at development time, Pipeline Tests run while data is flowing in.
 
 - two different suites of tools:
+
   - libraries / frameworks, that you run yourself
     - datapact, GE, tdda
     - easy to implement, don't require sales stuff, can be driven by dev
@@ -81,6 +82,7 @@ As opposed to unit tests, which run at development time, Pipeline Tests run whil
   - only for snowflake & co
   - only cloud-hosted
 - tdda (https://github.com/tdda/tdda)
+
   - consists of four sub-projects:
   - `referencetest`
     - kind of like snapshot tests for CSV files
@@ -116,7 +118,6 @@ As opposed to unit tests, which run at development time, Pipeline Tests run whil
   - custom sql tests (tracks scalar metric over time + alerts on outlier; tracks result set + alerts on outlier)
   - basic idea: capture metrics + do outlier detection with model feedback
   - supports ssh tunnels for warehouse access
-  
 - Acceldata
   - reliability across full data stack (includes compute monitoring, lineage + usage o11y)
   - really badly explained, not sure if I'll even list them
