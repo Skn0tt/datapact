@@ -305,8 +305,7 @@ def test_summary_stats(iris_df):
     assert dp.SepalWidth.should.have_average_between(3, 4)
     assert dp.SepalWidth.should.have_variance_between(0.1, 0.2)
     assert not dp.SepalWidth.should.have_variance_between(3, 4)
-    assert dp.SepalWidth.should.have_percentile_between(.95, 3, 4)
-
+    assert dp.SepalWidth.should.have_percentile_between(0.95, 3, 4)
 
     if isinstance(iris_df, pandas.DataFrame):
         assert dp.SepalWidth.should.have_median_between(3, 4)

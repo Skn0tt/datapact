@@ -5,7 +5,9 @@ import inspect
 import json
 from typing import Callable, Optional
 from dataclasses import dataclass, field
-import dask, dask.dataframe, dask.array
+import dask
+import dask.dataframe
+import dask.array
 from numpy import int64
 
 import pandas
@@ -618,7 +620,9 @@ class Asserter:
             >>> dp.size.should.have_percentile_between(.95, 10, 20)
         """
 
-        return check_range(minimum, maximum, compute(self.series.quantile(p)), "percentile")
+        return check_range(
+            minimum, maximum, compute(self.series.quantile(p)), "percentile"
+        )
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
