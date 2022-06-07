@@ -461,6 +461,27 @@ class Asserter:
         return Expectation.Pass(**result)
 
     @expectation
+    def match_distribution(self, distribution, alpha=0.05):
+        """
+        checks if series is from same distribution
+        using a kolmogorov-smirnoff-test.
+
+        Examples:
+            >>> dp.age.should.match_distribution(reference_distribution)
+        """
+
+        stat, p = scipy.stats.ks_2samp(self.series, distribution)
+        result = {
+            "stat": stat,
+            "p": p,
+        }
+
+        if p < alpha:
+            return Expectation.Fail("kolmogorov-smirnoff-test rejected", **result)
+
+        return Expectation.Pass(**result)
+
+    @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
         """
         checks if series passes your custom validator

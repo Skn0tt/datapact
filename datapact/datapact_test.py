@@ -1,7 +1,9 @@
 # pylint: disable=protected-access,redefined-outer-name
 
+import numpy.random
 import pandas
 import pytest
+
 import datapact
 from datapact.datapact import Expectation, compute
 
@@ -259,3 +261,22 @@ def test_expectation_without_parent():
     e = Expectation.Pass()
     assert e._repr_markdown_() is None
     assert e._repr_html_() is None
+
+
+def test_match_distribution():
+    numpy.random.seed(0)
+
+    df = pandas.DataFrame(
+        {
+            "poisson": numpy.random.poisson(5, 100),
+            "exp": numpy.random.exponential(5, 100),
+        }
+    )
+
+    dp = datapact.test(df)
+
+    assert dp.poisson.should.match_distribution(numpy.random.poisson(5, 100))
+    assert not dp.poisson.should.match_distribution(numpy.random.poisson(10, 50))
+
+    assert dp.exp.should.match_distribution(numpy.random.exponential(5, 100))
+    assert not dp.exp.should.match_distribution(numpy.random.poisson(5, 50))
