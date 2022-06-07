@@ -6,5 +6,8 @@
       "matchPackagePatterns": ["blitz", "@blitzjs/*"],
       "groupName": "blitz"
     }
-  ]
+  ],
+  "constraints": {
+    "python": "3.7"
+  }
 }
