@@ -461,16 +461,20 @@ class Asserter:
         return Expectation.Pass(**result)
 
     @expectation
-    def match_distribution(self, distribution, alpha=0.05):
+    def match_sample(self, sample, alpha=0.05):
         """
         checks if series is from same distribution
-        using a kolmogorov-smirnoff-test.
+        as sample using a kolmogorov-smirnoff-test.
+
+        Args:
+            sample : list-like
+                sample to compare to
 
         Examples:
-            >>> dp.age.should.match_distribution(reference_distribution)
+            >>> dp.age.should.match_sample(reference_sample)
         """
 
-        stat, p = scipy.stats.ks_2samp(self.series, distribution)
+        stat, p = scipy.stats.ks_2samp(self.series, sample)
         result = {
             "stat": stat,
             "p": p,
@@ -480,6 +484,81 @@ class Asserter:
             return Expectation.Fail("kolmogorov-smirnoff-test rejected", **result)
 
         return Expectation.Pass(**result)
+
+    def _match_cdf(self, cdf: Callable, args, N=20, alpha=0.05):
+        """
+        checks if series is from distribution as given by cdf using a kolmogorov-smirnoff-test.
+
+        Args:
+            cdf : Callable
+                Used to calculate the cdf.
+            args :
+                Distribution parameters, given to cdf.
+
+        Examples:
+            >>> dp.wins.should.match_sample(scipy.stats.binom)
+        """
+
+        stat, p = scipy.stats.kstest(self.series, cdf, args, N)
+        result = {"stat": stat, "p": p, "bins": self.bins()}
+
+        if p < alpha:
+            return Expectation.Fail("kolmogorov-smirnoff-test rejected", **result)
+
+        return Expectation.Pass(**result)
+
+    @expectation
+    def match_cdf(self, cdf: Callable, args, N=20, alpha=0.05):
+        """
+        checks if series is from distribution as given by cdf using a kolmogorov-smirnoff-test.
+
+        Args:
+            cdf : Callable
+                Used to calculate the cdf.
+            args :
+                Distribution parameters, given to cdf.
+
+        Examples:
+            >>> dp.wins.should.match_sample(scipy.stats.binom)
+        """
+
+        return self._match_cdf(cdf, args, N=N, alpha=alpha)
+
+    @expectation
+    def be_binomial_distributed(self, n, p=0.5, N=20, alpha=0.05):
+        """
+        checks if series is binomial distributed using a kolmogorov-smirnoff-test.
+
+        Args:
+            n : number
+                number of draws
+            p :
+                probability of success
+
+        Examples:
+            >>> dp.heads.should.be_binomial_distributed()
+        """
+
+        return self._match_cdf(
+            scipy.stats.distributions.binom.cdf, (n, p), N=N, alpha=alpha
+        )
+
+    @expectation
+    def be_poisson_distributed(self, l, N=20, alpha=0.05):
+        """
+        checks if series is poisson distributed using a kolmogorov-smirnoff-test.
+
+        Args:
+            l : number
+                lambda for poission distribution
+
+        Examples:
+            >>> dp.new_covid_cases.should.be_poisson_distributed(10)
+        """
+
+        return self._match_cdf(
+            scipy.stats.distributions.poisson.cdf, [l], N=N, alpha=alpha
+        )
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):

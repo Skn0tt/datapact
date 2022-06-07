@@ -264,11 +264,28 @@ def test_expectation_without_parent():
     assert e._repr_html_() is None
 
 
-def test_match_distribution(distribution_df):
+def test_match_sample(distribution_df):
     dp = datapact.test(distribution_df)
 
-    assert dp.poisson.should.match_distribution(numpy.random.poisson(5, 100))
-    assert not dp.poisson.should.match_distribution(numpy.random.poisson(10, 50))
+    assert dp.poisson.should.match_sample(numpy.random.poisson(5000, 10000))
+    assert not dp.poisson.should.match_sample(numpy.random.poisson(10, 50))
 
-    assert dp.exp.should.match_distribution(numpy.random.exponential(5, 100))
-    assert not dp.exp.should.match_distribution(numpy.random.poisson(5, 50))
+    assert dp.exp.should.match_sample(numpy.random.exponential(5, 10000))
+    assert not dp.exp.should.match_sample(numpy.random.poisson(5, 50))
+
+
+def test_be_binomial_distributed(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert not dp.poisson.should.be_binomial_distributed(10, 0.5)
+    assert (
+        dp.poisson.should.be_binomial_distributed(10, 0.5).name
+        == "be_binomial_distributed"
+    )
+    assert dp.binom.should.be_binomial_distributed(10000, 0.5, N=10000)
+
+
+def test_be_poisson_distributed(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert dp.poisson.should.be_poisson_distributed(5000, N=1000)

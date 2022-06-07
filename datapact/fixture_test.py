@@ -56,8 +56,9 @@ def test_fixture_contrived_df(contrived_df: pandas.DataFrame):
 random.seed(0)
 distribution_pandas = pandas.DataFrame(
     {
-        "poisson": random.poisson(5, 100),
-        "exp": random.exponential(5, 100),
+        "poisson": random.poisson(5000, 10000),
+        "exp": random.exponential(5, 10000),
+        "binom": random.binomial(10000, 0.5, 10000),
     }
 )
 distribution_dask = dask.dataframe.from_pandas(distribution_pandas, npartitions=2)
