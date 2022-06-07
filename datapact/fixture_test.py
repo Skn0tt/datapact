@@ -1,6 +1,6 @@
 # pylint: disable=redefined-outer-name
 
-from numpy import dtype
+from numpy import dtype, random
 import pytest
 import pandas
 import dask.dataframe
@@ -51,3 +51,19 @@ def contrived_df(request) -> pandas.DataFrame:
 
 def test_fixture_contrived_df(contrived_df: pandas.DataFrame):
     assert contrived_df.optional.dtype == dtype("float64")
+
+
+random.seed(0)
+distribution_pandas = pandas.DataFrame(
+    {
+        "poisson": random.poisson(5000, 10000),
+        "exp": random.exponential(5, 10000),
+        "binom": random.binomial(10000, 0.5, 10000),
+    }
+)
+distribution_dask = dask.dataframe.from_pandas(distribution_pandas, npartitions=2)
+
+
+@pytest.fixture(params=[distribution_pandas, distribution_dask], ids=["pandas", "dask"])
+def distribution_df(request) -> pandas.DataFrame:
+    return request.param

@@ -1,7 +1,10 @@
 # pylint: disable=protected-access,redefined-outer-name
 
+import numpy.random
+import scipy.stats
 import pandas
 import pytest
+
 import datapact
 from datapact.datapact import Expectation, compute
 
@@ -9,6 +12,7 @@ from datapact.fixture_test import (  # pylint: disable=unused-import
     iris_df,
     covid_df,
     contrived_df,
+    distribution_df,
 )
 
 
@@ -65,6 +69,7 @@ def test_iris(iris_df: pandas.DataFrame):
 
     custom_result = dp.SepalLength.must.fulfill(be_bigger_than_3)
     assert custom_result.name == "be_bigger_than_3"
+    assert custom_result.__repr__() == "Pass(be_bigger_than_3)"
     assert dp.PetalLength.must.fulfill(be_bigger_than_3).success is False
 
     expected_markdown = (
@@ -259,3 +264,59 @@ def test_expectation_without_parent():
     e = Expectation.Pass()
     assert e._repr_markdown_() is None
     assert e._repr_html_() is None
+
+
+def test_match_sample(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert dp.poisson.should.match_sample(numpy.random.poisson(5000, 10000))
+    assert not dp.poisson.should.match_sample(numpy.random.poisson(10, 50))
+
+    assert dp.exp.should.match_sample(numpy.random.exponential(5, 10000))
+    assert not dp.exp.should.match_sample(numpy.random.poisson(5, 50))
+
+
+def test_match_cdf(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert dp.poisson.should.match_cdf(scipy.stats.poisson.cdf, [5000])
+
+
+def test_be_binomial_distributed(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert not dp.poisson.should.be_binomial_distributed(10, 0.5)
+    assert (
+        dp.poisson.should.be_binomial_distributed(10, 0.5).name
+        == "be_binomial_distributed"
+    )
+    assert dp.binom.should.be_binomial_distributed(10000, 0.5, N=10000)
+
+
+def test_be_poisson_distributed(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert dp.poisson.should.be_poisson_distributed(5000, N=1000)
+
+
+def test_summary_stats(iris_df):
+    dp = datapact.test(iris_df)
+
+    assert dp.SepalWidth.should.have_average_between(3, 4)
+    assert dp.SepalWidth.should.have_variance_between(0.1, 0.2)
+    assert not dp.SepalWidth.should.have_variance_between(3, 4)
+    assert dp.SepalWidth.should.have_percentile_between(0.95, 3, 4)
+
+    if isinstance(iris_df, pandas.DataFrame):
+        assert dp.SepalWidth.should.have_median_between(3, 4)
+    else:
+        with pytest.raises(NotImplementedError):
+            assert dp.SepalWidth.should.have_median_between(3, 4)
+
+
+def test_have_no_outliers(iris_df, distribution_df):
+    iris_dp = datapact.test(iris_df)
+    distribution_dp = datapact.test(distribution_df)
+
+    assert iris_dp.SepalWidth.should.have_no_outliers()
+    assert not distribution_dp.exp.should.have_no_outliers()

@@ -6,10 +6,13 @@ import json
 from typing import Callable, Optional
 from dataclasses import dataclass, field
 import dask
+import dask.dataframe
+import dask.array
 from numpy import int64
 
 import pandas
 import requests
+import outliers
 import scipy.stats
 
 from datapact.util.github import get_github_url
@@ -58,6 +61,11 @@ class Expectation:  # pylint: disable=too-many-instance-attributes
             if self.failed_sample is not None
             else None,
         }
+
+    def __repr__(self) -> str:
+        if self.success:
+            return f"Pass({self.name})"
+        return f"Fail({self.name}: {self.message})"
 
     def _repr_markdown_(self):
         if self.parent is not None:
@@ -114,6 +122,16 @@ def compute(value):
     if "compute" in dir(value):
         return value.compute()
     return value
+
+
+def check_range(min_value: float, max_value: float, value: float, name):
+    result = {"value": value}
+    if value < min_value or value > max_value:
+        return Expectation.Fail(
+            f"{name} is not in range [{min_value}, {max_value}], found {value}",
+            **result,
+        )
+    return Expectation.Pass()
 
 
 class SeriesTest:
@@ -459,6 +477,172 @@ class Asserter:
             )
 
         return Expectation.Pass(**result)
+
+    @expectation
+    def match_sample(self, sample, alpha=0.05):
+        """
+        checks if series is from same distribution
+        as sample using a kolmogorov-smirnoff-test.
+
+        Args:
+            sample : list-like
+                sample to compare to
+
+        Examples:
+            >>> dp.age.should.match_sample(reference_sample)
+        """
+
+        stat, p = scipy.stats.ks_2samp(self.series, sample)
+        result = {
+            "stat": stat,
+            "p": p,
+        }
+
+        if p < alpha:
+            return Expectation.Fail("kolmogorov-smirnoff-test rejected", **result)
+
+        return Expectation.Pass(**result)
+
+    def _match_cdf(self, cdf: Callable, args, N=20, alpha=0.05):
+        """
+        checks if series is from distribution as given by cdf using a kolmogorov-smirnoff-test.
+
+        Args:
+            cdf : Callable
+                Used to calculate the cdf.
+            args :
+                Distribution parameters, given to cdf.
+
+        Examples:
+            >>> dp.wins.should.match_sample(scipy.stats.binom)
+        """
+
+        stat, p = scipy.stats.kstest(self.series, cdf, args, N)
+        result = {"stat": stat, "p": p, "bins": self.bins()}
+
+        if p < alpha:
+            return Expectation.Fail("kolmogorov-smirnoff-test rejected", **result)
+
+        return Expectation.Pass(**result)
+
+    @expectation
+    def match_cdf(self, cdf: Callable, args, N=20, alpha=0.05):
+        """
+        checks if series is from distribution as given by cdf using a kolmogorov-smirnoff-test.
+
+        Args:
+            cdf : Callable
+                Used to calculate the cdf.
+            args :
+                Distribution parameters, given to cdf.
+
+        Examples:
+            >>> dp.wins.should.match_sample(scipy.stats.binom)
+        """
+
+        return self._match_cdf(cdf, args, N=N, alpha=alpha)
+
+    @expectation
+    def be_binomial_distributed(self, n, p=0.5, N=20, alpha=0.05):
+        """
+        checks if series is binomial distributed using a kolmogorov-smirnoff-test.
+
+        Args:
+            n : number
+                number of draws
+            p :
+                probability of success
+
+        Examples:
+            >>> dp.heads.should.be_binomial_distributed()
+        """
+
+        return self._match_cdf(
+            scipy.stats.distributions.binom.cdf, (n, p), N=N, alpha=alpha
+        )
+
+    @expectation
+    def be_poisson_distributed(self, l, N=20, alpha=0.05):
+        """
+        checks if series is poisson distributed using a kolmogorov-smirnoff-test.
+
+        Args:
+            l : number
+                lambda for poission distribution
+
+        Examples:
+            >>> dp.new_covid_cases.should.be_poisson_distributed(10)
+        """
+
+        return self._match_cdf(
+            scipy.stats.distributions.poisson.cdf, [l], N=N, alpha=alpha
+        )
+
+    @expectation
+    def have_average_between(self, minimum: float, maximum: float):
+        """
+        checks if average is between min and max.
+
+        Examples:
+            >>> dp.size.should.have_average_between(4, 5)
+        """
+
+        return check_range(minimum, maximum, compute(self.series.mean()), "average")
+
+    @expectation
+    def have_variance_between(self, minimum: float, maximum: float):
+        """
+        checks if average is in given range.
+
+        Examples:
+            >>> dp.size.should.have_variance_between(150, 170)
+        """
+
+        return check_range(minimum, maximum, compute(self.series.var()), "variance")
+
+    @expectation
+    def have_median_between(self, minimum: float, maximum: float):
+        """
+        checks if median is in given range.
+
+        Examples:
+            >>> dp.size.should.have_median_between(150, 170)
+        """
+
+        if not isinstance(self.series, pandas.Series):
+            raise NotImplementedError()
+
+        return check_range(minimum, maximum, self.series.median(), "median")
+
+    @expectation
+    def have_percentile_between(self, p: float, minimum: float, maximum: float):
+        """
+        checks if percentile / quantile is in given range.
+
+        Examples:
+            >>> dp.size.should.have_percentile_between(.95, 10, 20)
+        """
+
+        return check_range(
+            minimum, maximum, compute(self.series.quantile(p)), "percentile"
+        )
+
+    @expectation
+    def have_no_outliers(self, alpha=0.05):
+        """
+        verifies that series has no outliers using Grubbs test.
+
+        Examples:
+            >>> dp.size.should.have_no_outliers()
+        """
+
+        indices = outliers.smirnov_grubbs.two_sided_test_indices(
+            compute(self.series), alpha=alpha
+        )
+        if len(indices) > 0:
+            return Expectation.Fail("found outliers", failed_sample_indices=indices[:5])
+
+        return Expectation.Pass()
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):
