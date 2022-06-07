@@ -29,6 +29,8 @@ jobs:
           pip install build
       - run: npm ci
         working-directory: track
+      - run: npm run build
+        working-directory: track
       - run: make build
       - name: Test with pytest
         run: pytest -vv --cov
