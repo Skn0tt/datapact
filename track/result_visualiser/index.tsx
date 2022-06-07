@@ -56,15 +56,15 @@ function RecordTable(props: { items: Record<string, any>[] }) {
       <Thead>
         <Tr>
           {[...columnNames].map((colName) => (
-            <Th>{colName}</Th>
+            <Th key={colName}>{colName}</Th>
           ))}
         </Tr>
       </Thead>
       <Tbody>
-        {rows.map((row) => (
-          <Tr>
-            {row.map((cell) => (
-              <Td>{cell}</Td>
+        {rows.map((row, i) => (
+          <Tr key={i}>
+            {row.map((cell, i) => (
+              <Td key={i}>{cell}</Td>
             ))}
           </Tr>
         ))}

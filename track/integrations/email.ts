@@ -7,8 +7,8 @@ function getDevelopmentTransport() {
   const jsonTransport = new JSONTransport({
     jsonTransport: true,
   })
-  jsonTransport.send = (mail, callback) => {
-    previewEmail(mail.data)
+  jsonTransport.send = async (mail, callback) => {
+    await previewEmail(mail.data)
     callback(null, null as any)
   }
   return jsonTransport

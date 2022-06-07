@@ -45,6 +45,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
         working-directory: track
+      - run: npm run lint
+        working-directory: track
       - run: make build
       - name: Test with pytest
         run: pytest -vv --cov
