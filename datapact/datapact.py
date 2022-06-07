@@ -5,7 +5,7 @@ import inspect
 import json
 from typing import Callable, Optional
 from dataclasses import dataclass, field
-import dask
+import dask, dask.dataframe, dask.array
 from numpy import int64
 
 import pandas
@@ -58,6 +58,9 @@ class Expectation:  # pylint: disable=too-many-instance-attributes
             if self.failed_sample is not None
             else None,
         }
+
+    def __repr__(self) -> str:
+        return f"{self.name}: {self.message or 'Success'}"
 
     def _repr_markdown_(self):
         if self.parent is not None:
@@ -114,6 +117,16 @@ def compute(value):
     if "compute" in dir(value):
         return value.compute()
     return value
+
+
+def check_range(min_value: float, max_value: float, value: float, name):
+    result = {"value": value}
+    if value < min_value or value > max_value:
+        return Expectation.Fail(
+            f"{name} is not in range [{min_value}, {max_value}], found {value}",
+            **result,
+        )
+    return Expectation.Pass()
 
 
 class SeriesTest:
@@ -559,6 +572,53 @@ class Asserter:
         return self._match_cdf(
             scipy.stats.distributions.poisson.cdf, [l], N=N, alpha=alpha
         )
+
+    @expectation
+    def have_average_between(self, minimum: float, maximum: float):
+        """
+        checks if average is between min and max.
+
+        Examples:
+            >>> dp.size.should.have_average_between(4, 5)
+        """
+
+        return check_range(minimum, maximum, compute(self.series.mean()), "average")
+
+    @expectation
+    def have_variance_between(self, minimum: float, maximum: float):
+        """
+        checks if average is in given range.
+
+        Examples:
+            >>> dp.size.should.have_variance_between(150, 170)
+        """
+
+        return check_range(minimum, maximum, compute(self.series.var()), "variance")
+
+    @expectation
+    def have_median_between(self, minimum: float, maximum: float):
+        """
+        checks if median is in given range.
+
+        Examples:
+            >>> dp.size.should.have_median_between(150, 170)
+        """
+
+        if not isinstance(self.series, pandas.Series):
+            raise NotImplementedError()
+
+        return check_range(minimum, maximum, self.series.median(), "median")
+
+    @expectation
+    def have_percentile_between(self, p: float, minimum: float, maximum: float):
+        """
+        checks if percentile / quantile is in given range.
+
+        Examples:
+            >>> dp.size.should.have_percentile_between(.95, 10, 20)
+        """
+
+        return check_range(minimum, maximum, compute(self.series.quantile(p)), "percentile")
 
     @expectation
     def fulfill(self, custom_assertion: Callable[[pandas.Series], Optional[str]]):

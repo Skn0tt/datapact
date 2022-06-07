@@ -1,6 +1,7 @@
 # pylint: disable=protected-access,redefined-outer-name
 
 import numpy.random
+import scipy.stats
 import pandas
 import pytest
 
@@ -68,6 +69,7 @@ def test_iris(iris_df: pandas.DataFrame):
 
     custom_result = dp.SepalLength.must.fulfill(be_bigger_than_3)
     assert custom_result.name == "be_bigger_than_3"
+    assert custom_result.__repr__() == "be_bigger_than_3: Success"
     assert dp.PetalLength.must.fulfill(be_bigger_than_3).success is False
 
     expected_markdown = (
@@ -274,6 +276,12 @@ def test_match_sample(distribution_df):
     assert not dp.exp.should.match_sample(numpy.random.poisson(5, 50))
 
 
+def test_match_cdf(distribution_df):
+    dp = datapact.test(distribution_df)
+
+    assert dp.poisson.should.match_cdf(scipy.stats.poisson.cdf, [5000])
+
+
 def test_be_binomial_distributed(distribution_df):
     dp = datapact.test(distribution_df)
 
@@ -289,3 +297,19 @@ def test_be_poisson_distributed(distribution_df):
     dp = datapact.test(distribution_df)
 
     assert dp.poisson.should.be_poisson_distributed(5000, N=1000)
+
+
+def test_summary_stats(iris_df):
+    dp = datapact.test(iris_df)
+
+    assert dp.SepalWidth.should.have_average_between(3, 4)
+    assert dp.SepalWidth.should.have_variance_between(0.1, 0.2)
+    assert not dp.SepalWidth.should.have_variance_between(3, 4)
+    assert dp.SepalWidth.should.have_percentile_between(.95, 3, 4)
+
+
+    if isinstance(iris_df, pandas.DataFrame):
+        assert dp.SepalWidth.should.have_median_between(3, 4)
+    else:
+        with pytest.raises(NotImplementedError):
+            assert dp.SepalWidth.should.have_median_between(3, 4)
