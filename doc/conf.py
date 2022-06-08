@@ -29,6 +29,8 @@ config = configparser.ConfigParser()
 config.read(r"../setup.cfg")
 release = config.get("metadata", "version")
 
+root_doc = "contents"
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -71,4 +73,6 @@ html_theme_options = {
 html_static_path = ["_static"]
 html_js_files = [
     "hypothesis.js",
+    "github_link.js",
+    "logo_link.js",
 ]
