@@ -27,11 +27,9 @@ dp.age.must.be_positive()
 dp.name.should.not_be_empty()
 ```
 
-<!-- TODO: add jupyter notebooks image here -->
-
 It works with Pandas + Dask DataFrames, and has special support for Jupyter Notebooks.
 
-<!-- TODO: list out supported DataFrame kinds -->
+![jupyter notebooks screenshot](./doc/jupyter_screenshot.png)
 
 Here's some features:
 
@@ -46,7 +44,7 @@ Get Started here: https://datapact.dev
 
 Datapact Track is an optional, browser-based data tracking service.
 
-<!-- TODO: add image here -->
+![Datapact Track dataset overview. code snippet for how to connect test suite to service](./doc/track_screenshot_dataset.png)
 
 It's fully self-hostable via Docker and Postgres, and there's a hosted version available at `track.datapact.dev`.
 
@@ -66,7 +64,7 @@ Datapact track gives you:
 - history of data expectations + reality
 - data quality tracking
 
-Try out Datapact Track at [track.datapact.dev](https://track.datapact.dev), or follow the [self-hosting guide](TODO:) to deploy your own instance.
+Try out Datapact Track at [track.datapact.dev](https://track.datapact.dev), or follow the [self-hosting guide](https://datapact.dev/track.html) to deploy your own instance.
 
 ## `datapact` vs [Great Expectations](https://greatexpectations.io)
 

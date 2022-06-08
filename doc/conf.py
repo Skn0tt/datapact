@@ -29,6 +29,8 @@ config = configparser.ConfigParser()
 config.read(r"../setup.cfg")
 release = config.get("metadata", "version")
 
+root_doc = "contents"
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -60,12 +62,17 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "furo"
 html_title = f"{project} <span style='font-size: 0.7em'>{release}</span>"
 html_theme_options = {
-    # "source_repository": "https://github.com/skn0tt/datapact/",
-    # "source_branch": "main",
-    # "source_directory": "doc/",
+    "source_repository": "https://github.com/skn0tt/datapact/",
+    "source_branch": "main",
+    "source_directory": "doc/",
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_js_files = [
+    "hypothesis.js",
+    "github_link.js",
+    "logo_link.js",
+]

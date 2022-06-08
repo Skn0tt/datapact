@@ -3,6 +3,7 @@ from functools import wraps
 import importlib.resources
 import inspect
 import json
+from os import PathLike
 from typing import Callable, Optional
 from dataclasses import dataclass, field
 import dask
@@ -135,10 +136,6 @@ def check_range(min_value: float, max_value: float, value: float, name):
 
 
 class SeriesTest:
-    """
-    wraps a column
-    """
-
     def __init__(self, parent: "DataframeTest", series: pandas.Series):
         self.parent = parent
         self.series = series
@@ -155,7 +152,10 @@ class SeriesTest:
         unit: Optional[str] = None,
     ):
         """
-        demo docstring
+        Adds human-readable information
+        to the column report.
+
+        >>> dp.SepalWidth.describe(description="TODO: put some sepal knowledge in here", unit="cm")
         """
         if title is not None:
             self.title = title
@@ -697,7 +697,13 @@ class DataframeTest:
         url: Optional[str] = None,
     ):
         """
-        demo docstring
+        Adds human-readable information
+        to the report.
+
+        >>> dp.describe(
+        >>>     title="Vacancy statistics",
+        >>>     description="data sourced from NYC housing markets"
+        >>> )
         """
         if title is not None:
             self.title = title
@@ -728,6 +734,9 @@ class DataframeTest:
         """
         Collects all tests and returns a DataframeResult object.
         If connected, uploads results.
+
+            >>> dp.day.must.be_datetime()
+            >>> dp.collect() # DataframeResult(...)
         """
 
         result = DataframeResult(self.title, self.description, self.url)
@@ -750,6 +759,10 @@ class DataframeTest:
     def expectations(self) -> "list[Expectation]":
         """
         Returns a list of all executed expectations.
+
+        >>> dp.age.should.be_positive() # Pass(be_positive)
+        >>> dp.day.must.be_datetime() # Fail(be_datetime)
+        >>> dp.failed_critical_expectations() # [ Pass(be_positive), Fail(be_datetime) ]
         """
         result = []
         for s in self.collect().series:
@@ -759,37 +772,58 @@ class DataframeTest:
     def failed_expectations(self) -> "list[Expectation]":
         """
         Returns a list of all failed expectations.
+
+        >>> dp.age.should.be_negative() # Fail(be_negative)
+        >>> dp.day.must.be_datetime() # Fail(be_datetime)
+        >>> dp.failed_critical_expectations() # [ Fail(be_negative), Fail(be_datetime) ]
         """
         return [e for e in self.expectations() if not e.success]
 
     def failed_critical_expectations(self) -> "list[Expectation]":
         """
         Returns a list of all failed critical expectations.
+
+        >>> dp.age.should.be_negative() # Fail(be_negative)
+        >>> dp.day.must.be_datetime() # Fail(be_datetime)
+        >>> dp.failed_critical_expectations() # [ Fail(be_datetime) ]
         """
         return [e for e in self.failed_expectations() if e.critical]
 
     def is_failure(self) -> bool:
         """
         Returns True if one of the expectations failed.
+
+        >>> dp.day.should.be_datetime() # Fail(be_datetime)
+        >>> dp.is_failure() # True
         """
         return len(self.failed_expectations()) > 0
 
     def is_critical_failure(self) -> bool:
         """
         Returns True if a critical expectation failed.
+
+        >>> dp.day.should.be_datetime() # Fail(be_datetime)
+        >>> dp.is_critical_failure() # False
+        >>> dp.day.must.be_datetime() # Fail(be_datetime)
+        >>> dp.is_critical_failure() # True
         """
         return len(self.failed_critical_expectations()) > 0
 
     def check(self):
         """
         Raises an exception if a critical expectation failed.
+
+        >>> dp.day.must.be_datetime() # Fail(be_datetime)
+        >>> dp.check() # 💥
         """
         if self.is_critical_failure():
             raise Exception("critical expectation failed")
 
     def to_html(self):
         """
-        see https://ipython.readthedocs.io/en/stable/config/integrating.html#rich-display
+        Returns a human-readable test result as HTML.
+
+        >>> dp.to_html() # "<script>..."
         """
         result = self.collect()
 
@@ -809,6 +843,16 @@ class DataframeTest:
         """.strip()
 
         return html
+
+    def write_html(self, to: PathLike):
+        """
+        Writes the test result to a file.
+
+        >>> dp.write_html("test.html")
+        """
+
+        with open(to, "w", encoding="utf8") as f:
+            f.write(self.to_html())
 
     def to_markdown(self):
         result = self.collect()
@@ -839,5 +883,11 @@ class DataframeTest:
         return self.to_html()
 
 
-def test(dataframe: pandas.DataFrame):
+def test(dataframe: pandas.DataFrame) -> DataframeTest:
+    """
+    Creates a datapact test object.
+
+    >>> df = pandas.read_csv(...)
+    >>> dp = datapact.test(df)
+    """
     return DataframeTest(dataframe)

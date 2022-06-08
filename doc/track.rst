@@ -5,8 +5,17 @@ Datapact Track
 It keeps a history of your test runs + results; and automatically sends out emails if a test failed.
 
 A public instance of Datapact Track is available at `track.datapact.dev <https://track.datapact.dev/>`_.
-To self-host Datapact, use the provided Docker image.
-Use the provided `docker-compose.yml <https://TODO: add/>`_ example as a reference.
+To self-host Datapact, use the provided Docker image:
+
+.. code::
+  
+  docker run
+    -d \
+    --name=datapact_track \
+    -e URL="https://track.yourorganisation.com" \ 
+    -e DATABASE_URL="postgresql://user:password@host:5432/database" \
+    -p 3000:3000 \ # serve behind a reverse proxy, e.g. caddy
+    ghcr.io/skn0tt/datapact
 
 After signing up for Datapact Track, either create a new organisation or ask your organisation owner to invite you:
 

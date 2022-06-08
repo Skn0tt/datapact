@@ -1,5 +1,6 @@
 # pylint: disable=protected-access,redefined-outer-name
 
+from pathlib import Path
 import numpy.random
 import scipy.stats
 import pandas
@@ -91,6 +92,14 @@ def test_describe(iris_df: pandas.DataFrame):
     assert "foo" in dp.to_html()
     assert "bar" in dp.to_html()
     assert "https://datapact.dev" in dp.to_html()
+
+
+def test_write_html(iris_df: pandas.DataFrame, tmp_path: Path):
+    dp = datapact.test(iris_df)
+    dp.describe(title="foo")
+    path = tmp_path / "test.html"
+    dp.write_html(path)
+    assert "foo" in path.read_text()
 
 
 def test_be_normal_distributed(iris_df: pandas.DataFrame, covid_df: pandas.DataFrame):
