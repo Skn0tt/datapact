@@ -107,94 +107,53 @@ can be used for similar purposes as `datapact`.
 - uniqueness
 - allowed values
 
-Compared to `datapact`, it lacks a HTML documentation,
-
-- `referencetest` implements [snapshot testing](https://jestjs.io/docs/snapshot-testing) for CSV files
-- `rexpy` infers regular expressions from text data
-- `gentest` generates python test files from a dataset
-- `constraints`
-
-- tdda (https://github.com/tdda/tdda)
-
-  - consists of four sub-projects:
-  - `referencetest`
-    - kind of like snapshot tests for CSV files
-  - `rexpy`
-    - infers regex from text data
-  - `gentest`
-    - generates python test files from a dataset
-  - `constraints`
-    - similar to datapact: discover constraints, validate, detect anomalies
-    - constraints:
-      - type (bool, int, real, string, date)
-      - min + max
-      - min/max length (missing!)
-      - sign (positive, negative, ...)
-      - max_nulls
-      - no_duplicates (unique)
-      - allowed values
-      - lol, datapact already support 95% of them ...
-  - part of "miro" tool
-  - built by a small consultancy shop somewhere
-  - seems pretty research-heavy
-  - built by "Simon Brown"
+Compared to `datapact`, it has a small number of supported constraints, does not output any human-readable documentation,
+and does not integrate well with Jupyter Notebooks.
+It does, however, have a data profiler that seems useful for setting up an initial expectation suite.
 
 ## Standalone Services
 
-- applications that tie in with data warehouses
-  - common pitch: "datadog for data"
-  - generally does freshness checking, col count + row count
-  - some do uniqueness + nullness testing, distribution tests (checks summary stats)
-  - don't aim to serve any documentation purposes
-  - some do datadog-like alerting, e.g. based on scalar values returned from custom SQL queries
+The following tools all work very similar:
+They are commercial Software-as-a-Service offerings that connect directly to your data warehouse (all support Snowflake, Redshift and BigQuery), do semi-automatic data monitoring and tracking, and alert via Slack or Email when
+they find an anomaly.
+
+Typically geared more towards industry applications than research, their common pitch is "being datadog for data", and they aim to prevent data pipelines from breaking.
+Compared to `datapact`, they are easier to set up, but very limited in the types of errors they can catch.
+Documentation is not in scope for them.
 
 ### Monte Carlo
 
-- Monte Carlo
-  - geared towards data engineering. does some limited tests really well (data missing, average moving, ...)
-  - only for snowflake & co
-  - only cloud-hosted
-  - just became a unicorn!
+Monte Carlo (https://www.montecarlodata.com) describes itself with the tagline "Data Reliability Delivered.".
+It monitors freshness, volume and schema changes to all tables.
+Anomaly detection is performed using machine learning, which can make it hard to predict how the tool works.
+For usecases where SaaS-usage is prohibited, e.g. because of data privacy requirements,
+hybrid deployments are only supported on AWS, ruling Monte Carlo out for a lot of research usecases.
+
+Monte Carlo features ready-made integrations for orchestrators like AirFlow, allowing you to build custom-made
+workflows e.g. for verifying pull requests.
 
 ### Metaplane
 
-- this other tool I found which is datadog for sql
+Metaplane (https://metaplane.dev) has the literal tagline "The Datadog for data".
 
-  - only for snowflake & co
-  - only cloud-hosted
+Similar to Monte Carlo, it connects to a data warehouse and performs anomaly detection
+on metrics like row and column count, data freshness, uniqueness, distribution, or custom SQL-based metrics.
+Anomalies are alerted via the Slack integration, and allow data engineers to give model feedback to train it better.
 
-- https://metaplane.dev
-  - datadog for data o11y
-  - connects to
-    - data warehouses (redshift, snowflake, bigquery, postgres, mysql)
-    - dbt
-    - BI tools
-    - slack
-  - browser-based
-  - allows adding tests to data: row count, col count, freshness, cardinality, uniqueness, nullness, sortedness, distribution (center, extent, cut points, spread, distribution (skew, kurtosis))
-  - custom sql tests (tracks scalar metric over time + alerts on outlier; tracks result set + alerts on outlier)
-  - basic idea: capture metrics + do outlier detection with model feedback
-  - supports ssh tunnels for warehouse access
-
-### Acceldata
-
-- Acceldata
-  - reliability across full data stack (includes compute monitoring, lineage + usage o11y)
-  - really badly explained, not sure if I'll even list them
+Metaplane, like Montecarlo, is not available for on-premise hosting.
 
 ### BigEye
 
-- Bigeye
-  - "industry leader" aha
-  - freshness tracking
-  - tracks categorical data categories
-  - tracks volume (row number, nullability, ...)
-  - outlier detection
-  - can validate formats (UUID, zip codes, ...)
-  - summary statistic tracking
-  - connects to basically everything (snowflake, redshift, etc, but also sap, oracle, ...)
+In addition to the common data ware houses, BigEye also connects to systems like Presto, SAP, Oracle and Rockset.
+Apart from data freshness, volume (row number, nullability, uniqueness ...) and summary statistics, it can
+verify a column's data format (UUID, zip codes, ...).
+It tracks data freshness, volume (), format (UUID, zip codes, ...) and summary
+statistics, and performs basic outlier detection.
+Compared to the other tools, BigEye seems to be the most lacking feature-wise.
 
 ### Datafold
+
+Datafold is
 
 - Datafold
   - in a dbt+PR-based workflow, datafold does monitoring + CI reporting on PRs
