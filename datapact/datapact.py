@@ -3,6 +3,7 @@ from functools import wraps
 import importlib.resources
 import inspect
 import json
+from os import PathLike
 from typing import Callable, Optional
 from dataclasses import dataclass, field
 import dask
@@ -842,6 +843,16 @@ class DataframeTest:
         """.strip()
 
         return html
+
+    def write_html(self, to: PathLike):
+        """
+        Writes the test result to a file.
+
+        >>> dp.write_html("test.html")
+        """
+
+        with open(to, "w", encoding="utf8") as f:
+            f.write(self.to_html())
 
     def to_markdown(self):
         result = self.collect()
