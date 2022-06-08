@@ -19,7 +19,7 @@ jobs:
           node-version: 18
         if: ${{ steps.release.outputs.release_created }}
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         if: ${{ steps.release.outputs.release_created }}
       - run: npm ci
         working-directory: track
