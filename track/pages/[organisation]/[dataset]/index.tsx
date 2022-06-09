@@ -147,6 +147,10 @@ dp.connect(
             {dataset.testRuns.map((run) => (
               <Tr
                 key={run.id}
+                cursor="pointer"
+                _hover={{
+                  bg: "gray.100",
+                }}
                 onClick={() =>
                   router.push(`/${query.organisation}/${query.dataset}/runs/${run.id}`)
                 }
