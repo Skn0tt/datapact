@@ -154,6 +154,7 @@ export default function OrganisationPage() {
       <SimpleGrid spacing={8} minChildWidth="150px">
         {org.datasets.map((dataset) => (
           <LinkBox
+            key={dataset.id}
             rounded="sm"
             bg="gray.100"
             p={4}
