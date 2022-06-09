@@ -25,6 +25,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "doetterl",
+      "name": "Jeremias Dötterl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5360291?v=4",
+      "profile": "https://github.com/doetterl",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
