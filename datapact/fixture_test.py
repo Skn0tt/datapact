@@ -67,3 +67,23 @@ distribution_dask = dask.dataframe.from_pandas(distribution_pandas, npartitions=
 @pytest.fixture(params=[distribution_pandas, distribution_dask], ids=["pandas", "dask"])
 def distribution_df(request) -> pandas.DataFrame:
     return request.param
+
+
+timerange = pandas.date_range("2020-01-01", "2020-02-01", freq="D").set_names("day")
+locations = pandas.Categorical(["london", "berlin", "tokyo"])
+index = pandas.MultiIndex.from_product(
+    [timerange, locations], names=["day", "location"]
+)
+multiindex_pandas = pandas.DataFrame(
+    {"x": random.randn(len(index))},
+    index=index,
+)
+
+
+@pytest.fixture(params=[multiindex_pandas], ids=["pandas"])
+def multiindex_df(request) -> pandas.DataFrame:
+    return request.param
+
+
+def test_fixture_multiindex():
+    assert multiindex_pandas.size == timerange.size * locations.size

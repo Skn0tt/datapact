@@ -14,6 +14,7 @@ from datapact.fixture_test import (  # pylint: disable=unused-import
     covid_df,
     contrived_df,
     distribution_df,
+    multiindex_df,
 )
 
 
@@ -329,3 +330,12 @@ def test_have_no_outliers(iris_df, distribution_df):
 
     assert iris_dp.SepalWidth.should.have_no_outliers()
     assert not distribution_dp.exp.should.have_no_outliers()
+
+
+def test_multiindex(multiindex_df: pandas.DataFrame):
+    dp = datapact.test(multiindex_df)
+
+    result = dp.x.must.be_negative()
+    assert not result.success
+    assert result.failed_sample
+    assert len(result.failed_sample.to_dict(orient="list")["x"]) == 1
