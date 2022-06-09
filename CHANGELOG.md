@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.9.0](https://github.com/Skn0tt/datapact/compare/v0.8.0...v0.9.0) (2022-06-09)
+
+
+### Features
+
+* implement ks-test ([#127](https://github.com/Skn0tt/datapact/issues/127)) ([45be43a](https://github.com/Skn0tt/datapact/commit/45be43a67fc28ec9d21b673b436e7f054e0ebbf2))
+* make cards clickable ([#152](https://github.com/Skn0tt/datapact/issues/152)) ([feb095b](https://github.com/Skn0tt/datapact/commit/feb095bf1c498e6aaec4320845c3060e872dd210))
+
+
+### Bug Fixes
+
+* .connect test ([a5830f5](https://github.com/Skn0tt/datapact/commit/a5830f55e23a8a29ef30d1fb754f9fc8836d4f8c))
+* add dask to requires ([f130fe5](https://github.com/Skn0tt/datapact/commit/f130fe5a585a5c09a361fca9caef6a29db6bf481))
+* add missing files ([4a50444](https://github.com/Skn0tt/datapact/commit/4a504449ca7fb9a89e3ccfdd261a23183816f1a6))
+* **deps:** update blitz to v2.0.0-alpha.26 ([#126](https://github.com/Skn0tt/datapact/issues/126)) ([b6b3306](https://github.com/Skn0tt/datapact/commit/b6b33063b5b39102dab3c29dfc24f37628417cd2))
+* **deps:** update blitz to v2.0.0-alpha.33 ([#131](https://github.com/Skn0tt/datapact/issues/131)) ([4fae24f](https://github.com/Skn0tt/datapact/commit/4fae24fffeb326a9be22d12637eaf9361e4e34b1))
+* **deps:** update dependency chart.js to v3.8.0 ([#136](https://github.com/Skn0tt/datapact/issues/136)) ([747adb7](https://github.com/Skn0tt/datapact/commit/747adb766b46090fef02ff08737f455d584527b9))
+* **deps:** update dependency framer-motion to v6.3.10 ([#132](https://github.com/Skn0tt/datapact/issues/132)) ([58f2737](https://github.com/Skn0tt/datapact/commit/58f2737baafa41c81f095fd212593d5e003f4b31))
+* **deps:** update dependency framer-motion to v6.3.11 ([#144](https://github.com/Skn0tt/datapact/issues/144)) ([7c8420c](https://github.com/Skn0tt/datapact/commit/7c8420c392e06ecab1ca6d2e6666b7e843b14e80))
+* **deps:** update dependency parcel to v2.6.0 ([#137](https://github.com/Skn0tt/datapact/issues/137)) ([61ee1e2](https://github.com/Skn0tt/datapact/commit/61ee1e214f40824237ba2216363556ce0eba4737))
+* **deps:** update dependency react-chartjs-2 to v4.2.0 ([#138](https://github.com/Skn0tt/datapact/issues/138)) ([e7d2d0c](https://github.com/Skn0tt/datapact/commit/e7d2d0c57cba98ca71cbe1fe437bc7612c72c5f4))
+* **deps:** update dependency undici to v5.4.0 ([44de301](https://github.com/Skn0tt/datapact/commit/44de301437eb12e9f6394659a8190959c3918f5b))
+* **deps:** update prisma monorepo to v3.15.0 ([2880669](https://github.com/Skn0tt/datapact/commit/2880669ba407f962003ffb843de2fe7ce6d9514d))
+* lint ([71f2dbd](https://github.com/Skn0tt/datapact/commit/71f2dbd73deb9a48c36a9ffca2867e078f99c9f4))
+* lint ([472cea9](https://github.com/Skn0tt/datapact/commit/472cea97055283f2cf085c557c31e0fb05c4e77c))
+* make linter happy ([e6c77d6](https://github.com/Skn0tt/datapact/commit/e6c77d648b605bfa3dc4ec7574f712633c208ad0))
+* one config at a time ([30922e0](https://github.com/Skn0tt/datapact/commit/30922e05d98cf4f1007ada5bf756bebedf02137b))
+* remember to do git user/email before committing ([083eeb1](https://github.com/Skn0tt/datapact/commit/083eeb115a90b9a42fa487337c4ae1998798a54f))
+* remove dataclasses-json ([80f4ef7](https://github.com/Skn0tt/datapact/commit/80f4ef7822717957be446eec0e993d8b6235919f))
+* support datetime dtypes ([#154](https://github.com/Skn0tt/datapact/issues/154)) ([879f375](https://github.com/Skn0tt/datapact/commit/879f3752d55238e67db5a38882f8022ce782c3a0))
+* up to 100% coverage! ([abacb9c](https://github.com/Skn0tt/datapact/commit/abacb9cc944901b4045a43108003fa54e5fb9d28))
+
+
+### Documentation
+
+* add st-sch as a contributor for bug ([#97](https://github.com/Skn0tt/datapact/issues/97)) ([d934de5](https://github.com/Skn0tt/datapact/commit/d934de5657d24749bd9d0f7e3837b215bfba6e00))
+* link to comparison (closes [#119](https://github.com/Skn0tt/datapact/issues/119)) ([a18cabf](https://github.com/Skn0tt/datapact/commit/a18cabfe1271f91c2d55f16a0e1317dfdca51bc1))
+
 ## [0.8.0](https://github.com/Skn0tt/datapact/compare/v0.7.1...v0.8.0) (2022-05-27)
 
 
