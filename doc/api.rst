@@ -9,5 +9,3 @@ API Reference
 .. autoclass:: datapact.SeriesTest
   :members:
 
-.. TODO: make list on right side work
-

@@ -143,7 +143,17 @@ class SeriesTest:
         self.description: Optional[str] = None
         self.unit: Optional[str] = None
         self.should = Asserter(self, critical=False)
+        """
+        `should` makes an assertion relaxed (results in warnings, not exceptions).
+
+        >>> dp.SepalWidth.should.be_in_range(0, 10)
+        """
         self.must = Asserter(self, critical=True)
+        """
+        `must` makes an assertion critical (results in exceptions, not warnings).
+
+        >>> dp.SepalWidth.must.be_in_range(0, 10)
+        """
 
     def describe(
         self,
@@ -155,7 +165,10 @@ class SeriesTest:
         Adds human-readable information
         to the column report.
 
-        >>> dp.SepalWidth.describe(description="TODO: put some sepal knowledge in here", unit="cm")
+        >>> dp.SepalWidth.describe(
+        >>>   description="Usually green, sepals typically function as protection ...",
+        >>>   unit="cm"
+        >>> )
         """
         if title is not None:
             self.title = title
@@ -222,36 +235,6 @@ class Asserter:
 
         bins = pandas.cut(self.series, bins=10).value_counts()
         return json.loads(bins.to_json())
-
-    @expectation
-    def be_normal_distributed(self, alpha: float = 0.05):
-        """
-        performs a normaltest.
-
-        uses `scipy.stats.normaltest` under the hood.
-
-        Args:
-            alpha :
-                sensitivity of the test. low value = more sensitive.
-
-        Examples:
-            >>> dp.salary.should.be_normal(alpha=0.1)
-        """
-
-        if not pandas.api.types.is_numeric_dtype(self.series):
-            return Expectation.Fail(
-                "not numeric. cannot perform normaltest.",
-            )
-
-        stat, p = scipy.stats.normaltest(self.series)
-        bins = self.bins()
-
-        result = {"stat": stat, "p": p, "bins": bins}
-
-        if p < alpha:
-            return Expectation.Fail(f"not normal. p={p}, stat={stat}", **result)
-
-        return Expectation.Pass(**result)
 
     @expectation
     def be_between(self, minimum: float, maximum: float):
@@ -485,6 +468,36 @@ class Asserter:
                 failed_sample_indices=[compute(self.series.idxmax())],
                 **result,
             )
+
+        return Expectation.Pass(**result)
+
+    @expectation
+    def be_normal_distributed(self, alpha: float = 0.05):
+        """
+        performs a normaltest.
+
+        uses `scipy.stats.normaltest` under the hood.
+
+        Args:
+            alpha :
+                sensitivity of the test. low value = more sensitive.
+
+        Examples:
+            >>> dp.salary.should.be_normal(alpha=0.1)
+        """
+
+        if not pandas.api.types.is_numeric_dtype(self.series):
+            return Expectation.Fail(
+                "not numeric. cannot perform normaltest.",
+            )
+
+        stat, p = scipy.stats.normaltest(self.series)
+        bins = self.bins()
+
+        result = {"stat": stat, "p": p, "bins": bins}
+
+        if p < alpha:
+            return Expectation.Fail(f"not normal. p={p}, stat={stat}", **result)
 
         return Expectation.Pass(**result)
 

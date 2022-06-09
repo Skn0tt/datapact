@@ -11,23 +11,12 @@ In this tutorial, we'll cover:
 
 To start, set up a Jupyter notebook, install ``pandas`` and ``datapact``, load up the Iris Dataset, and create a new datapact test object:
 
-TODO: replace all code snippets with jupyter images
-
-.. code:: python
-
-  #!pip install pandas datapact
-  import pandas
-  import datapact
-
-  df = pandas.TODO_LOAD_IRIS
-  dp = datapact.test(df)
+.. figure:: tutorial_jupyter_install.png
 
 I named the datapact test object ``dp`` as a shorthand for ``datapact``.
 Let's write our first tests!
 
-.. code:: python
-
-  dp.SepalWidth.should.be_between(3, 4)
+.. figure:: tutorial_jupyter_builtin.png
 
 Let's dissect what's going on here:
 
@@ -43,14 +32,7 @@ autocomplete or the :doc:`Expectation Reference <expectations>`.
 
 If you're missing an expectation, you can write a custom one using ``.fulfil``:
 
-.. code:: python
-
-  def be_uniform(series: pandas.Series):
-    if series.min() != series.max():
-      return "found different values"
-
-  dp.PetalWidth.should.fulfil(be_uniform) # Fail(be_uniform: found_different values)
-
+.. figure:: tutorial_jupyter_custom.png
 
 After exploring your data and writing your tests in a Jupyter Notebook,
 you can transfer them to a Python Script for usage in your data pipeline.
@@ -61,7 +43,7 @@ throw an exception when there are failing critical expectations.
   
   import pandas, datapact
 
-  df = pandas.TODO_LOAD_CSV
+  df = pandas.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv")
   dp = datapact.test(df)
 
   def be_uniform(series: pandas.Series):
