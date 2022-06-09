@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 import dask
 import dask.dataframe
 import dask.array
-from numpy import int64
+import numpy
 
 import pandas
 import requests
@@ -169,7 +169,7 @@ class SeriesTest:
 def coerce_to_json(arg):
     if inspect.isfunction(arg):
         return arg.__name__
-    if isinstance(arg, int64):
+    if isinstance(arg, numpy.int64):
         return str(arg)
     return arg
 
@@ -408,6 +408,17 @@ class Asserter:
             >>> dp.day.must.be_date()
         """
 
+        if self.series.dtype == numpy.dtype("datetime64[ns]"):
+            seconds_not_zero = self.series[
+                self.series.dt.time != datetime.time.fromisoformat("00:00")
+            ]
+            if len(seconds_not_zero) > 0:
+                return Expectation.Fail(
+                    "found datetimes with non-zero seconds",
+                    failed_sample_indices=seconds_not_zero.index,
+                )
+            return Expectation.Pass()
+
         rejected = compute(
             self.series[-self.series.str.match(r"\d{4}-\d{2}-\d{2}")].index
         ).to_list()
@@ -416,7 +427,6 @@ class Asserter:
             return Expectation.Fail(
                 "found non-date values", failed_sample_indices=rejected[:5]
             )
-
         return Expectation.Pass()
 
     @expectation

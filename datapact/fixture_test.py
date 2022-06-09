@@ -24,18 +24,42 @@ def test_fixture_iris_df(iris_df: pandas.DataFrame):
 
 
 covid_pandas = pandas.read_csv("datapact/covid.csv")
+covid_pandas_typed = pandas.read_csv(
+    "datapact/covid.csv",
+    dtype={
+        "area_id": "category",
+        "age group": "category",
+        "sex": "category",
+        "infection_start": "uint",
+        "new_case": "uint",
+        "new_death": "uint",
+        "new_recovered": "int",
+        "number_cases": "uint",
+        "number_deaths": "uint",
+        "number_recovered": "uint",
+    },
+    parse_dates=["report_date", "ref_date"],
+)
 covid_dask = dask.dataframe.read_csv(  # pyright: ignore [reportPrivateImportUsage]
     "datapact/covid.csv"
 )
 
 
-@pytest.fixture(params=[covid_pandas, covid_dask], ids=["pandas", "dask"])
+@pytest.fixture(
+    params=[covid_pandas, covid_pandas_typed, covid_dask],
+    ids=["pandas", "pandas_typed", "dask"],
+)
 def covid_df(request) -> pandas.DataFrame:
     return request.param
 
 
 def test_fixture_covid_df(covid_df: pandas.DataFrame):
     assert compute(covid_df.size) == 1199988
+
+
+def test_fixture_pandas_typed():
+    assert isinstance(covid_pandas_typed.area_id.dtype, pandas.CategoricalDtype)
+    assert covid_pandas_typed.report_date.dtype == dtype("datetime64[ns]")
 
 
 contrived_pandas = pandas.read_csv("datapact/contrived.csv")
