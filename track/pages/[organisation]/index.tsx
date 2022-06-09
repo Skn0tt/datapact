@@ -18,6 +18,7 @@ import {
   IconButton,
   Input,
   LinkBox,
+  LinkOverlay,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -152,29 +153,38 @@ export default function OrganisationPage() {
 
       <SimpleGrid spacing={8} minChildWidth="150px">
         {org.datasets.map((dataset) => (
-          <NextLink key={dataset.id} href={`/${organisation}/${dataset.slug}`}>
-            <LinkBox rounded="sm" bg="gray.100" p={4} maxWidth="300px">
-              <Heading size="md" mb={2}>
-                {dataset.slug}
-                {dataset.testRuns[0] && isFailure(dataset.testRuns[0]?.payload as any) ? (
-                  <WarningIcon color="red" boxSize={6} float="right" />
-                ) : (
-                  <CheckCircleIcon color="green" boxSize={6} float="right" />
-                )}
-              </Heading>
-
-              <Text>Number of runs: {dataset._count.testRuns}</Text>
-
-              {dataset.testRuns[0] && (
-                <Text>
-                  Last run:{" "}
-                  <time dateTime={dataset.testRuns[0].date.toISOString()}>
-                    {dataset.testRuns[0].date.toLocaleDateString()}
-                  </time>
-                </Text>
+          <LinkBox
+            rounded="sm"
+            bg="gray.100"
+            p={4}
+            cursor="pointer"
+            maxWidth="300px"
+            _hover={{
+              bg: "gray.200",
+            }}
+          >
+            <Heading size="md" mb={2}>
+              <NextLink key={dataset.id} href={`/${organisation}/${dataset.slug}`}>
+                <LinkOverlay>{dataset.slug}</LinkOverlay>
+              </NextLink>
+              {dataset.testRuns[0] && isFailure(dataset.testRuns[0]?.payload as any) ? (
+                <WarningIcon color="red" boxSize={6} float="right" />
+              ) : (
+                <CheckCircleIcon color="green" boxSize={6} float="right" />
               )}
-            </LinkBox>
-          </NextLink>
+            </Heading>
+
+            <Text>Number of runs: {dataset._count.testRuns}</Text>
+
+            {dataset.testRuns[0] && (
+              <Text>
+                Last run:{" "}
+                <time dateTime={dataset.testRuns[0].date.toISOString()}>
+                  {dataset.testRuns[0].date.toLocaleDateString()}
+                </time>
+              </Text>
+            )}
+          </LinkBox>
         ))}
       </SimpleGrid>
       <Button mt={4} size="sm" leftIcon={<AddIcon />} onClick={addDatasetModal.onOpen}>
