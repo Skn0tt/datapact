@@ -337,5 +337,5 @@ def test_multiindex(multiindex_df: pandas.DataFrame):
 
     result = dp.x.must.be_negative()
     assert not result.success
-    assert result.failed_sample
+    assert result.failed_sample is not None
     assert len(result.failed_sample.to_dict(orient="list")["x"]) == 1
