@@ -173,3 +173,5 @@ Summary table:
 # Acknowledgements
 
 We acknowledge contributions from the author's coworkers at Netlify, especially Laurie Voss, NetCheck's Team, TODO: add rest of people i talked to.
+
+# References
