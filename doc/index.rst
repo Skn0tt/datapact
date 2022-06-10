@@ -15,7 +15,7 @@ Getting Started
 
 :doc:`tutorial`
 
-`Comparison to Great Expectations, TDDA, Monte Carlo, Datafold, Metaplane <https://github.com/Skn0tt/datapact/blob/main/paper/paper.md#comparison-to-other-tools>`__
+`Comparison to Great Expectations, TDDA, Monte Carlo, Metaplane <https://github.com/Skn0tt/datapact/blob/main/paper/paper.md#comparison-to-other-tools>`__
 
 
 .. figure:: /jupyter_screenshot.png

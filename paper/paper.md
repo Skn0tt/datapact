@@ -1,18 +1,27 @@
 ---
-title: "datapact: An assertion library for Python Dataframes"
+title: "datapact: a library for checking assumptions on Python DataFrames"
 tags:
-  - Python
+  - python
+  - pandas
   - data
   - dataframes
   - verification
   - workflow
 authors:
   - name: Simon Knott
-    orcid: 123 # todo: add
-    affiliation: 1 # todo: should we list netlify here?
-  # todo: add other authors
+    orcid: 0000-0002-4852-3738
+    affiliation: 1
+  - name: Fabio Malcher Miranda
+    orcid: 0000-0002-6823-5995
+    affiliation: 1
+  - name: Ferdous Nasri
+    orcid: 0000-0003-2018-4786
+    affiliation: 1
+  - name: Bernhard Y. Renard
+    orcid: 0000-0003-4589-9809
+    affiliation: 1
 affiliations:
-  - name: DACS Chair, Hasso Plattner Institue, Germany
+  - name: DACS Chair, HPI, Digital Engineering Faculty, University of Potsdam, Potsdam, Germany
     index: 1
 date: 30 June 2022
 bibliography: paper.bib
@@ -20,34 +29,37 @@ bibliography: paper.bib
 
 # Summary
 
-It is crucial to have a good understanding of the datasets you're working with. For static datasets, you can explore it once, and document your findings for other team members to consume.
-For frequently changing datasets, this is not enough. After exploring, analysing and documenting it once, you need to continously verify your understanding is up-to-date, and update it when it's not.
-`datapact` is a Python library that allows you to do just that, by providing an ergonomic API to run assertions on DataFrames.
+It is crucial to have a good understanding of the datasets that are being worked with. For static datasets, users can explore them once, and document their findings for other team members to consume.
+For frequently changing datasets, this is not enough.
+After exploring, analysing and documenting it once, an understanding needs to be continously verified to be up-to-date, and adjusted it when it's not.
+To address these problems, we developed `datapact`, a Python library that provides an ergonomic API for running assertions on DataFrames.
 
 # Statement of need
 
-When working with continually changing datasets, e.g. occupancy stats for intensive care units, data will change frequently.
+When working with continually changing datasets, e.g. occupancy statistics for intensive care units during a pandemic, dataset shift (@moreno2012unifying) will occur frequently.
 Sometimes because of human errors in data entry, sometimes because of bugs, errors or outages in the data delivery, and sometimes because there are changes in the underlying data.
-If these changes stay unnoticed, they can become serious problems.
-The faster you notice them, the faster you can update your analysis scripts, dashboards and data pipelines.
+If these changes stay unnoticed, they can make their way into subtle bugs, faulty visualisations and ultimately lead to mislead decisions.
+The faster they're noticed, the faster analysis scripts, dashboards and data pipelines can be updated. TODO: citatation needed
 
-Without dedicated systems to detect them, changes can often go unnoticed for months!
+Without dedicated systems to detect them, changes can often go unnoticed for months.
+`datapact` enables such a system to be built easily, so changes are noticed as the data comes in.
+It is a Python library for expressing + verifying characteristics on DataFrames, and can be embedded right within the Python scripts and Jupyter notebooks that are already being used for analysis.
+Different tests are needed, both simple sanity checks ("the ICU patient's age should be between 0 and 150") and more complex characteristics ("the age should be normal distributed").
+Specialized tests should be easily addable via custom code.
 
-`datapact` allows you to easily build such a system, so you notice changes as the data comes in.
-It is a Python library for expressing + verifying characteristics on DataFrames, and can be embedded right within the Python scripts and Jupyter notebooks you already use for analysis.
-With X (TODO) different assertions built in, both for simple sanity checks ("the ICU patient's age should be between 0 and 150") and for more complex characteristics ("the age should be normal distributed"), a lot of the common tests are already there.
-Specialized tests can be added easily in your own code.
+Great Expectations (@Gong_Great_Expectations) is an existing framework that addresses these issues via Pipeline Tests. It can be hard to learn and hard to set up, especially for non-engineering-heavy organisations.
 
 `datapact` is designed to be used by researchers, industry data scientists and data engineers alike.
-If you're working in a team, there's `Datapact Track`: the optional web-app allows you to track test results.
-When critical assertions fail, it notifies you via E-Mail, Slack, Teams or PagerDuty.
+For teams there's `Datapact Track`: the optional web-app that tracks test results, and notifies about failures via E-Mail, Slack, MicroSoft Teams or PagerDuty.
 
 # Method
 
 The pain points around continous data verification were identified by the author during a research project involving continously surveyed mobility data.
-These were validated via qualitative interviews across several research + industry organisations (RKI, NetCheck, Great Expecations, Netlify, TODO: make full list).
-After evaluating prior art (especially Great Expectations), the idea of an assertion library was identified as a potential solution to the problem.
-To ensure that `datapact`'s developer-facing API is intuitive + ergonomic to use, the author performed (informal) experiments where developers without prior knowledge about the problem were asked to explain what they think a given `datapact` snippet did.
+These were validated via qualitative interviews across a variety of research and industry organisations.
+After evaluating prior art, the idea of an assertion library was identified as a potential solution to the problem.
+To ensure that `datapact`'s developer-facing API is intuitive + ergonomic to use, the authors performed informal experiments where developers without prior knowledge about the problem were asked to explain what they think a given `datapact` snippet did.
+
+potential TODO: mention design, implementation, unit tests, code coverage, CI, CD, documentation ...
 
 # Comparison to Other Tools
 
@@ -55,7 +67,7 @@ The problem of improving data quality is addressed by various solutions, which c
 into two distinct groups:
 
 1. libraries and frameworks that are integrated into existing pipelines and workflows
-2. standalone services that directly connect to your datasources, often distributed as software-as-a-service
+2. standalone services that directly connect to datasources, often distributed as software-as-a-service
 
 Especially the second category has seen a recent increase in products being developed,
 mostly backed by venture capital.
@@ -114,7 +126,7 @@ It does, however, have a data profiler that seems useful for setting up an initi
 ## Standalone Services
 
 The following tools all work very similar:
-They are commercial Software-as-a-Service offerings that connect directly to your data warehouse (all support Snowflake, Redshift and BigQuery), do semi-automatic data monitoring and tracking, and alert via Slack or Email when
+They are commercial Software-as-a-Service offerings that connect directly to data warehouses (all support Snowflake, Redshift and BigQuery), do semi-automatic data monitoring and tracking, and alert via Slack or Email when
 they find an anomaly.
 
 Typically geared more towards industry applications than research, their common pitch is "being datadog for data", and they aim to prevent data pipelines from breaking.
@@ -129,7 +141,7 @@ Anomaly detection is performed using machine learning, which can make it hard to
 For usecases where SaaS-usage is prohibited, e.g. because of data privacy requirements,
 hybrid deployments are only supported on AWS, ruling Monte Carlo out for a lot of research usecases.
 
-Monte Carlo features ready-made integrations for orchestrators like AirFlow, allowing you to build custom-made
+Monte Carlo features ready-made integrations for orchestrators like AirFlow, enabling custom-made
 workflows e.g. for verifying pull requests.
 
 ### Metaplane
@@ -150,15 +162,6 @@ verify a column's data format (UUID, zip codes, ...).
 It tracks data freshness, volume (), format (UUID, zip codes, ...) and summary
 statistics, and performs basic outlier detection.
 Compared to the other tools, BigEye seems to be the most lacking feature-wise.
-
-### Datafold
-
-Datafold is
-
-- Datafold
-  - in a dbt+PR-based workflow, datafold does monitoring + CI reporting on PRs
-  - connects to your database to alert on SQL-pulled scalars
-  - can be deployed On Prem
 
 Summary table:
 
