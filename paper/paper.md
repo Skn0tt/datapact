@@ -60,6 +60,7 @@ After evaluating prior art, the idea of an assertion library was identified as a
 To ensure that `datapact`'s developer-facing API is intuitive + ergonomic to use, the authors performed informal experiments where developers without prior knowledge about the problem were asked to explain what they think a given `datapact` snippet did.
 
 potential TODO: mention design, implementation, unit tests, code coverage, CI, CD, documentation ...
+Question to reviewers: would this be valuable? Fabio recommended this, but I'm unsure if it's interesting or bloaty.
 
 # Comparison to Other Tools
 
