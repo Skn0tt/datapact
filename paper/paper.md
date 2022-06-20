@@ -1,5 +1,5 @@
 ---
-title: "datapact: a library for checking assumptions on Python DataFrames"
+title: "datapact: a Python library for checking assumptions on DataFrames"
 tags:
   - python
   - pandas
@@ -21,7 +21,7 @@ authors:
     orcid: 0000-0003-4589-9809
     affiliation: 1
 affiliations:
-  - name: DACS Chair, HPI, Digital Engineering Faculty, University of Potsdam, Potsdam, Germany
+  - name: Hasso-Plattner-Institute for Digital Engineering, Digital Engineering Faculty, University of Potsdam, Potsdam, Germany
     index: 1
 date: 30 June 2022
 bibliography: paper.bib
@@ -29,38 +29,40 @@ bibliography: paper.bib
 
 # Summary
 
-It is crucial to have a good understanding of the datasets that are being worked with. For static datasets, users can explore them once, and document their findings for other team members to consume.
-For frequently changing datasets, this is not enough.
-After exploring, analysing and documenting it once, an understanding needs to be continously verified to be up-to-date, and adjusted it when it's not.
+It is crucial to have a good understanding of the datasets that are being worked with. For static datasets, users can explore the dataset once, and document their findings for other team members to consume.
+For frequently changing datasets, this may not be sufficient.
+After exploring, analysing and documenting it once, an understanding needs to be continously verified to be up-to-date, and adjusted when it is not.
 To address these problems, we developed `datapact`, a Python library that provides an ergonomic API for running assertions on DataFrames.
+
+`datapact` is available under MIT license and available at https://github.com/skn0tt/datapact.
 
 # Statement of need
 
 When working with continually changing datasets, e.g. occupancy statistics for intensive care units during a pandemic, dataset shift (@moreno2012unifying) will occur frequently.
 Sometimes because of human errors in data entry, sometimes because of bugs, errors or outages in the data delivery, and sometimes because there are changes in the underlying data.
-If these changes stay unnoticed, they can make their way into subtle bugs, faulty visualisations and ultimately lead to mislead decisions.
-The faster they're noticed, the faster analysis scripts, dashboards and data pipelines can be updated. TODO: citatation needed
+If these changes stay unnoticed, they can make their way into subtle bugs, faulty visualisations and ultimately lead to suboptimal decisions.
+The faster they get noticed, the faster analysis scripts, dashboards and data pipelines can be updated. TODO: citatation needed
 
 Without dedicated systems to detect them, changes can often go unnoticed for months.
 `datapact` enables such a system to be built easily, so changes are noticed as the data comes in.
-It is a Python library for expressing + verifying characteristics on DataFrames, and can be embedded right within the Python scripts and Jupyter notebooks that are already being used for analysis.
-Different tests are needed, both simple sanity checks ("the ICU patient's age should be between 0 and 150") and more complex characteristics ("the age should be normal distributed").
-Specialized tests should be easily addable via custom code.
+It is a Python library for expressing and verifying characteristics on DataFrames, and can be embedded right within the Python scripts and Jupyter notebooks that are already being used for analysis.
+Different tests are needed, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed").
+More specialized tests can easily be added via custom code.
 
-Great Expectations (@Gong_Great_Expectations) is an existing framework that addresses these issues via Pipeline Tests. It can be hard to learn and hard to set up, especially for non-engineering-heavy organisations.
+Exisitng projects addressing this need (e.g. Great Expectations (@Gong_Great_Expectations)) come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
 
-`datapact` is designed to be used by researchers, industry data scientists and data engineers alike.
-For teams there's `Datapact Track`: the optional web-app that tracks test results, and notifies about failures via E-Mail, Slack, MicroSoft Teams or PagerDuty.
+With `datapact`, we provide an easily usable library that is designed to be used by researchers, industry data scientists and, data engineers alike.
+For teams there is `Datapact Track`: the optional web-app that tracks test results, and notifies about failures via E-Mail, Slack, Microsoft Teams, or PagerDuty.
 
 # Method
 
-The pain points around continous data verification were identified by the author during a research project involving continously surveyed mobility data.
-These were validated via qualitative interviews across a variety of research and industry organisations.
+Qualitative interviews across a variety of research and industry organisations were conducted to learn about the problem of unnoticed dataset shift.
 After evaluating prior art, the idea of an assertion library was identified as a potential solution to the problem.
 To ensure that `datapact`'s developer-facing API is intuitive + ergonomic to use, the authors performed informal experiments where developers without prior knowledge about the problem were asked to explain what they think a given `datapact` snippet did.
 
-potential TODO: mention design, implementation, unit tests, code coverage, CI, CD, documentation ...
-Question to reviewers: would this be valuable? Fabio recommended this, but I'm unsure if it's interesting or bloaty.
+To ensure high code quality, `datapact` maintains 100% code coverage via unit tests, automatically executed by our continuous integration.
+Code style is linted via pylint (@pylint), pyright (@pyright) and Prettier (@prettier).
+Documentation is auto-generated from docstrings (@goodger2010docstring).
 
 # Comparison to Other Tools
 
@@ -71,6 +73,7 @@ The first group is made of libraries and frameworks that can be integrated into 
 They typically implement a concept that Great Expectations (@Gong_Great_Expectations) calls "Pipeline Tests".
 Similar to how unit tests are used to ensure code behaviour,
 pipeline tests ensure that the data being processed matches the analysis' requirements.
+Examples of this group are `Great Expectations`, `TDDA` (@tdda) or `datapact`.
 
 The second group of solutions are standalone services that directly connect to datasources.
 These are often proprietary, and distributed as software-as-a-service.
@@ -79,16 +82,17 @@ They are geared more towards industry applications than research.
 Their common pitch being "being datadog for data", they aim to prevent data pipelines from breaking, and not so much at spotting subtle changes in the data.
 Compared to `datapact`, they are easier to set up, but very limited in the types of errors they can catch.
 Documentation is not in scope for them.
+Examples of this group are Monte Carlo (@montecarlo), Metaplane (@metaplane) or BigEye (@bigeye).
 
-Summary table:
+# Potential Enhancements
 
-|            | datapact       | Great Expectations                    | Monte Carlo           | Exploratory Thingy |
-| ---------- | -------------- | ------------------------------------- | --------------------- | ------------------ |
-| it's a ... | Python Library | Framework with upcoming Cloud Product | Cloud Product         | TODO:              |
-| aimed at   | Research,      | data engineering orgs                 | data engineering orgs | research           |
+Future development on `datapact` can happen across multiple axis.
+
+TODO:
 
 # Acknowledgements
 
-We acknowledge contributions from the author's coworkers at Netlify, especially Laurie Voss, NetCheck's Team, TODO: add rest of people i talked to.
+We acknowledge contributions from the author's coworkers at Netlify, NET CHECK's Team, Robert Koch Institute,
+and other participants that brought invaluable perspectives to the research interviews.
 
 # References
