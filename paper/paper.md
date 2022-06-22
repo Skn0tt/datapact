@@ -41,7 +41,7 @@ To address these problems, we developed `datapact`, a Python library that provid
 When working with continually changing datasets, e.g. occupancy statistics for intensive care units during a pandemic, dataset shift (@moreno2012unifying) will occur frequently.
 Sometimes because of human errors in data entry, sometimes because of bugs, errors or outages in the data delivery, and sometimes because there are changes in the underlying data.
 If these changes stay unnoticed, they can make their way into subtle bugs, faulty visualisations and ultimately lead to suboptimal decisions.
-The faster they get noticed, the faster analysis scripts, dashboards and data pipelines can be updated. TODO: citatation needed
+The faster they get noticed, the faster analysis scripts, dashboards and data pipelines can be updated.
 
 Without dedicated systems to detect them, changes can often go unnoticed for months.
 `datapact` enables such a system to be built easily, so changes are noticed as the data comes in.
