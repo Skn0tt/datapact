@@ -70,7 +70,7 @@ The problem of improving data quality is addressed by various solutions, which c
 into two distinct groups.
 
 The first group is made of libraries and frameworks that can be integrated into existing pipelines and workflows.
-They typically implement a concept that Great Expectations (@Gong_Great_Expectations) calls "Pipeline Tests".
+They typically implement a concept that `Great Expectations` (@Gong_Great_Expectations) calls "Pipeline Tests".
 Similar to how unit tests are used to ensure code behaviour,
 pipeline tests ensure that the data being processed matches the analysis' requirements.
 Examples of this group are `Great Expectations`, `TDDA` (@tdda) or `datapact`.
@@ -86,9 +86,10 @@ Examples of this group are Monte Carlo (@montecarlo), Metaplane (@metaplane) or 
 
 # Potential Enhancements
 
-Future development on `datapact` can happen across multiple axis.
-
-TODO:
+`datapact` is usable, however there is always room for further development.
+One of these improvements would be more _built-in assertions_, extending `datapact` to more application areas out-of-the-box. This could be general statistical tests, but also assertions on domain-specific datatypes like geocoordinates, addresses, currencies or IP addresses.
+Adding support for _dataset segmentation_ would allow asserting on a subset of the data, allowing more granular tests.
+Furthermore, enabling _multi-variable tests_ over multiple colums would allow for tests for e.g. correlation or relational integrity.
 
 # Acknowledgements
 
