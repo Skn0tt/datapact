@@ -64,25 +64,9 @@ To ensure high code quality, `datapact` maintains 100% code coverage via unit te
 Code style is linted via pylint (@pylint), pyright (@pyright) and Prettier (@prettier).
 Documentation is auto-generated from docstrings (@goodger2010docstring).
 
-# Comparison to Other Tools
+# Example
 
-The problem of improving data quality is addressed by various solutions, which can be divided
-into two distinct groups.
-
-The first group is made of libraries and frameworks that can be integrated into existing pipelines and workflows.
-They typically implement a concept that `Great Expectations` (@Gong_Great_Expectations) calls "Pipeline Tests".
-Similar to how unit tests are used to ensure code behaviour,
-pipeline tests ensure that the data being processed matches the analysis' requirements.
-Examples of this group are `Great Expectations`, `TDDA` (@tdda) or `datapact`.
-
-The second group of solutions are standalone services that directly connect to datasources.
-These are often proprietary, and distributed as software-as-a-service.
-They typically connect directly to a data warehouse (most support Snowflake, Redshift and BigQuery), do semi-automatic data monitoring and tracking, and alert via Slack or Email when they find an anomaly.
-They are geared more towards industry applications than research.
-Their common pitch being "being datadog for data", they aim to prevent data pipelines from breaking, and not so much at spotting subtle changes in the data.
-Compared to `datapact`, they are easier to set up, but very limited in the types of errors they can catch.
-Documentation is not in scope for them.
-Examples of this group are Monte Carlo (@montecarlo), Metaplane (@metaplane) or BigEye (@bigeye).
+![Statistical assertions on the Iris dataset.\label{fig:example}](screenshot.png)
 
 # Future Work
 
