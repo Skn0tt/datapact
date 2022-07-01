@@ -34,7 +34,7 @@ For frequently changing datasets, this may not be sufficient.
 After exploring, analysing and documenting it once, an understanding needs to be continously verified to be up-to-date, and adjusted when it is not.
 To address these problems, we developed `datapact`, a Python library that provides an ergonomic API for running assertions on DataFrames.
 
-`datapact` is available under MIT license and available at https://github.com/skn0tt/datapact.
+`datapact` is available under MIT license at https://github.com/skn0tt/datapact.
 
 # Statement of need
 
@@ -49,9 +49,9 @@ It is a Python library for expressing and verifying characteristics on DataFrame
 Different tests are needed, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed").
 More specialized tests can easily be added via custom code.
 
-Exisitng projects addressing this need (e.g. Great Expectations (@Gong_Great_Expectations)) come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
+Existing projects addressing this need (e.g. Great Expectations (@Gong_Great_Expectations)) come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
 
-With `datapact`, we provide an easily usable library that is designed to be used by researchers, industry data scientists and, data engineers alike.
+With `datapact`, we provide an easily usable library that is designed to be used by researchers, industry data scientists and data engineers alike.
 For teams there is `Datapact Track`: the optional web-app that tracks test results, and notifies about failures via E-Mail, Slack, Microsoft Teams, or PagerDuty.
 
 # Method
@@ -84,10 +84,10 @@ Compared to `datapact`, they are easier to set up, but very limited in the types
 Documentation is not in scope for them.
 Examples of this group are Monte Carlo (@montecarlo), Metaplane (@metaplane) or BigEye (@bigeye).
 
-# Potential Enhancements
+# Future Work
 
-`datapact` is usable, however there is always room for further development.
-One of these improvements would be more _built-in assertions_, extending `datapact` to more application areas out-of-the-box. This could be general statistical tests, but also assertions on domain-specific datatypes like geocoordinates, addresses, currencies or IP addresses.
+Future work on `datapact` could happen in multiple areas.
+One possible extension would be the addition of more _built-in assertions_, extending `datapact` to more application areas out-of-the-box. This could be general statistical tests, but also assertions on domain-specific datatypes like geocoordinates, addresses, currencies or IP addresses.
 Adding support for _dataset segmentation_ would allow asserting on a subset of the data, allowing more granular tests.
 Furthermore, enabling _multi-variable tests_ over multiple colums would allow for tests for e.g. correlation or relational integrity.
 
