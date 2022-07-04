@@ -39,14 +39,14 @@ To address these problems, we developed `datapact`, a Python library that provid
 # Statement of need
 
 When working with continually changing datasets, e.g. occupancy statistics for intensive care units during a pandemic, dataset shift (@moreno2012unifying) will occur frequently.
-Sometimes because of human errors in data entry, sometimes because of bugs, errors or outages in the data delivery, and sometimes because there are changes in the underlying data.
+Some common causes of data shift are human errors in data entry, bugs, errors or outages in the data delivery, or simply changes in the underlying data.
 If these changes stay unnoticed, they can make their way into subtle bugs, faulty visualisations and ultimately lead to suboptimal decisions.
 The faster they get noticed, the faster analysis scripts, dashboards and data pipelines can be updated.
 
 Without dedicated systems to detect them, changes can often go unnoticed for months.
 `datapact` enables such a system to be built easily, so changes are noticed as the data comes in.
 It is a Python library for expressing and verifying characteristics on DataFrames, and can be embedded right within the Python scripts and Jupyter notebooks that are already being used for analysis.
-Different tests are needed, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed").
+Different tests are supported, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed").
 More specialized tests can easily be added via custom code.
 
 Existing projects addressing this need (e.g. Great Expectations (@Gong_Great_Expectations)) come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
@@ -58,7 +58,7 @@ For teams there is `Datapact Track`: the optional web-app that tracks test resul
 
 Qualitative interviews across a variety of research and industry organisations were conducted to learn about the problem of unnoticed dataset shift.
 After evaluating prior art, the idea of an assertion library was identified as a potential solution to the problem.
-To ensure that `datapact`'s developer-facing API is intuitive + ergonomic to use, the authors performed informal experiments where developers without prior knowledge about the problem were asked to explain what they think a given `datapact` snippet did.
+To ensure that `datapact`'s developer-facing API is intuitive and ergonomic to use, the authors performed informal experiments where developers without prior knowledge about the problem were asked to explain what they think a given `datapact` snippet did.
 
 To ensure high code quality, `datapact` maintains 100% code coverage via unit tests, automatically executed by our continuous integration.
 Code style is linted via pylint (@pylint), pyright (@pyright) and Prettier (@prettier).
