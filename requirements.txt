@@ -9,5 +9,5 @@ pylint==2.13.9
 pytest==7.1.1
 pytest-cov==3.0.0
 sphinx==5.0.2
-furo==2022.6.4.1
+furo==2022.6.21
 pytest_httpserver==1.0.4
