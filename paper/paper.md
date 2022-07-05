@@ -49,7 +49,7 @@ It is a Python library for expressing and verifying characteristics on DataFrame
 Different tests are supported, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed").
 More specialized tests can easily be added via custom code.
 
-Existing projects addressing this need (e.g. Great Expectations (@Gong_Great_Expectations)) come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
+Existing projects addressing this need, e.g. Great Expectations (@Gong_Great_Expectations), come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
 
 With `datapact`, we provide an easily usable library that is designed to be used by researchers, industry data scientists and data engineers alike.
 For teams there is `Datapact Track`: the optional web-app that tracks test results, and notifies about failures via E-Mail, Slack, Microsoft Teams, or PagerDuty.
