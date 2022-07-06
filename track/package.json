@@ -39,7 +39,7 @@
     "chart.js": "3.8.0",
     "date-fns": "2.28.0",
     "final-form": "4.20.7",
-    "framer-motion": "6.4.0",
+    "framer-motion": "6.4.2",
     "mjml": "4.12.0",
     "next": "12.1.6",
     "nodemailer": "6.7.6",
