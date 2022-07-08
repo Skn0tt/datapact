@@ -69,7 +69,7 @@ Documentation is auto-generated from docstrings (@goodger2010docstring).
 \begin{figure}[ht]
 \centering
 
-```python
+\begin{minted}{python}
 iris dp = datapact.test(iris_df)
 iris_dp.describe("Iris dataset")
 iris dp.sepal_width.describe(unit="cm")
@@ -77,7 +77,7 @@ iris_dp.sepal_width.should.be_normal_distributed()
 iris_dp.sepal_width.must.be_between(0, 3)
 
 iris_dp.check()
-```
+\end{minted}
 
 \caption{Statistical assertions on the Iris dataset.}
 \label{fig:codeexample}
