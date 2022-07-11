@@ -66,6 +66,8 @@ Documentation is auto-generated from docstrings (@goodger2010docstring).
 
 # Example
 
+\usepackage{minted}
+
 \begin{figure}[ht]
 \centering
 
