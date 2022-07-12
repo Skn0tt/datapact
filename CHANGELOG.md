@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.9.1](https://github.com/Skn0tt/datapact/compare/v0.9.0...v0.9.1) (2022-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update blitz to v2.0.0-alpha.38 ([#163](https://github.com/Skn0tt/datapact/issues/163)) ([c1bc58b](https://github.com/Skn0tt/datapact/commit/c1bc58bdc16b97efaf260797b294cfb2f7330f4d))
+* **deps:** update blitz to v2.0.0-alpha.49 ([#177](https://github.com/Skn0tt/datapact/issues/177)) ([41cae3f](https://github.com/Skn0tt/datapact/commit/41cae3f5149aca57159aabd9f861f54140b7d04a))
+* **deps:** update dependency chakra-react-select to v3.3.8 ([#194](https://github.com/Skn0tt/datapact/issues/194)) ([645393c](https://github.com/Skn0tt/datapact/commit/645393cc0729f26bd3e3e444c7c36347dd276242))
+* **deps:** update dependency framer-motion to v6.4.0 ([#179](https://github.com/Skn0tt/datapact/issues/179)) ([ab54f7a](https://github.com/Skn0tt/datapact/commit/ab54f7ab2db2e7e112c1275720443624c811c58e))
+* **deps:** update dependency framer-motion to v6.4.2 ([c14f965](https://github.com/Skn0tt/datapact/commit/c14f965c17e5551e167acaf1f3dc46cda8bd168c))
+* **deps:** update dependency nodemailer to v6.7.6 ([#191](https://github.com/Skn0tt/datapact/issues/191)) ([55ed01a](https://github.com/Skn0tt/datapact/commit/55ed01a03b3bdebf76233fc7217d8267717c6ec8))
+* **deps:** update dependency nodemailer to v6.7.7 ([2147cbc](https://github.com/Skn0tt/datapact/commit/2147cbcca9eb88e6c223a1a678be58729eb0bb4e))
+* **deps:** update dependency parcel to v2.6.1 ([#176](https://github.com/Skn0tt/datapact/issues/176)) ([4d0ce7a](https://github.com/Skn0tt/datapact/commit/4d0ce7a6c84f0416f23d2b6efc7c0616b67daf3d))
+* **deps:** update dependency parcel to v2.6.2 ([#182](https://github.com/Skn0tt/datapact/issues/182)) ([5956870](https://github.com/Skn0tt/datapact/commit/5956870bb416f9b06084d6e2580fec1adcc9260e))
+* **deps:** update dependency undici to v5.5.1 ([#165](https://github.com/Skn0tt/datapact/issues/165)) ([9355a78](https://github.com/Skn0tt/datapact/commit/9355a781d9ef2e008c5c74b73854d56e178e472f))
+* **deps:** update dependency undici to v5.6.0 ([#192](https://github.com/Skn0tt/datapact/issues/192)) ([8cf75e9](https://github.com/Skn0tt/datapact/commit/8cf75e9d3d4d7df1fb55636ef6f01dd9b637e70c))
+* **deps:** update emotion monorepo to v11.9.3 ([#164](https://github.com/Skn0tt/datapact/issues/164)) ([0b473a5](https://github.com/Skn0tt/datapact/commit/0b473a527585b3b6ac24ab72e8ff1b17a307d25a))
+* **deps:** update prisma monorepo to v3.15.1 ([#158](https://github.com/Skn0tt/datapact/issues/158)) ([7013efc](https://github.com/Skn0tt/datapact/commit/7013efc1c9a52307ac73d022432bcca54aa2eca5))
+* **deps:** update prisma monorepo to v3.15.2 ([#169](https://github.com/Skn0tt/datapact/issues/169)) ([2a2701f](https://github.com/Skn0tt/datapact/commit/2a2701f84d8759fd4dbad52637a0845be1ec2c38))
+* **deps:** update prisma monorepo to v4 ([adae3d2](https://github.com/Skn0tt/datapact/commit/adae3d2d48c531ea1aa8755802eb06e3c7a66889))
+* **deps:** update prisma monorepo to v4 (major) ([#186](https://github.com/Skn0tt/datapact/issues/186)) ([adae3d2](https://github.com/Skn0tt/datapact/commit/adae3d2d48c531ea1aa8755802eb06e3c7a66889))
+* **deps:** update react monorepo to v18.2.0 ([#168](https://github.com/Skn0tt/datapact/issues/168)) ([a8ed279](https://github.com/Skn0tt/datapact/commit/a8ed279fadda4fa1abfb8edd6a9ef8d89db90a48))
+
+
+### Documentation
+
+* add doetterl as a contributor for bug ([#156](https://github.com/Skn0tt/datapact/issues/156)) ([49e16bd](https://github.com/Skn0tt/datapact/commit/49e16bdcd73fe11969b2b684cbc4436858d45911))
+
 ## [0.9.0](https://github.com/Skn0tt/datapact/compare/v0.8.0...v0.9.0) (2022-06-09)
 
 
