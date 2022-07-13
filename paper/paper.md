@@ -66,16 +66,7 @@ Documentation is auto-generated from docstrings (@goodger2010docstring).
 
 # Example
 
-```python
-iris dp = datapact.test(iris_df)
-iris_dp.describe("Iris dataset")
-iris dp.sepal_width.describe(unit="cm")
-iris_dp.sepal_width.should.be_normal_distributed()
-iris_dp.sepal_width.must.be_between(0, 3)
-iris_dp.check() # raises exception if assertion failed
-```
-
-![Same code as above, run in Jupyter.](screenshot.png)
+![Statistical assertions on the Iris dataset.\label{fig:example}](screenshot.png)
 
 # Future Work
 
