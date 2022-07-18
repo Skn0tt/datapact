@@ -46,7 +46,7 @@ The faster they get noticed, the faster analysis scripts, dashboards and data pi
 Without dedicated systems to detect them, changes can often go unnoticed for months.
 `datapact` enables such a system to be built easily, so changes are noticed as the data comes in.
 It is a Python library for expressing and verifying characteristics on DataFrames, and can be embedded right within the Python scripts and Jupyter notebooks that are already being used for analysis.
-Different tests are supported, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed").
+Different tests are supported, both simple sanity checks ("the patient's age should be between 0 and 125") and more complex characteristics ("the age should be normally distributed") (see \autoref{fig:example}).
 More specialized tests can easily be added via custom code.
 
 Existing projects addressing this need, e.g. Great Expectations (@Gong_Great_Expectations), come with comparatively high entrance hurdles that are hard to overcome, particularly for non engineering heavy organisations.
@@ -77,7 +77,7 @@ Furthermore, enabling _multi-variable tests_ over multiple colums would allow fo
 
 # Acknowledgements
 
-We acknowledge contributions from the author's coworkers at Netlify, NET CHECK's Team, Robert Koch Institute,
+We acknowledge contributions from the authors' coworkers at Netlify, NET CHECK's Team, Robert Koch Institute,
 and other participants that brought invaluable perspectives to the research interviews.
 
 # References
