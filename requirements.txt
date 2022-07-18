@@ -11,3 +11,4 @@ pytest-cov==3.0.0
 sphinx==5.0.2
 furo==2022.6.21
 pytest_httpserver==1.0.4
+myst-parser==0.18.0
