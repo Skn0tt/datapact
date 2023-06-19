@@ -41,7 +41,7 @@
     "final-form": "4.20.7",
     "framer-motion": "6.4.2",
     "mjml": "4.13.0",
-    "next": "12.1.6",
+    "next": "12.3.4",
     "nodemailer": "6.7.7",
     "parcel": "2.6.2",
     "prisma": "4.0.0",
@@ -54,7 +54,7 @@
     "zod": "3.10.1"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "12.1.6",
+    "@next/bundle-analyzer": "12.3.4",
     "@types/jest": "28.1.4",
     "@types/node": "17.0.16",
     "@types/preview-email": "2.0.1",
@@ -63,7 +63,7 @@
     "@typescript-eslint/eslint-plugin": "5.30.5",
     "@typescript-eslint/parser": "5.30.5",
     "eslint": "7.32.0",
-    "eslint-config-next": "12.1.6",
+    "eslint-config-next": "12.3.4",
     "eslint-config-prettier": "8.5.0",
     "husky": "8.0.1",
     "jest": "28.1.2",
